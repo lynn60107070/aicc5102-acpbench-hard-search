@@ -1,0 +1,9 @@
+# Python 3.12 (needed for the Windows temp-file fix). Exact working environment: env/acp-env-requirements.txt
+lm_eval==0.4.13
+datasets==5.0.1
+tarski[clingo]==0.8.2
+pddl==0.4.2
+lark==1.1.9
+kstar-planner==1.6.0
+PyYAML==6.0.3
+requests==2.34.2

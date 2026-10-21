@@ -1,0 +1,32 @@
+# secrets
+.env
+
+# environments
+acp-env/
+.venv/
+venv/
+
+# python
+__pycache__/
+*.pyc
+
+# local scratch runs (commit final runs by moving them to results/final/)
+results/runs/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# LaTeX build files (keep .tex/.bib/figures)
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
+paper/*.synctex.gz
+
+# byte-identical duplicate of proposal/AICC_project_proposal.pdf
+proposal/AICC_project_proposal (1).pdf

@@ -1,0 +1,10 @@
+# Each folder's owner must approve pull requests that touch it.
+# TODO: replace the placeholders with Faheema's and Aisha's GitHub usernames.
+*                    @lynn60107070
+/methods/search.py   @lynn60107070
+/methods/direct.py   @lynn60107070
+/methods/structured.py  @FAHEEMA_GITHUB
+/methods/best_of_n.py   @FAHEEMA_GITHUB
+/related_work/       @FAHEEMA_GITHUB
+/common/             @AISHA_GITHUB @lynn60107070
+/experiments/        @AISHA_GITHUB

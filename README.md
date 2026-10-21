@@ -155,13 +155,16 @@ lm-eval --model local-chat-completions ^
 |---|---|---|
 | Llama 3.1 8B, Next Action (required) | 0.25 (Table 1) | ✅ **0.223** (29/130, 95% CI 0.15–0.29), bf16 via CoreWeave, 21 Oct 2026 → match. `results/final/repro_llama31_8b_direct_bf16_coreweave/` |
 | Llama 3.1 8B, all 8 tasks (stretch: whole Table 1 row) | Table 1 row | optional, `--tasks acp_gen_2shot` via `scripts/lm_eval_win.py` |
-| Llama 3.1 70B, Next Action (stretch; also the fallback model) | 0.42 | optional |
+| Llama 3.1 8B, Progression (state prediction; informs the search design) | 0.40 (Table 1) | ✅ **0.400** (official harness, bf16 CoreWeave, 21 Oct) → exact match. `results/final/repro_prog_llama31_8b/` |
+| Llama 3.1 70B, Progression | 0.65 | ✅ **0.608** (official harness, Amazon Bedrock, 21 Oct) → match (95% CI ±0.08). `results/final/repro_prog_llama31_70b/` |
+| Llama 3.1 70B, Next Action (second comparison model for search) | 0.42 | to run |
 | Closed models (GPT-4o, GPT-4o mini, o1-mini, o1-preview) | — | not reproducible (see below) |
 
 **Known deviations from the paper's setup** (add a row whenever anything else differs)
 | # | Paper | Ours | Why | Expected effect |
 |---|---|---|---|---|
 | D1 | Model access not specified per model (API, or HF transformers on 2×A100) | Llama 3.1 8B via OpenRouter, pinned to CoreWeave (bf16) with `ACP_PROVIDER` | No local GPU; Groq retired the model 16 Aug 2026. Unpinned, OpenRouter mixed providers: run 1 (21 Oct) went to Groq 97 / DeepInfra 23 / Novita 9 / Cloudflare 1, and 3 of those 4 serve fp8 | Mixed run 0.192 vs bf16 run 0.223 (paper 0.25). The two runs disagree on 16 questions (6 right only in run 1, 10 right only in run 2): precision visibly changes answers |
+| D1b | (same as D1) | Llama 3.1 70B via OpenRouter → Amazon Bedrock | Only 70B providers are DeepInfra (fp8, blocked) and Bedrock (precision unspecified) | Progression 0.608 vs paper 0.65, inside the interval |
 | D2 | 5 stop sequences (A.5) | lm-eval's API mode sends only the first 4 (drops `"Q:"`) | OpenAI-style APIs accept at most 4 | Probably negligible |
 | D3 | Chat template use not stated | `--apply_chat_template` (chat messages) | Required by the chat API | Unknown; if outside the interval, rerun without it |
 | D4 | Paper's own YAML is in its supplementary material | lm-eval's built-in `acpbench` task config | Supplementary not yet checked | Likely identical (same authors) — verify |

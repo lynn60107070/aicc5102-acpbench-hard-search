@@ -16,6 +16,10 @@ from pathlib import Path
 
 if os.name == "nt":
     tempfile.NamedTemporaryFile = functools.partial(tempfile.NamedTemporaryFile, delete_on_close=False)
+    # lm-eval's results table contains "↑", which the Windows console encoding can't print when
+    # output is redirected to a file; results are saved before that, but the run then exits with an error.
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
 
 # Read OPENAI_API_KEY from the repo's .env, like the rest of our code.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))

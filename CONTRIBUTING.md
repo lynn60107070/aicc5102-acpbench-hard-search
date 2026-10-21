@@ -103,13 +103,16 @@ python -m experiments.run --method search --param k=3 --param d=2 --max-calls 12
 - Scoring labels every wrong answer as `format` (no parsable action), `inapplicable`, or
   `not_closer` (applicable, but not on an optimal plan).
 
-## 7. Your first tasks
+## 7. Your tasks and deadlines
 
-Deadlines and check-ins for everything below are in **[SCHEDULE.md](SCHEDULE.md)**.
+Your full task list (IDs, effort estimates, which checkpoint each is due at) and the checkpoint dates
+are in **[SCHEDULE.md](SCHEDULE.md)**. Read it after setup. In summary:
 
-- **Faheema:** run `scripts\reproduce_official.bat` and `python -m experiments.run --method direct`.
-  Both should give the same score, and it should land in [0.176, 0.324]. Then start `structured.py`.
-- **Aisha:** read `experiments/run.py` and `common/`. Add the paired comparison script
-  (McNemar on two `rows.jsonl` files) and a seed-sweep / ablation driver.
-- **Lynn:** check by hand whether the 8B model can predict next states on a few instances
-  (this decides whether the fallback model is needed), then build `search.py`.
+- **Faheema (F1–F7):** setup tonight → verify the reproduction with `scripts\reproduce_official.bat`
+  (CP1, Thu 22) → `structured.py` + `best_of_n.py` (CP2, Sat 24) → full runs + related work
+  (CP3, Mon 26) → related work and reproduction sections of the paper (CP5, Fri 30).
+- **Aisha (A1–A9):** setup + McNemar `compare.py` (CP1, Thu 22) → `sweep.py` + `analyze.py`
+  (CP2, Sat 24) → budget matching (CP3, Mon 26) → ablations + token-matched check (CP4, Wed 28)
+  → setup/results/limitations sections (CP5, Fri 30) → code ZIP checked on a fresh clone (CP6, Sun 1).
+- **Lynn (L1–L8):** state-prediction test (CP1) → `search.py` v0 (CP2) → search frozen + paper
+  skeleton (CP3) → main search runs (CP4) → method/intro/discussion sections (CP5) → final assembly (CP6).

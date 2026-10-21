@@ -105,6 +105,8 @@ python -m experiments.run --method search --param k=3 --param d=2 --max-calls 12
 
 ## 7. Your first tasks
 
+Deadlines and check-ins for everything below are in **[SCHEDULE.md](SCHEDULE.md)**.
+
 - **Faheema:** run `scripts\reproduce_official.bat` and `python -m experiments.run --method direct`.
   Both should give the same score, and it should land in [0.176, 0.324]. Then start `structured.py`.
 - **Aisha:** read `experiments/run.py` and `common/`. Add the paired comparison script

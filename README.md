@@ -179,6 +179,8 @@ lm-eval --model local-chat-completions ^
 
 ## 6. Deadlines (Section 1)
 
+Team checkpoints (CP1–CP5 before the 3 Nov progress check) are in [SCHEDULE.md](SCHEDULE.md).
+
 | Stage | Date | Weight (of course) |
 |---|---|---|
 | Proposal | 29 Sep 2026 ✅ | 4% |

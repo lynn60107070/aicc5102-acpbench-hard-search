@@ -146,7 +146,38 @@ lm-eval --model local-chat-completions ^
 
 ---
 
-## 5. Deadlines (Section 1)
+## 5. Reproduction fidelity log (feeds the paper's discrepancy + limitations sections)
+
+**Principle:** match the paper as closely as possible, record every deviation as it happens, and report honestly what could not be reproduced and why. A match means the score falls within the 95% interval, not that it equals the paper's number exactly.
+
+**Scope**
+| Target | Paper value | Status |
+|---|---|---|
+| Llama 3.1 8B, Next Action (required) | 0.25 (Table 1) | ✅ **0.223** (29/130, 95% CI 0.15–0.29), bf16 via CoreWeave, 21 Oct 2026 → match. `results/final/repro_llama31_8b_direct_bf16_coreweave/` |
+| Llama 3.1 8B, all 8 tasks (stretch: whole Table 1 row) | Table 1 row | optional, `--tasks acp_gen_2shot` via `scripts/lm_eval_win.py` |
+| Llama 3.1 70B, Next Action (stretch; also the fallback model) | 0.42 | optional |
+| Closed models (GPT-4o, GPT-4o mini, o1-mini, o1-preview) | — | not reproducible (see below) |
+
+**Known deviations from the paper's setup** (add a row whenever anything else differs)
+| # | Paper | Ours | Why | Expected effect |
+|---|---|---|---|---|
+| D1 | Model access not specified per model (API, or HF transformers on 2×A100) | Llama 3.1 8B via OpenRouter, pinned to CoreWeave (bf16) with `ACP_PROVIDER` | No local GPU; Groq retired the model 16 Aug 2026. Unpinned, OpenRouter mixed providers: run 1 (21 Oct) went to Groq 97 / DeepInfra 23 / Novita 9 / Cloudflare 1, and 3 of those 4 serve fp8 | Mixed run 0.192 vs bf16 run 0.223 (paper 0.25). The two runs disagree on 16 questions (6 right only in run 1, 10 right only in run 2): precision visibly changes answers |
+| D2 | 5 stop sequences (A.5) | lm-eval's API mode sends only the first 4 (drops `"Q:"`) | OpenAI-style APIs accept at most 4 | Probably negligible |
+| D3 | Chat template use not stated | `--apply_chat_template` (chat messages) | Required by the chat API | Unknown; if outside the interval, rerun without it |
+| D4 | Paper's own YAML is in its supplementary material | lm-eval's built-in `acpbench` task config | Supplementary not yet checked | Likely identical (same authors) — verify |
+| D5 | Paper ran on Linux | Windows, with the temp-file fix to the official validator | Plain lm-eval crashes on Windows | None: same scoring code, verified against the answer key |
+| D6 | Dataset as of paper (v2, Feb 2026) | `ibm-research/acp_bench` as of download date | Dataset may have been updated | Size matches (130); record the download date/revision |
+
+**What can't be reproduced, and why (for the limitations section)**
+- Closed-model rows: API versions change or are retired (o1-preview is gone), so the original models no longer exist.
+- Exact numbers: greedy decoding isn't bit-for-bit deterministic across hardware, batching and precision. With n = 130, one flipped answer moves the score by 0.008.
+- Unreported settings (D1, D3) can't be copied exactly.
+- Very large models (Llama 3.1 405B) and reasoning models: cost/hardware beyond the project's budget.
+- Dataset generation: we re-evaluate the released dataset; we don't regenerate the questions.
+
+---
+
+## 6. Deadlines (Section 1)
 
 | Stage | Date | Weight (of course) |
 |---|---|---|
@@ -162,12 +193,13 @@ lm-eval --model local-chat-completions ^
 
 ---
 
-## 6. Open to-dos before 3 Nov
+## 7. Open to-dos before 3 Nov
 
 - [x] Choose how to serve Llama 3.1 8B → OpenRouter (Groq retired the model; no local GPU).
 - [x] Shared pipeline + Windows validator fix + tests (see `CONTRIBUTING.md`).
-- [ ] Create an OpenRouter key, put it in `.env`, run `python -m experiments.run --method direct --limit 3`.
-- [ ] Run the full 130-instance `acp_nexta_gen` baseline and compare with 0.25.
+- [x] OpenRouter key in `.env`; live test passed.
+- [x] Full 130-instance baseline: 0.223 bf16 (match), 0.192 mixed-provider run kept as evidence for D1.
+- [ ] Faheema: independent check of the reproduction through the official harness (`scripts\reproduce_official.bat` with the provider pinned).
 - [ ] Push the repo to GitHub and add Faheema and Aisha; fill their usernames into `.github/CODEOWNERS`.
 - [ ] Settle the HF dataset citation (`ibm-research/acp_bench` vs `ibm/ACPBench`).
 - [ ] Prototype the best-first search extension (k candidates, depth d, call budget).

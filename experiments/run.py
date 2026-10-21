@@ -51,6 +51,7 @@ def summarize(rows: list[dict]) -> dict:
         "total_tokens": sum(r["prompt_tokens"] + r["completion_tokens"] for r in rows),
         "mean_calls": sum(r["calls"] for r in rows) / n,
         "mean_tokens": sum(r["prompt_tokens"] + r["completion_tokens"] for r in rows) / n,
+        "providers": dict(Counter(p for r in rows for p in r.get("providers", []))),
     }
 
 
@@ -104,6 +105,7 @@ def main(argv=None):
                 "calls": llm.budget.calls, "prompt_tokens": llm.budget.prompt_tokens,
                 "completion_tokens": llm.budget.completion_tokens,
                 "calls_by_tag": llm.budget.calls_by_tag, "tokens_by_tag": llm.budget.tokens_by_tag,
+                "providers": sorted({str(c.get("provider")) for c in llm.log}),
                 "seconds": round(time.time() - start, 2), "crash": crash,
             }
             rows.append(row)

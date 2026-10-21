@@ -43,8 +43,10 @@ def load_dotenv(path: Path = REPO_ROOT / ".env") -> None:
 class LLMClient:
     def __init__(self, model: str, base_url: str, api_key: str | None = None,
                  seed: int = LM_EVAL_SEED, cache_path: Path | None = DEFAULT_CACHE,
-                 timeout: float = 180, max_retries: int = 8):
+                 timeout: float = 180, max_retries: int = 8, provider: str | None = None):
         self.model = model
+        # OpenRouter only: pin one backend so every request runs at the same precision.
+        self.provider = provider
         base_url = base_url.rstrip("/")
         if not base_url.endswith("/chat/completions"):
             base_url += "/chat/completions"
@@ -67,6 +69,7 @@ class LLMClient:
             model=os.environ.get("ACP_MODEL"),
             base_url=os.environ.get("ACP_BASE_URL"),
             api_key=os.environ.get("OPENAI_API_KEY"),
+            provider=os.environ.get("ACP_PROVIDER") or None,
         )
         kwargs.update({k: v for k, v in overrides.items() if v is not None})
         if not kwargs["model"] or not kwargs["base_url"]:
@@ -110,6 +113,8 @@ class LLMClient:
                     "prompt_tokens": usage.get("prompt_tokens",
                                                sum(len(m["content"]) for m in payload["messages"]) // 4),
                     "completion_tokens": usage.get("completion_tokens", len(text) // 4),
+                    # Which backend served it (OpenRouter routes between providers): fidelity log D1.
+                    "provider": data.get("provider"),
                 }
             if r is not None and r.status_code not in (408, 409, 429) and r.status_code < 500:
                 raise RuntimeError(f"LLM request failed {r.status_code}: {r.text[:500]}")
@@ -134,6 +139,8 @@ class Session:
         self.budget.check()
         payload = {"model": self.client.model, "messages": messages,
                    "temperature": temperature, "max_tokens": max_tokens}
+        if self.client.provider:
+            payload["provider"] = {"order": [self.client.provider], "allow_fallbacks": False}
         if stop:
             payload["stop"] = stop[:4]  # the OpenAI API accepts at most 4 stop sequences
         request_id = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()

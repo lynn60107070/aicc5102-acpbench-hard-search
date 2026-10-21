@@ -86,6 +86,10 @@ python -m experiments.run --method search --param k=3 --param d=2 --max-calls 12
 
 ## 6. Things you need to know
 
+- **Log every deviation from the paper.** If anything in your runs differs from the paper's
+  setup (model host, prompt, settings, data version, a failed run), add a row to the
+  "Reproduction fidelity log" in `README.md` section 5. That table becomes the paper's
+  discrepancy and limitations sections, so nothing should be fixed silently.
 - **Plain `lm-eval` crashes on Windows** when scoring this task: the validator reopens an open
   temp file. Our `common/validator.py` and `scripts/lm_eval_win.py` fix it. Use
   `scripts\reproduce_official.bat` for the official harness run.

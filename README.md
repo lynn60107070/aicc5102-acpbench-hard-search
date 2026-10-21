@@ -179,7 +179,7 @@ lm-eval --model local-chat-completions ^
 
 ## 6. Deadlines (Section 1)
 
-Team checkpoints (CP1–CP5 before the 3 Nov progress check) are in [SCHEDULE.md](SCHEDULE.md).
+Team checkpoints (CP1–CP6, daily updates; whole submission done by 3 Nov) are in [SCHEDULE.md](SCHEDULE.md).
 
 | Stage | Date | Weight (of course) |
 |---|---|---|

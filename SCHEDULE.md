@@ -1,72 +1,84 @@
 # Schedule and checkpoints
 
-**Goal: 90% done by the course progress check on Tue 3 Nov.** That means every experiment is finished,
-including ablations. Nov 4–17 is for writing the paper, one robustness run and cleanup.
+**Goal: finish the whole submission by the course progress check on Tue 3 Nov**: all experiments,
+the full paper draft and the code ZIP. After that, only instructor feedback, slides, defence prep and the
+peer review remain, so we can focus on our other courses.
 
-**Check-in format (15 min, call or in person):** each person answers three questions:
-1. What's done? (Show it: a command that runs, a `summary.json`, a table.)
-2. What's blocked?
-3. What's next before the next checkpoint?
+We work through weekends. The plan is tight, and every day counts.
 
-If you're blocked, message the group **the same day**. Don't wait for the next check-in.
+## Daily update (every day, by 10 pm, in the group chat)
+Three lines, even if nothing changed:
+```
+✅ Done today:
+🚧 Blocked on:
+➡️ Tomorrow:
+```
+If you're blocked, say so **immediately**. Don't wait for the evening update or the next checkpoint.
 
-Each checkpoint lists what must be **done** by then, not just started.
-
----
-
-## CP1: Sun 25 Oct (online), setup + reproduction verified
-| Who | Done means |
-|---|---|
-| Faheema | Repo set up, `python -m unittest` passes, live 3-question test works. `scripts\reproduce_official.bat` run on all 130 questions; score compared with our 0.223, and any difference explained in the fidelity log |
-| Aisha | Same setup working. Has read `common/` and `experiments/run.py` and can explain the method contract |
-| Lynn | State-prediction test done on ~5 questions, so we know whether search uses 8B or 70B. Search v0 skeleton started |
-
-## CP2: Tue 27 Oct (in person, lab), first versions run end to end
-| Who | Done means |
-|---|---|
-| Faheema | `structured.py` works on `--limit 10`. `best_of_n.py` written and works on `--limit 10` |
-| Aisha | McNemar script compares two `rows.jsonl` files (tested on the two reproduction runs). Seed/sweep runner can launch one method × 3 seeds |
-| Lynn | `search.py` v0 runs end to end on `--limit 10` with `k`, `d`, `scoring`, `predict_state` switches working |
-
-## CP3: Thu 29 Oct (online), baselines complete, search design frozen
-| Who | Done means |
-|---|---|
-| Faheema | Structured prompting full run (130). Best-of-N full runs × 3 seeds (1, 2, 3), copied to `results/final/` |
-| Aisha | Budget matching works (calls and tokens). Analysis script outputs accuracy ± std over seeds, per-domain accuracy and error types. Runner made faster (parallel requests) if runs are too slow |
-| Lynn | **Search design frozen.** No changes to the method after today, only bug fixes. Main search config chosen on a small dev subset |
-
-## CP4: Sun 1 Nov (online), main results + ablations
-| Who | Done means |
-|---|---|
-| Lynn | Main search runs: 130 × 3 seeds, in `results/final/` |
-| Aisha | Ablations run: no LLM scoring, random/fixed expansion, no state prediction, vary k / d / budget |
-| Faheema | Related work notes + `related_work/refs.bib` draft. Second check of everyone's results (spot-check rows) |
-
-## CP5: Mon 2 Nov (online), dry run for the progress check
-| Who | Done means |
-|---|---|
-| All | Results table: direct vs structured vs best-of-N vs search, with McNemar tests. Ablation table. 5-minute walkthrough rehearsed; each person can explain every part |
-| All | Paper sections assigned (see below) |
-
-## Course progress check: Tue 3 Nov
-Show: reproduction (0.223 vs 0.25), main comparison, ablations, fidelity log.
+## Checkpoints (15–20 min call, or in person on Tue)
+Each person **shows** their work (a command that runs, a `summary.json`, a draft section) and we agree
+on what to focus on next. "Done" means finished, not started.
 
 ---
 
-## After the progress check
-| Date | Milestone |
+### CP1: Fri 23 Oct, setup + reproduction verified + model decided
+| Who | Done means |
 |---|---|
-| Tue 3 – Thu 5 Nov | Act on instructor feedback. Token-matched robustness check (Aisha) |
-| Sun 8 Nov | Each person's paper sections drafted (NeurIPS template, 6 pages) |
-| Tue 10 Nov | Full paper draft. Everyone reviews everyone's sections |
-| Thu 12 Nov | Final figures/tables. README reproduce commands checked on a fresh clone |
-| Sun 15 Nov | Final paper + code ZIP ready (2-day buffer) |
-| **Tue 17 Nov** | **Submit: paper PDF, LaTeX source, code ZIP** |
-| 24 Nov / 1 Dec | Presentation + individual defence |
+| Faheema | Repo set up, `python -m unittest` passes, live 3-question test works. `scripts\reproduce_official.bat` run on all 130; result compared with our 0.223 and logged in the fidelity log |
+| Aisha | Same setup working. Has read `common/` + `experiments/run.py`. McNemar script started |
+| Lynn | State-prediction test done → **decide 8B or 70B for search**. Search skeleton started |
 
-**Paper sections:** Lynn writes method & extension and the discussion. Faheema writes related work and the reproduction section.
-Aisha writes the experimental setup, results and limitations.
+### CP2: Sun 25 Oct, everything runs end to end on 10 questions
+| Who | Done means |
+|---|---|
+| Faheema | `structured.py` and `best_of_n.py` work on `--limit 10`. Related work notes started |
+| Aisha | McNemar script tested on the two reproduction runs. Seed/sweep runner launches one method × 3 seeds. Parallel requests in the runner if needed |
+| Lynn | `search.py` v0 runs on `--limit 10`; all switches (`k`, `d`, `scoring`, `predict_state`) work |
+| All | Tell Lynn how many full runs you need → Lynn tops up the account |
+
+### CP3: Tue 27 Oct (in person, lab), baselines done + search frozen
+| Who | Done means |
+|---|---|
+| Faheema | Structured (130) and best-of-N (130 × seeds 1, 2, 3) full runs in `results/final/` |
+| Aisha | Analysis script: accuracy ± std over seeds, per-domain table, error types, calls/tokens per method. Budget matching works |
+| Lynn | **Search design frozen**: only bug fixes from now on. Main search runs started |
+
+### CP4: Thu 29 Oct, ALL EXPERIMENTS DONE
+| Who | Done means |
+|---|---|
+| Lynn | Main search runs (130 × 3 seeds) in `results/final/` |
+| Aisha | Ablations done: no LLM scoring, random/fixed expansion, no state prediction, vary k / d / budget. Token-matched robustness check |
+| Faheema | Reproduction section + related work section drafted in LaTeX. `refs.bib` complete |
+| All | Final results tables and figures generated by script (not by hand) |
+
+### CP5: Sat 31 Oct, full paper draft
+| Who | Done means |
+|---|---|
+| Lynn | Abstract, introduction, research question, method & extension, discussion, conclusion |
+| Faheema | Related work, reproduction (incl. fidelity log → discrepancy paragraph) |
+| Aisha | Experimental setup, results, ablations, limitations |
+| All | Paper compiles in the NeurIPS template, about 6 pages |
+
+### CP6: Mon 2 Nov, submission-ready + dry run
+| Who | Done means |
+|---|---|
+| All | Everyone has read and commented on the whole paper; fixes applied. Contributions + AI use statement written |
+| Aisha | Code ZIP: README reproduce commands tested on a **fresh clone** |
+| All | 5-minute walkthrough for Nov 3 rehearsed; each person can explain every part |
+
+### Tue 3 Nov: course progress check
+Show the complete draft: reproduction, main comparison, ablations, fidelity log.
+
+---
+
+## After 3 Nov (light work only)
+| When | What |
+|---|---|
+| 4–6 Nov | Apply instructor feedback, then submit (deadline **Tue 17 Nov**) |
+| by 20 Nov | Presentation slides |
+| before 24 Nov / 1 Dec | Individual defence prep: everyone must be able to explain every part |
+| TBA | Peer review of another team (4%) |
 
 ## Budget
-Keys have spending caps. Develop with `--limit 10`. The full-size runs (CP3–CP4) cost the most:
-Lynn will top up the account before CP3, so tell Lynn **by CP2** roughly how many full runs you need.
+Keys have spending caps. Develop with `--limit 10`. Full runs happen between CP2 and CP4, so Lynn tops up
+the account at CP2.

@@ -1,10 +1,10 @@
 # Each folder's owner must approve pull requests that touch it.
-# TODO: replace @AISHA_GITHUB with Aisha's GitHub username.
+# TODO: replace @Aishaa-S with Aisha's GitHub username.
 *                    @lynn60107070
 /methods/search.py   @lynn60107070
 /methods/direct.py   @lynn60107070
 /methods/structured.py  @faheemahassan
 /methods/best_of_n.py   @faheemahassan
 /related_work/       @faheemahassan
-/common/             @AISHA_GITHUB @lynn60107070
-/experiments/        @AISHA_GITHUB
+/common/             @Aishaa-S @lynn60107070
+/experiments/        @Aishaa-S

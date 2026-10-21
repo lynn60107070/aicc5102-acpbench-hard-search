@@ -14,7 +14,11 @@ pip install -r requirements.txt
 copy .env.example .env
 ```
 
-Open `.env` and put in the team's API key. Use the same model and endpoint as everyone else.
+Open `.env` and replace `your-key-here` with the personal OpenRouter key Lynn sent you (no quotes).
+Leave the other lines as they are. Every key has a spending cap, so develop on small subsets
+(`--limit 10`) and ask Lynn before running big sweeps. The account only allows the full-precision
+(bf16) provider, so everyone's results are comparable.
+
 Then check everything works (offline, about 10 s, no key needed):
 
 ```bat

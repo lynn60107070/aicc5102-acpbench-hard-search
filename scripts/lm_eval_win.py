@@ -12,9 +12,16 @@ import functools
 import os
 import sys
 import tempfile
+from pathlib import Path
 
 if os.name == "nt":
     tempfile.NamedTemporaryFile = functools.partial(tempfile.NamedTemporaryFile, delete_on_close=False)
+
+# Read OPENAI_API_KEY from the repo's .env, like the rest of our code.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from common.llm import load_dotenv  # noqa: E402
+
+load_dotenv()
 
 from lm_eval.__main__ import cli_evaluate  # noqa: E402
 

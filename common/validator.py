@@ -1,7 +1,8 @@
 """Scoring with the official ACPBench-Hard grammar and validator, plus error labels.
 
-Only the runner may import this module. Methods must never call it: that would be
-oracle leakage.
+Only the runner may call `score`. Methods must never call it: that would be oracle
+leakage. Methods may use `parse_action` / `parse_actions`, which apply only the output
+grammar and see no PDDL or answer key.
 
 Correctness is exactly the official NextActionEvaluator's. On top of it we label why
 an answer is wrong:
@@ -24,6 +25,7 @@ if os.name == "nt":
 import lm_eval.tasks.acpbench.gen_2shot.acp_utils as acp  # noqa: E402
 
 _parser = acp.ACPGrammarParser("action_name")
+_list_parser = acp.ACPGrammarParser("action_list")
 
 
 @dataclass
@@ -37,6 +39,12 @@ def parse_action(response: str) -> str | None:
     """Extract the action exactly as lm-eval's ACP_grammar_filter does."""
     parsed = _parser.parse(response)
     return None if parsed in (None, "None") else parsed
+
+
+def parse_actions(response: str) -> list[str]:
+    """Extract every action from a list-style response, with the official grammar. Order kept, duplicates dropped."""
+    parsed = _list_parser.parse(response) or []
+    return list(dict.fromkeys(a.strip().lower() for a in parsed))
 
 
 def score(doc: dict, response: str) -> Verdict:

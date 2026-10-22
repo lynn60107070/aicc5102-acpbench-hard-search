@@ -1,0 +1,47 @@
+{
+  "settings": {
+    "method": "direct",
+    "param": [],
+    "model": "meta-llama/llama-3.1-70b-instruct",
+    "base_url": null,
+    "seed": 1234,
+    "limit": null,
+    "ids": null,
+    "max_calls": null,
+    "max_tokens": null,
+    "name": "repro_llama31_70b_direct_bedrock",
+    "params": {}
+  },
+  "n": 130,
+  "accuracy": 0.3769230769230769,
+  "ci95": [
+    0.29361605828920617,
+    0.46023009555694766
+  ],
+  "errors": {
+    "not_closer": 46,
+    "inapplicable": 35
+  },
+  "accuracy_by_domain": {
+    "alfred": 0.1,
+    "blocksworld-4ops": 0.2,
+    "depots": 0.3,
+    "ferry": 0.4,
+    "floor-tile": 0.2,
+    "gold-miner-typed": 0.5,
+    "grid": 0.5,
+    "grid-visit-all": 0.5,
+    "gripper-strips": 0.1,
+    "logistics-strips": 0.3,
+    "rover": 0.3,
+    "satellite": 0.5,
+    "swap": 1.0
+  },
+  "total_calls": 130,
+  "total_tokens": 213867,
+  "mean_calls": 1.0,
+  "mean_tokens": 1645.1307692307691,
+  "providers": {
+    "Amazon Bedrock": 130
+  }
+}

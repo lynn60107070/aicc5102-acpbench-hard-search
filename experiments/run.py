@@ -62,6 +62,8 @@ def main(argv=None):
     ap.add_argument("--model", help="overrides ACP_MODEL")
     ap.add_argument("--base-url", help="overrides ACP_BASE_URL")
     ap.add_argument("--seed", type=int, default=1234, help="1234 = the seed lm-eval uses")
+    ap.add_argument("--split", default="test", choices=["test", "validation"],
+                    help="tune on validation (40), report on test (130)")
     ap.add_argument("--limit", type=int)
     ap.add_argument("--ids", nargs="*", help="run only these instance ids")
     ap.add_argument("--max-calls", type=int)
@@ -76,11 +78,12 @@ def main(argv=None):
     name = args.name or "_".join(
         [args.method, re.sub(r"[^\w.-]", "-", client.model), f"s{args.seed}"]
         + [f"{k}{v}" for k, v in sorted(params.items())]
-        + ([f"lim{args.limit}"] if args.limit else []))
+        + ([f"lim{args.limit}"] if args.limit else [])
+        + (["val"] if args.split == "validation" else []))
     out = REPO_ROOT / "results" / "runs" / name
     out.mkdir(parents=True, exist_ok=True)
 
-    docs = load_docs(limit=args.limit, ids=args.ids)
+    docs = load_docs(limit=args.limit, ids=args.ids, split=args.split)
     rows = []
     with open(out / "rows.jsonl", "w", encoding="utf8") as f:
         for i, doc in enumerate(docs, 1):

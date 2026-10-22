@@ -78,6 +78,8 @@ python -m experiments.run --method search --param k=3 --param d=2 --max-calls 12
   the same outputs. Different `--seed` values give different samples.
 - Sampled methods use 3 seeds (1, 2, 3). Direct generation is deterministic (temperature 0).
 - Use `--limit 10` while developing, and the full set only for real results.
+- Tune anything (prompts, N, k, d) on `--split validation` (40 questions), never on the test set.
+  Results in the paper are always on test (130).
 
 ## 5. Git workflow
 

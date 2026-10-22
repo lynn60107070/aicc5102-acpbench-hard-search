@@ -157,7 +157,7 @@ lm-eval --model local-chat-completions ^
 | Llama 3.1 8B, all 8 tasks (stretch: whole Table 1 row) | Table 1 row | optional, `--tasks acp_gen_2shot` via `scripts/lm_eval_win.py` |
 | Llama 3.1 8B, Progression (state prediction; informs the search design) | 0.40 (Table 1) | ✅ **0.400** (official harness, bf16 CoreWeave, 21 Oct) → exact match. `results/final/repro_prog_llama31_8b/` |
 | Llama 3.1 70B, Progression | 0.65 | ✅ **0.608** (official harness, Amazon Bedrock, 21 Oct) → match (95% CI ±0.08). `results/final/repro_prog_llama31_70b/` |
-| Llama 3.1 70B, Next Action (second comparison model for search) | 0.42 | to run |
+| Llama 3.1 70B, Next Action (second comparison model for search) | 0.42 | ✅ **0.377** (49/130, Amazon Bedrock, 22 Oct) → match (interval for 0.42: 0.335–0.505). `results/final/repro_llama31_70b_direct_bedrock/` |
 | Closed models (GPT-4o, GPT-4o mini, o1-mini, o1-preview) | — | not reproducible (see below) |
 
 **Known deviations from the paper's setup** (add a row whenever anything else differs)

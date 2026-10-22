@@ -22,7 +22,7 @@ This file is the single index for the project: links, setup, how the smoke test 
 | `common/` | Shared, tested infrastructure: method contract, LLM client (cache + budget), data + official prompt, validator (Windows-fixed) |
 | `methods/` | `direct.py` (working baseline), `structured.py` + `best_of_n.py` (Faheema), `search.py` (Lynn) |
 | `experiments/run.py` | Runs any method on the benchmark and scores it (Aisha) |
-| `scripts/` | Official lm-eval reproduction for Windows (`reproduce_official.bat`, `lm_eval_win.py`) |
+| `scripts/` | Official lm-eval reproduction: `reproduce_official.bat` (Windows), `reproduce_official.sh` (macOS/Linux), both via `lm_eval_win.py` |
 | `tests/` | Offline tests: `python -m unittest -v` |
 
 ---
@@ -140,7 +140,7 @@ lm-eval --model local-chat-completions ^
 - **Target:** the paper reports **0.25** for Llama 3.1 8B Instruct. With n = 130, the 95% binomial CI around 0.25 is about **[0.176, 0.324]** (0.25 ± 1.96·√(0.25·0.75/130)). A reproduced score inside this range counts as a match.
 - **Full run, two independent ways (both should agree):**
   ```bat
-  scripts\reproduce_official.bat                     :: official lm-eval harness (Windows-fixed)
+  scripts\reproduce_official.bat                     :: official lm-eval harness (macOS: bash scripts/reproduce_official.sh)
   python -m experiments.run --method direct          :: our pipeline, same prompt byte-for-byte
   ```
 
@@ -204,7 +204,7 @@ Team tasks (F1–F7, A1–A9, L1–L8) and checkpoints CP1–CP6 (whole submissi
 - [x] Shared pipeline + Windows validator fix + tests (see `CONTRIBUTING.md`).
 - [x] OpenRouter key in `.env`; live test passed.
 - [x] Full 130-instance baseline: 0.223 bf16 (match), 0.192 mixed-provider run kept as evidence for D1.
-- [ ] Faheema: independent check of the reproduction through the official harness (`scripts\reproduce_official.bat` with the provider pinned).
+- [ ] Faheema: independent check of the reproduction through the official harness (`scripts\reproduce_official.bat`, or `bash scripts/reproduce_official.sh` on macOS).
 - [ ] Push the repo to GitHub and add Faheema and Aisha; fill their usernames into `.github/CODEOWNERS`.
 - [ ] Settle the HF dataset citation (`ibm-research/acp_bench` vs `ibm/ACPBench`).
 - [ ] Prototype the best-first search extension (k candidates, depth d, call budget).

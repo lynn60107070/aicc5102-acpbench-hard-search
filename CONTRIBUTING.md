@@ -3,8 +3,13 @@
 Everything shared (data loading, the official prompt, the LLM client, scoring, the runner) already
 works and is tested. You only build your own part.
 
-## 1. One-time setup (Windows, cmd)
+## 1. One-time setup
 
+Needs Python 3.12. All other commands in this guide are the same on Windows and macOS,
+except the official reproduction script: `scripts\reproduce_official.bat` (Windows) or
+`bash scripts/reproduce_official.sh` (macOS/Linux).
+
+**Windows (cmd):**
 ```bat
 git clone <repo url>
 cd <repo folder>
@@ -13,6 +18,17 @@ acp-env\Scripts\activate
 pip install -r requirements.txt
 copy .env.example .env
 ```
+
+**macOS (Terminal):**
+```bash
+git clone <repo url>
+cd <repo folder>
+python3.12 -m venv acp-env          # no python3.12? brew install python@3.12
+source acp-env/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+```
+On macOS, use `python` (not `python3`) after activating, so the venv's Python is used.
 
 Open `.env` and replace `your-key-here` with the personal OpenRouter key Lynn sent you (no quotes).
 Leave the other lines as they are. Every key has a spending cap, so develop on small subsets
@@ -25,8 +41,8 @@ Then check everything works (offline, about 10 s, no key needed):
 python -m unittest -v
 ```
 
-All 7 tests must pass. They check that our prompt is byte-identical to lm-eval's and that the
-official validator gives the right verdicts on known answers.
+All tests must pass. They check that our prompt is byte-identical to lm-eval's, that the
+official validator gives the right verdicts on known answers, and that search works as designed.
 
 Then try one live call (3 instances, about 1 cent):
 
@@ -98,7 +114,8 @@ python -m experiments.run --method search --param k=3 --param d=2 --max-calls 12
   discrepancy and limitations sections, so nothing should be fixed silently.
 - **Plain `lm-eval` crashes on Windows** when scoring this task: the validator reopens an open
   temp file. Our `common/validator.py` and `scripts/lm_eval_win.py` fix it. Use
-  `scripts\reproduce_official.bat` for the official harness run.
+  `scripts\reproduce_official.bat` (Windows) or `bash scripts/reproduce_official.sh` (macOS/Linux)
+  for the official harness run.
 - **Groq retired Llama 3.1 8B** (16 Aug 2026). We use OpenRouter (see `.env.example`).
 - The task has **130 instances**, 10 per domain across 13 domains. The paper reports **0.25** for
   Llama 3.1 8B. A match means our score falls in about **[0.176, 0.324]**.
@@ -110,7 +127,7 @@ python -m experiments.run --method search --param k=3 --param d=2 --max-calls 12
 Your full task list (IDs, effort estimates, which checkpoint each is due at) and the checkpoint dates
 are in **[SCHEDULE.md](SCHEDULE.md)**. Read it after setup. In summary:
 
-- **Faheema (F1–F7):** setup tonight → verify the reproduction with `scripts\reproduce_official.bat`
+- **Faheema (F1–F7):** setup tonight → verify the reproduction with the official harness (`.bat` on Windows, `.sh` on macOS)
   (CP1, Thu 22) → `structured.py` + `best_of_n.py` (CP2, Sat 24) → full runs + related work
   (CP3, Mon 26) → related work and reproduction sections of the paper (CP5, Fri 30).
 - **Aisha (A1–A9):** setup + McNemar `compare.py` (CP1, Thu 22) → `sweep.py` + `analyze.py`

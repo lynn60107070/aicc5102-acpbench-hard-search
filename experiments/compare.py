@@ -1,4 +1,8 @@
+"""Compare two experiment runs using accuracy and the exact McNemar test.
 
+Usage:
+    python -m experiments.compare runA/rows.jsonl runB/rows.jsonl
+"""
 import argparse
 import json
 from pathlib import Path
@@ -117,11 +121,14 @@ def main():
     print(f"Run A accuracy: {accuracy_a:.1%}")
     print(f"Run B accuracy: {accuracy_b:.1%}")
     print(f"Accuracy difference (B - A): {(accuracy_b - accuracy_a) * 100:.2f} percentage points")
-    print(f"A-only correct: {a_only_correct}")
+    print("\nPaired correctness table:")
+    print(f"{'':24} {'Run B correct':>14} {'Run B wrong':>12}")
+    print(f"{'Run A correct':24} {both_correct:>14} {a_only_correct:>12}")
+    print(f"{'Run A wrong':24} {b_only_correct:>14} {both_wrong:>12}")
+
+    print(f"\nA-only correct: {a_only_correct}")
     print(f"B-only correct: {b_only_correct}")
     print(f"McNemar exact p-value: {p_value:.4f}")
-
-
 if __name__ == "__main__":
     main()
 

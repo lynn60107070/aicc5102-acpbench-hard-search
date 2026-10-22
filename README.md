@@ -159,6 +159,7 @@ lm-eval --model local-chat-completions ^
 | Llama 3.1 70B, Progression | 0.65 | ✅ **0.608** (official harness, Amazon Bedrock, 21 Oct) → match (95% CI ±0.08). `results/final/repro_prog_llama31_70b/` |
 | Llama 3.1 70B, Next Action (second comparison model for search) | 0.42 | ✅ **0.377** (49/130, Amazon Bedrock, 22 Oct) → match (interval for 0.42: 0.335–0.505). `results/final/repro_llama31_70b_direct_bedrock/` |
 | Closed models (GPT-4o, GPT-4o mini, o1-mini, o1-preview) | — | not reproducible (see below) |
+| Llama 3.1 8B, Next Action (Reproduction [F2]) | 0.25 (Table 1) | ✅ **0.223** (official harness run, 22 Oct 2026) → match. `results/official_reproduction/` |
 
 **Known deviations from the paper's setup** (add a row whenever anything else differs)
 | # | Paper | Ours | Why | Expected effect |

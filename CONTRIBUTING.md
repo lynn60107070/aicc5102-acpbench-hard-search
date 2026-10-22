@@ -50,6 +50,16 @@ Then try one live call (3 instances, about 1 cent):
 python -m experiments.run --method direct --limit 3
 ```
 
+### Troubleshooting (errors teammates actually hit)
+
+| Error | Cause | Fix |
+|---|---|---|
+| lm-eval asks you to `pip install "lm-eval[api]"` | Missing API packages | `pip install -r requirements.txt` again (now includes them) |
+| `401 Client Error` | lm-eval didn't get the API key | Use our scripts (`reproduce_official.sh` / `.bat`), which read `.env`. Running `lm_eval` yourself? Then `export OPENAI_API_KEY=...` (macOS) / `set OPENAI_API_KEY=...` (Windows) first. Note the name: OPENAI, not OPEN |
+| `400 Client Error` | `base_url` ends in `/completions` instead of `/chat/completions` | Use our scripts, or `base_url=https://openrouter.ai/api/v1/chat/completions` |
+| `429 Client Error` (too many requests) | Rate limit; lm-eval only retries 3× by default | Our scripts now pass `max_retries=10`. If it still fails, just rerun: our runner caches finished answers |
+| Official harness sits silent for a few minutes at start | Loading the dataset and checking the Hugging Face hub | Normal, wait |
+
 ## 2. Who owns what
 
 You edit only the files you own. To change someone else's file, ask them or open a PR they review.

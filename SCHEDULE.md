@@ -44,7 +44,7 @@ a draft section), and we agree on the focus until the next checkpoint. Done mean
 | ID | Task | Effort | Due |
 |---|---|---|---|
 | F1 | Setup: clone, venv, `.env` key, `python -m unittest` passes, `python -m experiments.run --method direct --limit 3` works | 30 min | Wed 21 (tonight) |
-| F2 | Independent reproduction check with the **official lm-eval harness** (not `experiments.run`): `scripts\reproduce_official.bat` (Windows) or `bash scripts/reproduce_official.sh` (macOS) on all 130. Compare with our 0.223 (`results/final/`) and record it in README §5 | 1 h (+15 min run) | **CP1** |
+| F2 | Independent reproduction check with the **official lm-eval harness** (not `experiments.run`); verify with `python scripts/check_official_run.py results/official_reproduction`: `scripts\reproduce_official.bat` (Windows) or `bash scripts/reproduce_official.sh` (macOS) on all 130. Compare with our 0.223 (`results/final/`) and record it in README §5 | 1 h (+15 min run) | **CP1** |
 | F3 | `methods/structured.py`: state → goal → candidate action → progress → final action. Works on `--limit 10` | 2–3 h | **CP2** |
 | F4 | `methods/best_of_n.py`: N samples at temperature 0.7, majority vote with `parse_action` (never the validator). Works on `--limit 10` | 1–2 h | **CP2** |
 | F5 | Full runs: structured (130) and best-of-N (130 × seeds 1, 2, 3), copied to `results/final/` | 1 h (+ run time) | **CP3** |

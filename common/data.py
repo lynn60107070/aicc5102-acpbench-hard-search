@@ -25,9 +25,13 @@ _TASK_DIR = Path(_acp_utils.__file__).parent
 _FEWSHOT = yaml.safe_load((_TASK_DIR / "next_act.yaml").read_text(encoding="utf8"))["fewshot_config"]["samples"]
 
 
-def load_docs(limit: int | None = None, ids: list[str] | None = None) -> list[dict]:
-    """Raw dataset rows, including PDDL and answer key. Only the runner and validator use these."""
-    docs = list(load_dataset(DATASET, CONFIG, split=SPLIT))
+def load_docs(limit: int | None = None, ids: list[str] | None = None, split: str = SPLIT) -> list[dict]:
+    """Raw dataset rows, including PDDL and answer key. Only the runner and validator use these.
+
+    split="validation" has 40 questions (8 domains, no overlap with test): tune methods there,
+    report on "test" (130), so tuning never sees the reported questions.
+    """
+    docs = list(load_dataset(DATASET, CONFIG, split=split))
     if ids is not None:
         wanted = set(ids)
         docs = [d for d in docs if str(d["id"]) in wanted]

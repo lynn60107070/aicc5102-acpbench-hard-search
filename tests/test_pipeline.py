@@ -5,6 +5,7 @@
 
 import glob
 import json
+import subprocess
 import time
 from threading import Lock
 import tempfile
@@ -166,6 +167,76 @@ class TestRunner(unittest.TestCase):
         self.assertEqual(summary["total_calls"], 3)
         self.assertGreater(max_active, 1)
 
+
+class TestSweep(unittest.TestCase):
+    def test_sweep_launches_every_seed_and_config(self):
+        """Check combinations without launching real experiments."""
+        from experiments import sweep
+
+        with mock.patch.object(sweep.subprocess, "run") as mocked_run:
+            sweep.main([
+                "--method", "search",
+                "--seeds", "1", "2",
+                "--config", "k=3,d=2",
+                "--config", "k=5,d=2",
+                "--limit", "10",
+                "--workers", "4",
+            ])
+
+        # Two configurations × two seeds = four runs.
+        self.assertEqual(mocked_run.call_count, 4)
+
+        commands = [call.args[0] for call in mocked_run.call_args_list]
+        # Every combination receives its own descriptive output name.
+        names = [
+            command[command.index("--name") + 1]
+            for command in commands
+        ]
+        self.assertEqual(len(names), len(set(names)))
+        self.assertEqual(len(names), 4)
+
+        # Every run uses the existing runner.
+        self.assertTrue(all(
+            "experiments.run" in command for command in commands
+        ))
+
+        # Every run keeps the development limit and worker setting.
+        for command in commands:
+            self.assertIn("--limit", command)
+            self.assertIn("10", command)
+            self.assertIn("--workers", command)
+            self.assertIn("4", command)
+
+        # All seed/configuration combinations are represented.
+        combinations = {
+            (
+                command[command.index("--seed") + 1],
+                tuple(
+                    command[i + 1]
+                    for i, value in enumerate(command[:-1])
+                    if value == "--param"
+                ),
+            )
+            for command in commands
+        }
+        self.assertEqual(len(combinations), 4)
+
+    def test_sweep_stops_if_a_run_fails(self):
+        """A failed run should stop the sweep instead of reporting success."""
+        from experiments import sweep
+
+        with mock.patch.object(
+            sweep.subprocess, "run", side_effect=subprocess.CalledProcessError(1, "run")
+        ) as mocked_run:
+            with self.assertRaises(subprocess.CalledProcessError):
+                sweep.main([
+                    "--method", "search",
+                    "--seeds", "1", "2",
+                    "--limit", "1",
+                ])
+
+        # It should not continue to the second seed after the first failure.
+        self.assertEqual(mocked_run.call_count, 1)
 
 
 if __name__ == "__main__":

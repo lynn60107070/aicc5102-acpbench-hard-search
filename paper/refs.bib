@@ -1,0 +1,136 @@
+% OWNER: Faheema (F6). Seeded with the core references; add the rest of the related work here.
+% Check every entry against the paper's own page before submitting.
+
+% ---- The paper we reproduce, its code and data (the brief requires citing paper AND code) ----
+% Venue still unconfirmed (proposal says ICLR 2026; arXiv v2 does not state it). Cite arXiv unless confirmed.
+@misc{kokel2025acpbenchhard,
+  title         = {{ACPBench Hard}: Unrestrained Reasoning about Action, Change, and Planning},
+  author        = {Kokel, Harsha and Katz, Michael and Srinivas, Kavitha and Sohrabi, Shirin},
+  year          = {2025},
+  eprint        = {2503.24378},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2503.24378}
+}
+
+@inproceedings{kokel2025acpbench,
+  title     = {{ACPBench}: Reasoning about Action, Change, and Planning},
+  author    = {Kokel, Harsha and Katz, Michael and Srinivas, Kavitha and Sohrabi, Shirin},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  year      = {2025}
+}
+
+@misc{acpbench_code,
+  title        = {{ACPBench}: code repository},
+  author       = {{IBM Research}},
+  howpublished = {\url{https://github.com/IBM/ACPBench}},
+  year         = {2025},
+  note         = {Accessed October 2026}
+}
+
+@misc{acpbench_data,
+  title        = {{ACPBench} dataset, configuration \texttt{acp\_nexta\_gen}},
+  author       = {{IBM Research}},
+  howpublished = {\url{https://huggingface.co/datasets/ibm-research/acp_bench}},
+  year         = {2025},
+  note         = {Accessed October 2026}
+}
+
+@misc{gao2024lmeval,
+  title     = {A framework for few-shot language model evaluation},
+  author    = {Gao, Leo and others},
+  year      = {2024},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.12608602},
+  url       = {https://zenodo.org/records/12608602}
+}
+
+@misc{dubey2024llama3,
+  title         = {The {Llama} 3 Herd of Models},
+  author        = {Dubey, Abhimanyu and others},
+  year          = {2024},
+  eprint        = {2407.21783},
+  archivePrefix = {arXiv}
+}
+
+% ---- Search over LLM-generated states ----
+@inproceedings{yao2023tot,
+  title     = {Tree of Thoughts: Deliberate Problem Solving with Large Language Models},
+  author    = {Yao, Shunyu and Yu, Dian and Zhao, Jeffrey and Shafran, Izhak and Griffiths, Thomas L. and Cao, Yuan and Narasimhan, Karthik},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2023}
+}
+
+@inproceedings{hao2023rap,
+  title     = {Reasoning with Language Model is Planning with World Model},
+  author    = {Hao, Shibo and Gu, Yi and Ma, Haodi and Hong, Joshua Jiahua and Wang, Zhen and Wang, Daisy Zhe and Hu, Zhiting},
+  booktitle = {Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing},
+  year      = {2023}
+}
+
+% ---- LLMs with planners / search (course paper list) ----
+@inproceedings{katz2024tos,
+  title     = {Thought of Search: Planning with Language Models Through the Lens of Efficiency},
+  author    = {Katz, Michael and Kokel, Harsha and Srinivas, Kavitha and Sohrabi, Shirin},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2024}
+}
+
+@inproceedings{correa2025heuristics,
+  title     = {Classical Planning with {LLM}-Generated Heuristics: Challenging the State of the Art with {Python} Code},
+  author    = {Corr{\^e}a, Augusto B. and Pereira, Andr{\'e} G. and Seipp, Jendrik},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2025}
+}
+
+@misc{liu2023llmp,
+  title         = {{LLM+P}: Empowering Large Language Models with Optimal Planning Proficiency},
+  author        = {Liu, Bo and Jiang, Yuqian and Zhang, Xiaohan and Liu, Qiang and Zhang, Shiqi and Biswas, Joydeep and Stone, Peter},
+  year          = {2023},
+  eprint        = {2304.11477},
+  archivePrefix = {arXiv}
+}
+
+@inproceedings{valmeekam2023planbench,
+  title     = {{PlanBench}: An Extensible Benchmark for Evaluating Large Language Models on Planning and Reasoning about Change},
+  author    = {Valmeekam, Karthik and Marquez, Matthew and Olmo, Alberto and Sreedharan, Sarath and Kambhampati, Subbarao},
+  booktitle = {Advances in Neural Information Processing Systems, Datasets and Benchmarks Track},
+  year      = {2023}
+}
+
+@misc{kapoor2024agents,
+  title         = {{AI} Agents That Matter},
+  author        = {Kapoor, Sayash and Stroebl, Benedikt and Siegel, Zachary S. and Nadgir, Nitya and Narayanan, Arvind},
+  year          = {2024},
+  eprint        = {2407.01502},
+  archivePrefix = {arXiv}
+}
+
+% ---- Classical background ----
+@article{hart1968astar,
+  title   = {A Formal Basis for the Heuristic Determination of Minimum Cost Paths},
+  author  = {Hart, Peter E. and Nilsson, Nils J. and Raphael, Bertram},
+  journal = {IEEE Transactions on Systems Science and Cybernetics},
+  volume  = {4},
+  number  = {2},
+  pages   = {100--107},
+  year    = {1968}
+}
+
+@article{mcnemar1947,
+  title   = {Note on the Sampling Error of the Difference Between Correlated Proportions or Percentages},
+  author  = {McNemar, Quinn},
+  journal = {Psychometrika},
+  volume  = {12},
+  number  = {2},
+  pages   = {153--157},
+  year    = {1947}
+}
+
+@book{russell2021aima,
+  title     = {Artificial Intelligence: A Modern Approach},
+  author    = {Russell, Stuart and Norvig, Peter},
+  edition   = {4th},
+  publisher = {Pearson},
+  year      = {2021}
+}

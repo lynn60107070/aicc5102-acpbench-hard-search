@@ -1,0 +1,59 @@
+\documentclass{article}
+
+% NeurIPS 2026 template, preprint option (required by the assignment brief).
+% Main content: at most 6 pages (brief), not the template's 9. References and appendices are extra.
+\usepackage[preprint]{neurips_2026}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+% Draft helper: \todo{...} prints in red. Remove all of them before submitting
+% (search the project for "\todo").
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+
+\title{LLM-Guided Search for Open-Ended Planning on ACPBench-Hard}
+
+\author{%
+  Lynn Younes \quad Faheema Hassan Kudukky \quad Aisha Suleiman Shaik \\
+  College of Computing and Information Technology\\
+  University of Doha for Science and Technology, Doha, Qatar \\
+  \texttt{\{60107070, 60327609, 60328939\}@udst.edu.qa} \\
+  AICC5102 Principles of AI, Section 1, Fall 2026
+}
+
+\begin{document}
+
+\maketitle
+
+\input{sections/00_abstract}
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_reproduction}
+\input{sections/04_method}
+\input{sections/05_experimental_setup}
+\input{sections/06_results}
+\input{sections/07_discussion}
+\input{sections/08_limitations}
+\input{sections/09_conclusion}
+
+% The brief requires citing the paper and its code; this also keeps BibTeX happy while drafting.
+\nocite{kokel2025acpbenchhard,acpbench_code}
+\bibliographystyle{plainnat}
+\bibliography{refs}
+
+\appendix
+\input{sections/A_fidelity_log}
+\input{sections/B_prompts}
+\input{sections/C_contributions}
+\input{sections/D_ai_use}
+
+\end{document}

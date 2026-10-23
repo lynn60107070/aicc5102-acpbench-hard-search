@@ -1,17 +1,45 @@
-% OWNER: Lynn (L6). Target: ~0.75 page.
-% Cover:
-% - Motivation: LLMs as planning components; open-ended (generative) planning questions are hard to
-%   validate and hard to answer (ACPBench-Hard, \citet{kokel2025acpbenchhard}).
-% - The Next Action task: generate an action that moves the state one optimal step closer to the goal.
-% - Gap: ACPBench-Hard evaluates direct generation only; Tree of Thoughts \citep{yao2023tot} and RAP
-%   \citep{hao2023rap} search over LLM-generated states on other tasks.
-% - Research question (state it exactly, in bold or as a numbered question):
+% OWNER: Lynn (L6). Target: ~0.75 page (4 short paragraphs + a contributions list).
+% [FILL] = numbers that come from the final test-set runs.
+%
+% ---- P1: Motivation (3-4 sentences) ----
+% - LLMs are increasingly considered as planning components: as policies that pick the next action,
+%   or inside planners. That needs reasoning about actions and their effects.
+% - ACPBench-Hard \citep{kokel2025acpbenchhard} tests this with open-ended (generative) questions
+%   over 13 PDDL domains and validators with provable correctness; most models stay well below 65%.
+% - Focus: Next Action = "generate an action that moves the current state one optimal step closer
+%   to the goal". Iterating it yields an optimal plan, so it is exactly what an LLM policy must do.
+%   Llama 3.1 8B solves only 25% of these questions in the paper.
+%
+% ---- P2: The gap (2-3 sentences) ----
+% - ACPBench-Hard evaluates direct generation only: one call, one answer.
+% - Search over LLM-generated intermediate states helped on other reasoning and planning tasks:
+%   Tree of Thoughts \citep{yao2023tot}, RAP \citep{hao2023rap}.
+% - Open question: does it transfer to open-ended planning when NO verifier is available, i.e.
+%   the model must predict and judge states itself, and when compute is matched?
+%
+% ---- P3: Research question + what we do (3-4 sentences) ----
+% - State the RQ exactly (e.g. in italics):
 %   "Does LLM-guided search over LLM-predicted intermediate states improve Next Action accuracy on
 %    ACPBench-Hard over direct generation, under a matched compute budget?"
-% - Contributions (bullet list): (1) reproduction: 4 numbers from the paper, an independent check
-%   on a second machine (130/130 identical answers), and a Windows fix for the official validator;
-%   (2) LLM-guided best-first search with no planner/simulator/checker; (3) controlled comparison +
-%   ablations showing evaluation, not generation, is the bottleneck.
+% - We first reproduce the paper's baseline (Sec. 3), then add best-first search in which the LLM
+%   proposes actions, predicts their effects and scores the predicted states (Sec. 4), and compare
+%   with direct generation, structured prompting and best-of-N on the same questions, budgets and
+%   validator, with ablations of each search component (Secs. 5-6).
+%
+% ---- P4: Findings preview (2-3 sentences; write after results) ----
+% - Answer the RQ in one line: search does [not] improve accuracy: 8B [FILL] vs 0.223 direct,
+%   70B [FILL] vs 0.377 direct.
+% - Why: the evaluation gap. A correct action is among the candidates in [FILL]% of questions, but
+%   the model's own scores barely distinguish correct from wrong candidates.
+%
+% ---- Contributions (bullet list, 3 items) ----
+% 1. A reproduction of four ACPBench-Hard results (Next Action and Progression, Llama 3.1 8B and
+%    70B), all within the 95% interval, an independent re-run on a second machine with identical
+%    answers on 130/130 questions, and a fix that lets the official validator run on Windows.
+% 2. An LLM-guided best-first search for open-ended Next Action that uses no planner, simulator,
+%    applicability checker or oracle; code, tests and all prompts released.
+% 3. A controlled, budget-matched comparison and ablations that locate the bottleneck in state
+%    evaluation rather than action generation.
 \section{Introduction}
 \label{sec:intro}
 

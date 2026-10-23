@@ -5,6 +5,8 @@
 
 import glob
 import json
+import time
+from threading import Lock
 import tempfile
 import unittest
 from pathlib import Path
@@ -122,6 +124,48 @@ class TestRunner(unittest.TestCase):
             summary = json.loads((Path(td) / "results/runs/t/summary.json").read_text())
         self.assertEqual(summary["accuracy"], 1.0)
         self.assertEqual(summary["total_calls"], 3)
+
+    def test_parallel_runner(self):
+        """Verify that questions run concurrently without real API calls."""
+        active = 0
+        max_active = 0
+        lock = Lock()
+        docs = DOCS[:3]
+        gold = {to_instance(d).context: d["answer"]["yes"][0] for d in docs}
+
+        def oracle_server(payload):
+            nonlocal active, max_active
+            with lock:
+                active += 1
+                max_active = max(max_active, active)
+            try:
+                time.sleep(0.1)
+                context = payload["messages"][-1]["content"].split("**Question**: ")[1]
+                return next(a for c, a in gold.items() if context.startswith(c))
+            finally:
+                with lock:
+                    active -= 1
+
+        with tempfile.TemporaryDirectory() as td, \
+                mock.patch.object(run, "REPO_ROOT", Path(td)), \
+                mock.patch.object(
+                    run.LLMClient, "from_env",
+                    lambda **kw: FakeClient(oracle_server, cache_path=None),
+                ):
+            run.main([
+                "--method", "direct",
+                "--limit", "3",
+                "--name", "parallel-test",
+                "--workers", "3",
+            ])
+            summary = json.loads(
+                (Path(td) / "results/runs/parallel-test/summary.json").read_text()
+            )
+
+        self.assertEqual(summary["accuracy"], 1.0)
+        self.assertEqual(summary["total_calls"], 3)
+        self.assertGreater(max_active, 1)
+
 
 
 if __name__ == "__main__":

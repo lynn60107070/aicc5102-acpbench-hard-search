@@ -17,12 +17,20 @@ def scripted(payload):
     prompt = payload["messages"][-1]["content"]
     if "List " in prompt:
         return "(x)\n(y)\n(z)" if "After applying" in prompt else "(a)\n(b)\n(c)"
+    if "Which option" in prompt:
+        n = prompt.split("Option ")[1:]
+        best = next(i for i, o in enumerate(n, 1) if o.split(":")[1].startswith(" apply (b)"))
+        return f"Option {best} moves a block.\nBest: {best}"
+    if "Estimate the minimum" in prompt:
+        if "if we apply" in prompt:
+            return "Steps: 1" if "apply (c) next" in prompt else "Steps: 4"
+        return "Two more.\nSteps: 2" if prompt.rstrip().count("state after (b)") else "Steps: 5"
     if "resulting state" in prompt:
-        return "state after " + prompt.split("Now the action ")[1].split(" is applied")[0]
+        return "state after " + prompt.split("applying the action ")[1].split(". First")[0]
     if "How close" in prompt:
-        return "9" if "state after (b)" in prompt else "3"
+        return "Reasoning.\nScore: 9" if "state after (b)" in prompt else "Reasoning.\nScore: 3"
     if "How good" in prompt:
-        return "8" if "(c)" in prompt else "2"
+        return "Score: 8" if "(c)" in prompt else "Score: 2"
     raise AssertionError(prompt)
 
 
@@ -59,6 +67,56 @@ class TestSearch(unittest.TestCase):
         answer, budget = run(Budget(max_calls=5), k=3, d=2)
         self.assertEqual(budget.calls, 5)  # propose, predict a, score a, predict b, score b
         self.assertEqual(answer, "(b)")
+
+    def test_inapplicable_prediction_is_pruned(self):
+        def b_inapplicable(payload):
+            prompt = payload["messages"][-1]["content"]
+            if "resulting state" in prompt and "applying the action (b)" in prompt:
+                return "NOT APPLICABLE"
+            return scripted(payload)
+
+        llm = FakeClient(b_inapplicable, cache_path=None).session(Budget(max_calls=6))
+        answer = search.solve(INSTANCE, llm, k=3, d=2)
+        self.assertNotEqual(answer, "(b)")  # (b) would have scored 9, but the LLM ruled it out
+        self.assertEqual(llm.budget.calls_by_tag, {"propose": 1, "predict": 3, "score": 2})
+
+    def test_steps_scoring_is_astar_like(self):
+        answer, budget = run(Budget(max_calls=14), k=3, d=2, scoring="steps")
+        self.assertEqual(answer, "(b)")  # lowest f = depth 1 + 2 remaining steps
+        self.assertEqual(budget.calls_by_tag, {"propose": 2, "predict": 6, "score": 6})
+
+    def test_steps_without_state_prediction(self):
+        answer, budget = run(k=3, d=2, scoring="steps", predict_state=False)
+        self.assertEqual(answer, "(c)")
+        self.assertEqual(budget.calls, 4)
+
+    def test_vote_scoring_one_call_per_expansion(self):
+        answer, budget = run(k=3, d=1, scoring="vote")
+        self.assertEqual(answer, "(b)")
+        self.assertEqual(budget.calls_by_tag, {"propose": 1, "predict": 3, "score": 1})
+
+    def test_unscored_child_never_wins(self):
+        # Budget runs out on (b)'s steps call: (b) must be dropped, not kept with a default score of 0.
+        answer, _ = run(Budget(max_calls=4), k=3, d=2, scoring="steps")
+        self.assertEqual(answer, "(a)")
+
+    def test_prune_off_keeps_and_scores_inapplicable(self):
+        def b_inapplicable(payload):
+            prompt = payload["messages"][-1]["content"]
+            if "resulting state" in prompt and "applying the action (b)" in prompt:
+                return "NOT APPLICABLE"
+            return scripted(payload)
+
+        llm = FakeClient(b_inapplicable, cache_path=None).session(Budget(max_calls=7))
+        search.solve(INSTANCE, llm, k=3, d=2, prune=False)
+        self.assertEqual(llm.budget.calls_by_tag, {"propose": 1, "predict": 3, "score": 3})
+
+    def test_score_parsing(self):
+        self.assertEqual(search._parse_score("## Step 1: Determine the number of cars"), 0.0)
+        self.assertEqual(search._parse_score("The ferry is close.\nScore: 7"), 7.0)
+        self.assertEqual(search._parse_score("**Score:** 6.5"), 6.5)
+        self.assertEqual(search._parse_score("Score: 3 at first... Score: 8"), 8.0)
+        self.assertEqual(search._parse_score("Score: 15"), 10.0)
 
     def test_random_scoring_is_reproducible(self):
         self.assertEqual(run(k=3, d=2, scoring="random")[0], run(k=3, d=2, scoring="random")[0])

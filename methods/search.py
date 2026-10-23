@@ -18,7 +18,10 @@ expands the root and only the most promising child.
 
 Ablation switches (Aisha's sweeps call these by name, so keep them stable):
     k, d
-    scoring        "llm" | "random" | "fixed"   fixed = trust the proposer's order (no scoring calls)
+    scoring        "llm"    0-10 closeness score per state (v1; barely discriminates for 8B)
+                   "steps"  A*-style: LLM estimates remaining actions h, rank by f = depth + h
+                   "vote"   one comparative call per expansion picks the best child (as in ToT)
+                   "random" | "fixed"           fixed = trust the proposer's order (no scoring calls)
     predict_state  True | False                 False = children keep the parent's state and the
                                                 LLM scores the action itself; the search is then depth 1
     temperature    for the proposal call (prediction and scoring are greedy)
@@ -103,9 +106,41 @@ def _score_action(llm: Session, instance: Instance, node: Node, action: str) -> 
     return _parse_score(_ask(llm, prompt, "score", max_tokens=400))
 
 
+UNKNOWN_STEPS = 99  # the LLM gave no estimate: rank such nodes last
+
+
+def _estimate_steps(llm: Session, instance: Instance, node: Node, action: str | None = None) -> int:
+    """LLM estimate of the remaining plan length from node's state (after `action`, if given)."""
+    what = "this state" if action is None else f"the current state, if we apply {action} next"
+    prompt = (f"{instance.context}\n\n{_state_text(node)}\n\n"
+              f"Estimate the minimum number of actions still needed to reach the goal from {what}. "
+              f"Reason briefly in at most three sentences, then end with a final line of the form: "
+              f"Steps: N")
+    text = _ask(llm, prompt, "score", max_tokens=400)
+    matches = re.findall(r"steps\W{0,3}\s*(\d+)", text, flags=re.IGNORECASE)
+    return int(matches[-1]) if matches else UNKNOWN_STEPS
+
+
+def _vote(llm: Session, instance: Instance, node: Node, children: list[Node]) -> int:
+    """Index of the child the LLM judges to make the most progress (Tree-of-Thoughts-style vote)."""
+    options = "\n\n".join(
+        f"Option {j + 1}: apply {c.path[-1]}." + (f" Resulting state:\n{c.state}" if c.state else "")
+        for j, c in enumerate(children))
+    prompt = (f"{instance.context}\n\n{_state_text(node)}\n\n{options}\n\n"
+              f"Which option makes the most progress towards the goal? Reason briefly in at most "
+              f"three sentences, then end with a final line of the form: Best: N")
+    matches = re.findall(r"best\W{0,3}\s*(?:option\s*)?(\d+)",
+                         _ask(llm, prompt, "score", max_tokens=400), flags=re.IGNORECASE)
+    best = int(matches[-1]) - 1 if matches else 0
+    return best if 0 <= best < len(children) else 0
+
+
+SCORINGS = ("llm", "steps", "vote", "random", "fixed")
+
+
 def solve(instance: Instance, llm: Session, k: int = 3, d: int = 2,
           scoring: str = "llm", predict_state: bool = True, temperature: float = 0.7) -> str:
-    if scoring not in ("llm", "random", "fixed"):
+    if scoring not in SCORINGS:
         raise ValueError(f"unknown scoring {scoring!r}")
     rng = random.Random(f"{llm.client.seed}-{instance.id}")
     root = Node(state=None, path=[])
@@ -118,22 +153,37 @@ def solve(instance: Instance, llm: Session, k: int = 3, d: int = 2,
                 break
             node = max(frontier, key=lambda n: n.score)  # ties: earliest proposed wins
             node.expanded = True
+            children = []
             for i, action in enumerate(_propose(llm, instance, node, k, temperature)):
                 state = _predict(llm, instance, node, action) if predict_state else node.state
                 child = Node(state=state, path=node.path + [action])
                 if predict_state and state is None:
                     # The LLM itself judged the action inapplicable: never expand it, never pick it
                     # over an applicable candidate, and skip its scoring call.
-                    child.score, child.expanded = -1.0, True
-                elif scoring == "fixed":
+                    child.score, child.expanded = float("-inf"), True
+                    nodes.append(child)
+                    continue
+                if scoring == "fixed":
                     child.score = node.score + k - i
                 elif scoring == "random":
                     child.score = rng.random()
-                elif predict_state:
-                    child.score = _score_state(llm, instance, child)
-                else:
-                    child.score = _score_action(llm, instance, node, action)
+                elif scoring == "llm":
+                    child.score = (_score_state(llm, instance, child) if predict_state
+                                   else _score_action(llm, instance, node, action))
+                elif scoring == "steps":
+                    # A*-style: f = g + h with g = depth and h = the LLM's estimate; higher score = lower f
+                    h = (_estimate_steps(llm, instance, child) if predict_state
+                         else _estimate_steps(llm, instance, node, action))
+                    child.score = -(child.depth + h)
+                # Only now join the tree: a child whose scoring call hit the budget is dropped,
+                # so an unscored default can never outrank scored nodes.
                 nodes.append(child)
+                children.append(child)
+            if scoring == "vote" and children:
+                # One comparative call per expansion; the chosen child outranks its siblings.
+                best = _vote(llm, instance, node, children) if len(children) > 1 else 0
+                for j, child in enumerate(children):
+                    child.score = node.score + (1 if j == best else 0)
     except BudgetExceeded:
         pass  # answer with the best node found so far
     candidates = [n for n in nodes if n.path]

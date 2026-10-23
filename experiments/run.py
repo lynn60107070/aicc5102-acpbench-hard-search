@@ -109,6 +109,8 @@ def main(argv=None):
                 "completion_tokens": llm.budget.completion_tokens,
                 "calls_by_tag": llm.budget.calls_by_tag, "tokens_by_tag": llm.budget.tokens_by_tag,
                 "providers": sorted({str(c.get("provider")) for c in llm.log}),
+                # Every reply (no prompts), for analysis, e.g. whether a correct candidate was proposed.
+                "replies": [{"tag": c["tag"], "text": c["text"]} for c in llm.log],
                 "seconds": round(time.time() - start, 2), "crash": crash,
             }
             rows.append(row)

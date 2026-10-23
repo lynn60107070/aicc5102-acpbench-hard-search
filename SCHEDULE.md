@@ -57,9 +57,9 @@ a draft section), and we agree on the focus until the next checkpoint. Done mean
 | A1 | Setup (as F1) + read `common/` and `experiments/run.py` until you can explain the method contract | 1.5 h | **CP1** |
 | A2 | `experiments/compare.py`: McNemar test + accuracy difference between two `rows.jsonl` files. Test it on the two reproduction runs in `results/final/` | 2 h | **CP1** |
 | A3 | `experiments/sweep.py`: one method × several seeds/params in one command. Add parallel requests to the runner if a full run takes over ~15 min | 3 h | **CP2** |
-| A4 | `experiments/analyze.py`: accuracy mean ± std over seeds, per-domain table, error types, calls/tokens per method → LaTeX tables + figures | 3 h | **CP2** |
+| A4 | `experiments/analyze.py`: accuracy mean ± std over seeds, per-domain table, error types, calls/tokens per method → LaTeX tables + figures. Also, for search runs, **"correct candidate proposed"** (analysis only): parse the first `propose` reply in each row's `replies` with `common.validator.parse_actions` and score each candidate with `validator.score`. This is the upper limit search could reach; the gap to search's accuracy is our main finding | 3–4 h | **CP2** |
 | A5 | Budget matching: best-of-N's N and search's call budget set to equal calls; report tokens too | 1–2 h | **CP3** |
-| A6 | Ablations (once search is frozen at CP3): no LLM scoring, random and fixed expansion, no state prediction, vary k / d / budget, 3 seeds each | 1 h (+ run time) | **CP4** |
+| A6 | Ablations of the frozen search (frozen 23 Oct: `scoring=llm k=3 d=2 prune=True --max-calls 14`), 8B, test split, 3 seeds each, changing one setting at a time: `scoring=steps`, `scoring=vote` (with `d=1`), `scoring=fixed`, `scoring=random`, `predict_state=False`, `prune=False`, `k=2` / `k=5`, `d=1` / `d=3`, `--max-calls 7` / `28` | 1 h (+ run time) | **CP4** |
 | A7 | Token-matched robustness check (main comparison with equal tokens instead of equal calls) | 1 h (+ run time) | **CP4** |
 | A8 | Paper: experimental setup, results, ablations, limitations | 4–5 h | **CP5** |
 | A9 | Code ZIP: README reproduce commands tested on a **fresh clone** in a new folder | 2 h | **CP6** |
@@ -69,7 +69,7 @@ a draft section), and we agree on the focus until the next checkpoint. Done mean
 |---|---|---|---|
 | L1 | State-prediction test on ~5 questions → decide 8B or 70B for search | 1–2 h | **CP1** |
 | L2 | `methods/search.py` v0 with all switches (`k`, `d`, `scoring`, `predict_state`), runs on `--limit 10` | 5–6 h | **CP2** |
-| L3 | Tune on the **validation split** (`--split validation`, 40 questions, no overlap with test), then **freeze the design**: only bug fixes after this | 3–4 h | **CP3** |
+| L3 | ✅ Done 23 Oct (frozen: scoring=llm, k=3, d=2, prune, 14 calls). Tune on the **validation split** (`--split validation`, 40 questions, no overlap with test), then **freeze the design**: only bug fixes after this | 3–4 h | **CP3** |
 | L4 | Main search runs: 130 × seeds 1, 2, 3 in `results/final/` | 1 h (+ run time) | **CP4** |
 | L5 | `paper/` LaTeX skeleton in the NeurIPS template, with one file per section | 1 h | **CP3** |
 | L6 | Paper: abstract, introduction, research question, method & extension, discussion, conclusion | 5–6 h | **CP5** |

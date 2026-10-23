@@ -100,6 +100,17 @@ class TestSearch(unittest.TestCase):
         answer, _ = run(Budget(max_calls=4), k=3, d=2, scoring="steps")
         self.assertEqual(answer, "(a)")
 
+    def test_prune_off_keeps_and_scores_inapplicable(self):
+        def b_inapplicable(payload):
+            prompt = payload["messages"][-1]["content"]
+            if "resulting state" in prompt and "applying the action (b)" in prompt:
+                return "NOT APPLICABLE"
+            return scripted(payload)
+
+        llm = FakeClient(b_inapplicable, cache_path=None).session(Budget(max_calls=7))
+        search.solve(INSTANCE, llm, k=3, d=2, prune=False)
+        self.assertEqual(llm.budget.calls_by_tag, {"propose": 1, "predict": 3, "score": 3})
+
     def test_score_parsing(self):
         self.assertEqual(search._parse_score("## Step 1: Determine the number of cars"), 0.0)
         self.assertEqual(search._parse_score("The ferry is close.\nScore: 7"), 7.0)

@@ -1,5 +1,9 @@
 """LLM-guided best-first search over LLM-predicted states (owner: Lynn). The extension.
 
+DESIGN FROZEN 23 Oct 2026 (L3), chosen on the validation split only:
+    scoring="llm", k=3, d=2, prune=True, temperature=0.7, run with --max-calls 14.
+Only bug fixes after this. Every other setting below is an ablation.
+
 One search per instance:
     root = the state described in the problem
     repeat until no node can be expanded (depth limit d) or the call budget runs out:
@@ -22,6 +26,8 @@ Ablation switches (Aisha's sweeps call these by name, so keep them stable):
                    "steps"  A*-style: LLM estimates remaining actions h, rank by f = depth + h
                    "vote"   one comparative call per expansion picks the best child (as in ToT)
                    "random" | "fixed"           fixed = trust the proposer's order (no scoring calls)
+    prune          True | False                 False = keep candidates the LLM calls NOT APPLICABLE,
+                                                scored as if the state were unchanged
     predict_state  True | False                 False = children keep the parent's state and the
                                                 LLM scores the action itself; the search is then depth 1
     temperature    for the proposal call (prediction and scoring are greedy)
@@ -70,6 +76,7 @@ def _propose(llm: Session, instance: Instance, node: Node, k: int, temperature: 
 
 
 NOT_APPLICABLE = "NOT APPLICABLE"
+_UNCHANGED = "The same as the current state given in the description above."
 
 
 def _predict(llm: Session, instance: Instance, node: Node, action: str) -> str | None:
@@ -138,8 +145,8 @@ def _vote(llm: Session, instance: Instance, node: Node, children: list[Node]) ->
 SCORINGS = ("llm", "steps", "vote", "random", "fixed")
 
 
-def solve(instance: Instance, llm: Session, k: int = 3, d: int = 2,
-          scoring: str = "llm", predict_state: bool = True, temperature: float = 0.7) -> str:
+def solve(instance: Instance, llm: Session, k: int = 3, d: int = 2, scoring: str = "llm",
+          predict_state: bool = True, prune: bool = True, temperature: float = 0.7) -> str:
     if scoring not in SCORINGS:
         raise ValueError(f"unknown scoring {scoring!r}")
     rng = random.Random(f"{llm.client.seed}-{instance.id}")
@@ -156,6 +163,8 @@ def solve(instance: Instance, llm: Session, k: int = 3, d: int = 2,
             children = []
             for i, action in enumerate(_propose(llm, instance, node, k, temperature)):
                 state = _predict(llm, instance, node, action) if predict_state else node.state
+                if predict_state and state is None and not prune:
+                    state = node.state or _UNCHANGED  # keep the candidate, as if nothing changed
                 child = Node(state=state, path=node.path + [action])
                 if predict_state and state is None:
                     # The LLM itself judged the action inapplicable: never expand it, never pick it

@@ -1,0 +1,20 @@
+% OWNER: Faheema (F7). Target: ~0.75 page. Source of truth: README section 5 (fidelity log) and
+% results/final/. Cite the paper AND the code (required by the brief): \citep{kokel2025acpbenchhard},
+% \citep{acpbench_code}, the harness \citep{gao2024lmeval}, the dataset \citep{acpbench_data}.
+% Cover:
+% - Task + validator: an action taking s to t is correct iff applicable and h(s) - h(t) = 1
+%   (validator only; never visible to the model). 130 test questions, 13 domains x 10.
+% - Setup: lm-eval 0.4.13, 2-shot, greedy, max 1000 tokens, chat template, Llama 3.1 8B Instruct
+%   \citep{dubey2024llama3} via OpenRouter pinned to a bf16 provider.
+% - Match criterion (from the proposal): inside the 95% binomial interval around the paper's value.
+% - Results table (suggest \input{tables/reproduction}):
+%     8B Next Action  0.223 vs 0.25  | 8B Progression 0.400 vs 0.40
+%     70B Next Action 0.377 vs 0.42  | 70B Progression 0.608 vs 0.65   -> all four inside the interval
+% - Independent check: official harness on a second machine (macOS) gave identical answers on
+%   130/130 questions (scripts/check_official_run.py).
+% - Discrepancies and why (fidelity log D1-D6): provider precision (fp8 mix 0.192 vs bf16 0.223,
+%   McNemar p = 0.45), 4 vs 5 stop sequences, chat template unstated in the paper, Windows fix.
+\section{Reproduction}
+\label{sec:reproduction}
+
+\todo{Reproduction (Faheema).}

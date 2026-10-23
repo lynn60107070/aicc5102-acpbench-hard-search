@@ -1,0 +1,14 @@
+% OWNER: Aisha (A8). Target: ~0.5 page.
+% Cover:
+% - Data: test split (130) for all reported results; validation split (40, disjoint) for tuning only.
+% - Models: Llama 3.1 8B Instruct (main, bf16) and 70B (second comparison).
+% - Methods compared: direct, structured, best-of-N, search (+ ablations).
+% - Budget matching: equal LLM calls (main) and equal tokens (robustness check, A7); report both.
+% - Seeds: sampled methods use seeds 1, 2, 3; report mean +/- std. Direct is greedy (deterministic).
+% - Statistics: per-question paired exact McNemar test \citep{mcnemar1947} (experiments/compare.py).
+% - Metrics: accuracy; error types (format / inapplicable / not closer); calls and tokens;
+%   "correct candidate proposed" for search (analysis only, uses the answer key to measure).
+\section{Experimental Setup}
+\label{sec:setup}
+
+\todo{Experimental setup (Aisha).}

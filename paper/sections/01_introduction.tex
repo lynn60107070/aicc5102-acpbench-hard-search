@@ -1,0 +1,18 @@
+% OWNER: Lynn (L6). Target: ~0.75 page.
+% Cover:
+% - Motivation: LLMs as planning components; open-ended (generative) planning questions are hard to
+%   validate and hard to answer (ACPBench-Hard, \citet{kokel2025acpbenchhard}).
+% - The Next Action task: generate an action that moves the state one optimal step closer to the goal.
+% - Gap: ACPBench-Hard evaluates direct generation only; Tree of Thoughts \citep{yao2023tot} and RAP
+%   \citep{hao2023rap} search over LLM-generated states on other tasks.
+% - Research question (state it exactly, in bold or as a numbered question):
+%   "Does LLM-guided search over LLM-predicted intermediate states improve Next Action accuracy on
+%    ACPBench-Hard over direct generation, under a matched compute budget?"
+% - Contributions (bullet list): (1) reproduction: 4 numbers from the paper, an independent check
+%   on a second machine (130/130 identical answers), and a Windows fix for the official validator;
+%   (2) LLM-guided best-first search with no planner/simulator/checker; (3) controlled comparison +
+%   ablations showing evaluation, not generation, is the bottleneck.
+\section{Introduction}
+\label{sec:intro}
+
+\todo{Introduction and research question (Lynn).}

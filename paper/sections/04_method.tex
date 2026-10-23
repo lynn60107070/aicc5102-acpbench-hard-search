@@ -1,0 +1,18 @@
+% OWNER: Lynn (L6). Target: ~1 page. Source: methods/search.py (docstring has the frozen design).
+% Cover:
+% - Direct generation baseline = the reproduced official setup.
+% - LLM-guided best-first search: propose k actions -> predict each resulting state (or NOT
+%   APPLICABLE, pruned) -> score each state (brief reasoning, then "Score: N") -> expand the
+%   highest-scored node until depth d or the call budget runs out -> answer = first action of the
+%   path to the best node. Frozen: k=3, d=2, 14 calls, proposal temperature 0.7.
+% - Constraint: only LLM-predicted states; no planner, simulator, applicability checker or oracle.
+%   The validator is used only to score final answers.
+% - Scoring variants we compare (ablations): steps (A*-style f = g + h with LLM-estimated h,
+%   \citet{hart1968astar}), vote (ToT-style comparison, \citet{yao2023tot}), random, fixed.
+% - Control baselines (Faheema's methods): structured prompting, best-of-N with majority vote.
+% - Algorithm box or short pseudocode (optional) + one small figure of the search tree (optional).
+% - Design chosen on the validation split only (40 questions, disjoint from test).
+\section{Method: LLM-Guided Search}
+\label{sec:method}
+
+\todo{Method and extension (Lynn).}

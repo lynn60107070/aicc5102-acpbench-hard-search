@@ -23,6 +23,9 @@ comment's `\todo{...}` line when you write the section. Before submitting, there
 - Numbers in the text must match `results/final/`. If in doubt, check the `summary.json`.
 
 ## Compiling (Overleaf)
+**Team Overleaf project:** https://www.overleaf.com/project/6adb43bef2e6e9267b35af13
+(Lynn sends the invite.)
+
 No LaTeX install needed.
 1. Lynn creates an Overleaf project: **New Project → Upload Project**, with a ZIP of this `paper/`
    folder, then **Share** with Faheema and Aisha (edit access).

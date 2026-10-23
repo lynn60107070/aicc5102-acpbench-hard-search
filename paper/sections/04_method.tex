@@ -4,6 +4,9 @@
 % - A question = NL description of the domain, current state s, goal, and action schemas;
 %   the answer is one ground action.
 % - Direct generation = the reproduced official setup: 2-shot prompt, greedy, one call (Sec. 3).
+% - Control baselines (Faheema's methods, 1-2 sentences each): structured prompting (state, goal,
+%   action, progress before answering) and best-of-N with majority vote (never the validator).
+%   They test whether gains come from extra reasoning or extra candidates alone.
 %
 % ---- 4.2 Best-first search over LLM-predicted states (the core, ~half a page) ----
 % - Tree: a node = (predicted state description, action path from the root). Root = the state in

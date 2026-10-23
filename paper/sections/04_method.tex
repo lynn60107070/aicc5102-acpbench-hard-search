@@ -1,49 +1,73 @@
 % OWNER: Lynn (L6). Target: ~1 page. Source of truth: methods/search.py (frozen 23 Oct).
-%
-% ---- 4.1 Task and baseline (2-3 sentences) ----
-% - A question = NL description of the domain, current state s, goal, and action schemas;
-%   the answer is one ground action.
-% - Direct generation = the reproduced official setup: 2-shot prompt, greedy, one call (Sec. 3).
-% - Control baselines (Faheema's methods, 1-2 sentences each): structured prompting (state, goal,
-%   action, progress before answering) and best-of-N with majority vote (never the validator).
-%   They test whether gains come from extra reasoning or extra candidates alone.
-%
-% ---- 4.2 Best-first search over LLM-predicted states (the core, ~half a page) ----
-% - Tree: a node = (predicted state description, action path from the root). Root = the state in
-%   the question.
-% - Expanding a node uses the LLM in three roles:
-%   (1) Proposer: lists k = 3 candidate actions (temperature 0.7), parsed with the benchmark's own
-%       action grammar.
-%   (2) Predictor: writes the resulting state for each candidate, or answers NOT APPLICABLE;
-%       such candidates are pruned and never scored.
-%   (3) Evaluator: reasons briefly, then outputs "Score: N" (0-10, closeness to the goal).
-% - Loop: always expand the highest-scored unexpanded node with depth < d = 2; stop when no node
-%   is left or the budget of B = 14 calls is used up.
-% - Answer: the first action on the path to the highest-scored node.
-% - Cost: each expansion costs 1 + 2k = 7 calls, so B = 14 expands the root and its most promising
-%   child. Best-first order matters only because of the budget.
-% - Algorithm box: 8-10 lines of pseudocode (propose -> predict/prune -> score -> pick next node).
-%
-% ---- 4.3 What the search cannot use (2-3 sentences; key for novelty) ----
-% - No planner, simulator, applicability checker, PDDL or oracle: every state and judgment comes
-%   from the LLM. The official validator only scores final answers.
-% - Contrast: Thought of Search \citep{katz2024tos} and LLM+P \citep{liu2023llmp} use symbolic
-%   tools; new vs ToT \citep{yao2023tot} / RAP \citep{hao2023rap}: open-ended Next Action without
-%   a verifier.
-%
-% ---- 4.4 Evaluator variants (short list; they reappear as ablations) ----
-% - steps: LLM estimates remaining actions h; rank by f = depth + h (A* with an LLM heuristic,
-%   \citet{hart1968astar}).
-% - vote: one comparative call per expansion picks the best child (ToT evaluator).
-% - random, fixed (trust the proposer's order); plus switching off state prediction / pruning.
-%
-% ---- 4.5 Design selection (1-2 sentences) ----
-% - All choices made on the validation split (40 questions, disjoint from test) and frozen before
-%   any test run; "llm" scoring was the best search variant for 8B on validation.
-%
-% Optional figure: small search tree (root, 3 children: one pruned NOT APPLICABLE, two scored,
-% one expanded). Doubles as a presentation slide.
+% Needs \usepackage{algorithm} and \usepackage{algpseudocode} in main.tex.
 \section{Method: LLM-Guided Search}
 \label{sec:method}
 
-\todo{Method and extension (Lynn).}
+\paragraph{Task and baselines.}
+Each Next Action question describes, in natural language, a planning domain, the current state $s$,
+the goal, and the action schemas; the answer is a single ground action. Our baseline is
+\emph{direct generation}: the reproduced official setup of Section~\ref{sec:reproduction}, a 2-shot
+prompt answered greedily in one call. Two further controls separate the effect of search from
+simpler sources of gain: \emph{structured prompting}, which asks the model to write out the state,
+the goal, a candidate action and its progress before answering, and \emph{best-of-$N$}, which
+samples $N$ answers at temperature $0.7$ and returns the majority action. Neither control, nor the
+search below, ever consults the validator.
+
+\paragraph{Best-first search over predicted states.}
+Our extension searches a tree whose nodes are pairs of a \emph{predicted} state description and the
+action path that leads to it from the root, the state given in the question. Expanding a node uses
+the LLM in three roles (Algorithm~\ref{alg:search}). The \emph{proposer} lists $k$ candidate actions,
+most promising first, sampled at temperature $0.7$ and parsed with the benchmark's own action
+grammar. For each candidate, the \emph{predictor} either describes the complete resulting state or
+answers \texttt{NOT APPLICABLE}; such candidates are pruned and never scored. The \emph{evaluator}
+then reasons in at most three sentences about how close the predicted state is to the goal and ends
+with a line \texttt{Score: $N$} on a 0--10 scale; prediction and evaluation are greedy. The search
+always expands the highest-scored unexpanded node with depth below $d$, and stops when no such node
+remains or as soon as the budget of $B$ LLM calls is used. The answer is the first action on the
+path to the highest-scored node. Each expansion costs at most $1 + 2k$ calls, so with the frozen
+setting $k{=}3$, $d{=}2$, $B{=}14$, the search expands the root and then only its most promising
+child: the order of expansion matters because the budget is binding.
+
+\begin{algorithm}[t]
+\caption{LLM-guided best-first search (frozen: $k{=}3$, $d{=}2$, $B{=}14$ calls)}
+\label{alg:search}
+\begin{algorithmic}[1]
+\State $\mathit{root} \gets$ state described in the question; $N \gets \{\mathit{root}\}$
+\While{some unexpanded node in $N$ has depth $< d$ \textbf{and} calls used $< B$}
+  \State $n \gets$ highest-scored unexpanded node with depth $< d$
+  \For{each action $a$ in \textsc{Propose}$(n, k)$} \Comment{1 call}
+    \State $s' \gets$ \textsc{Predict}$(n, a)$ \Comment{1 call}
+    \If{$s' =$ \texttt{NOT APPLICABLE}} \State \textbf{continue} \Comment{pruned, not scored}
+    \EndIf
+    \State $c \gets$ child of $n$ with state $s'$ and path $n.\mathit{path} + [a]$
+    \State $c.\mathit{score} \gets$ \textsc{Score}$(c)$; \ add $c$ to $N$ \Comment{1 call}
+  \EndFor
+\EndWhile
+\State \Return first action on the path to the highest-scored node in $N \setminus \{\mathit{root}\}$
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{What the search may not use.}
+Every state and every judgment in the search comes from the LLM: there is no planner, simulator,
+applicability checker, PDDL description, or oracle, and the official validator is used only to score
+final answers. This distinguishes our setting from approaches that delegate planning or state
+expansion to symbolic tools, such as LLM+P~\citep{liu2023llmp} and Thought of
+Search~\citep{katz2024tos}, and extends search over LLM-generated states, as in Tree of
+Thoughts~\citep{yao2023tot} and RAP~\citep{hao2023rap}, to open-ended Next Action without a
+verifier.
+
+\paragraph{Evaluator variants.}
+To test which component matters, we compare the frozen evaluator with alternatives that keep the
+rest of the search fixed. \emph{Steps} asks the LLM to estimate the number of actions $h$ still
+needed and ranks nodes by $f = \mathit{depth} + h$, i.e.\ A$^*$~\citep{hart1968astar} with an LLM
+heuristic. \emph{Vote} makes one comparative call per expansion, in which the LLM picks the child
+that makes the most progress, following the Tree of Thoughts evaluator~\citep{yao2023tot}.
+\emph{Random} assigns random scores, and \emph{fixed} trusts the proposer's order. We also disable
+state prediction, letting the LLM score actions directly from the parent state, and disable
+pruning.
+
+\paragraph{Design selection.}
+All design choices were made on the validation split (40 questions, disjoint from the 130 test
+questions) and frozen before any test run. The 0--10 evaluator was the best-performing search
+variant for Llama~3.1~8B on validation, so it is the method we report; the other evaluators appear
+as ablations.

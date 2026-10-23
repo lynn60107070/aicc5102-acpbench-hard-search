@@ -5,8 +5,10 @@ One search per instance:
     repeat until no node can be expanded (depth limit d) or the call budget runs out:
         node    = the highest-scored unexpanded node with depth < d
         propose = the LLM lists k candidate actions for node's state          (1 call)
-        predict = for each action, the LLM writes the resulting state          (k calls)
-        score   = for each predicted state, the LLM rates progress 0-10       (k calls)
+        predict = for each action, the LLM writes the resulting state, or says (k calls)
+                  NOT APPLICABLE; such actions are pruned and not scored
+        score   = for each predicted state, the LLM reasons briefly and       (≤ k calls)
+                  ends with "Score: N" (0-10)
     answer = first action on the path to the highest-scored node
 
 Only LLM-predicted states are used: no planner, simulator or applicability checker.
@@ -59,36 +61,46 @@ def _propose(llm: Session, instance: Instance, node: Node, k: int, temperature: 
     prompt = (f"{instance.context}\n\n{_state_text(node)}\n\n"
               f"List {k} different actions that can be applied in the current state and that could "
               f"move us towards the goal, most promising first. Write each action on its own line, "
-              f"in parentheses with all its parameters, like the available actions above. "
-              f"Write only the actions.")
+              f"in parentheses, with the action name followed only by object names from the problem "
+              f"(no other words), like the available actions above. Write only the actions.")
     return parse_actions(_ask(llm, prompt, "propose", temperature, max_tokens=200))[:k]
 
 
-def _predict(llm: Session, instance: Instance, node: Node, action: str) -> str:
+NOT_APPLICABLE = "NOT APPLICABLE"
+
+
+def _predict(llm: Session, instance: Instance, node: Node, action: str) -> str | None:
+    """The predicted next state, or None if the LLM judges the action inapplicable."""
     prompt = (f"{instance.context}\n\n{_state_text(node)}\n\n"
-              f"Now the action {action} is applied. Describe the complete resulting state: state every "
-              f"fact that is true afterwards, in the same style as the description above. "
-              f"Write only the state.")
-    return _ask(llm, prompt, "predict").strip()
+              f"Consider applying the action {action}. First check whether it can be applied in the "
+              f"current state. If it cannot, reply only: {NOT_APPLICABLE}. Otherwise describe the "
+              f"complete resulting state: state every fact that is true afterwards, in the same style "
+              f"as the description above. Write only the state.")
+    text = _ask(llm, prompt, "predict").strip()
+    return None if NOT_APPLICABLE in text.upper() else text
 
 
 def _parse_score(text: str) -> float:
-    match = re.search(r"\d+(?:\.\d+)?", text)
-    return min(max(float(match.group()), 0.0), 10.0) if match else 0.0
+    """The number on the last 'Score: N' line; 0 if the model gave none."""
+    matches = re.findall(r"score\W{0,3}\s*(\d+(?:\.\d+)?)", text, flags=re.IGNORECASE)
+    return min(max(float(matches[-1]), 0.0), 10.0) if matches else 0.0
+
+
+_SCORE_FORMAT = "Reason briefly in at most three sentences, then end with a final line of the form: Score: N"
 
 
 def _score_state(llm: Session, instance: Instance, child: Node) -> float:
     prompt = (f"{instance.context}\n\n{_state_text(child)}\n\n"
-              f"How close is this state to the goal? Answer with a single number from "
-              f"0 (no progress) to 10 (goal reached).")
-    return _parse_score(_ask(llm, prompt, "score", max_tokens=10))
+              f"How close is this state to the goal, on a scale from 0 (no progress) to 10 "
+              f"(goal reached)? {_SCORE_FORMAT}")
+    return _parse_score(_ask(llm, prompt, "score", max_tokens=400))
 
 
 def _score_action(llm: Session, instance: Instance, node: Node, action: str) -> float:
     prompt = (f"{instance.context}\n\n{_state_text(node)}\n\n"
-              f"How good is applying {action} next for reaching the goal? Answer with a single number "
-              f"from 0 (not applicable or useless) to 10 (certainly the right next action).")
-    return _parse_score(_ask(llm, prompt, "score", max_tokens=10))
+              f"How good is applying {action} next for reaching the goal, on a scale from 0 (not "
+              f"applicable or useless) to 10 (certainly the right next action)? {_SCORE_FORMAT}")
+    return _parse_score(_ask(llm, prompt, "score", max_tokens=400))
 
 
 def solve(instance: Instance, llm: Session, k: int = 3, d: int = 2,
@@ -109,7 +121,11 @@ def solve(instance: Instance, llm: Session, k: int = 3, d: int = 2,
             for i, action in enumerate(_propose(llm, instance, node, k, temperature)):
                 state = _predict(llm, instance, node, action) if predict_state else node.state
                 child = Node(state=state, path=node.path + [action])
-                if scoring == "fixed":
+                if predict_state and state is None:
+                    # The LLM itself judged the action inapplicable: never expand it, never pick it
+                    # over an applicable candidate, and skip its scoring call.
+                    child.score, child.expanded = -1.0, True
+                elif scoring == "fixed":
                     child.score = node.score + k - i
                 elif scoring == "random":
                     child.score = rng.random()

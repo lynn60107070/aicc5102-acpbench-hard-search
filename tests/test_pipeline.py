@@ -88,6 +88,24 @@ class TestLLM(unittest.TestCase):
             client._db.close()
 
 
+    def test_cache_is_thread_safe(self):
+        from concurrent.futures import ThreadPoolExecutor
+        with tempfile.TemporaryDirectory() as td:
+            client = FakeClient(lambda p: p["messages"][0]["content"].upper(), cache_path=Path(td) / "c.sqlite")
+
+            def ask(i):
+                return client.session().chat([{"role": "user", "content": f"q{i}"}])
+
+            with ThreadPoolExecutor(max_workers=8) as pool:
+                first = list(pool.map(ask, range(64)))
+            with ThreadPoolExecutor(max_workers=8) as pool:
+                again = list(pool.map(ask, range(64)))
+            self.assertEqual(first, [f"Q{i}" for i in range(64)])
+            self.assertEqual(again, first)
+            self.assertEqual(client.requests, 64)  # second round came entirely from cache
+            client._db.close()
+
+
 class TestRunner(unittest.TestCase):
     def test_direct_end_to_end(self):
         gold = {to_instance(d).context: d["answer"]["yes"][0] for d in DOCS[:3]}

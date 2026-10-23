@@ -16,6 +16,7 @@ import hashlib
 import json
 import os
 import sqlite3
+import threading
 import time
 from pathlib import Path
 
@@ -56,9 +57,12 @@ class LLMClient:
         self.timeout = timeout
         self.max_retries = max_retries
         self._db = None
+        # One connection shared by all threads (parallel runners), so every access takes this lock.
+        self._db_lock = threading.Lock()
         if cache_path is not None:
             Path(cache_path).parent.mkdir(parents=True, exist_ok=True)
-            self._db = sqlite3.connect(str(cache_path), check_same_thread=False)
+            # timeout: wait instead of failing if another process is writing the same file.
+            self._db = sqlite3.connect(str(cache_path), check_same_thread=False, timeout=60)
             self._db.execute("CREATE TABLE IF NOT EXISTS cache (key TEXT PRIMARY KEY, value TEXT)")
             self._db.commit()
 
@@ -71,6 +75,8 @@ class LLMClient:
             api_key=os.environ.get("OPENAI_API_KEY"),
             provider=os.environ.get("ACP_PROVIDER") or None,
         )
+        if os.environ.get("ACP_CACHE"):  # e.g. a separate cache file per concurrent run
+            kwargs["cache_path"] = Path(os.environ["ACP_CACHE"])
         kwargs.update({k: v for k, v in overrides.items() if v is not None})
         if not kwargs["model"] or not kwargs["base_url"]:
             raise SystemExit("Set ACP_MODEL and ACP_BASE_URL (in .env or pass --model / --base-url).")
@@ -85,13 +91,15 @@ class LLMClient:
             {"url": self.url, "seed": self.seed, "occurrence": occurrence, **payload},
             sort_keys=True).encode()).hexdigest()
         if self._db is not None:
-            row = self._db.execute("SELECT value FROM cache WHERE key = ?", (key,)).fetchone()
+            with self._db_lock:
+                row = self._db.execute("SELECT value FROM cache WHERE key = ?", (key,)).fetchone()
             if row:
                 return json.loads(row[0])
-        result = self._post(payload)
+        result = self._post(payload)  # outside the lock, so parallel requests really run in parallel
         if self._db is not None:
-            self._db.execute("INSERT OR REPLACE INTO cache VALUES (?, ?)", (key, json.dumps(result)))
-            self._db.commit()
+            with self._db_lock:
+                self._db.execute("INSERT OR REPLACE INTO cache VALUES (?, ?)", (key, json.dumps(result)))
+                self._db.commit()
         return result
 
     def _post(self, payload: dict) -> dict:

@@ -1,6 +1,52 @@
-% OWNER: Lynn (L6). The exact propose / predict / score prompts from methods/search.py
-% (and Faheema's structured / best-of-N prompts), so the method is reproducible.
+% OWNER: Lynn (L6). Copied verbatim from methods/search.py (frozen 23 Oct) and common/data.py.
+% Faheema: add the structured-prompting and best-of-N prompts as B.3 when F3/F4 are final.
 \section{Prompts}
 \label{app:prompts}
 
-\todo{Exact prompts (Lynn, with Faheema's baseline prompts).}
+\newcommand{\promptbox}[1]{\begin{quote}\small\ttfamily #1\end{quote}}
+
+\subsection{Direct generation}
+The official ACPBench-Hard prompt \citep{gao2024lmeval}, sent as a chat with the two fixed
+in-context examples as earlier user/assistant turns:
+\promptbox{**Question**: \textit{<problem description>} What is the next action that takes us
+towards the goal? Each action starts with an opening parenthesis and ends with closing parenthesis.
+Provide only the action. **Final Answer**:}
+
+\subsection{Search}
+Every search prompt is a single user message that starts with the problem description, followed by
+a state line. At the root the state line is
+\promptbox{The current state is the one described above.}
+and at any other node it is
+\promptbox{Ignore the current state given in the description above. After applying
+\textit{<action path>}, the current state is:\\ \textit{<predicted state>}}
+The role-specific instruction follows.
+
+\paragraph{Proposer} (temperature 0.7, at most 200 tokens):
+\promptbox{List \textit{<k>} different actions that can be applied in the current state and that
+could move us towards the goal, most promising first. Write each action on its own line, in
+parentheses, with the action name followed only by object names from the problem (no other words),
+like the available actions above. Write only the actions.}
+
+\paragraph{Predictor} (greedy, at most 600 tokens):
+\promptbox{Consider applying the action \textit{<action>}. First check whether it can be applied in
+the current state. If it cannot, reply only: NOT APPLICABLE. Otherwise describe the complete
+resulting state: state every fact that is true afterwards, in the same style as the description
+above. Write only the state.}
+
+\paragraph{Evaluator, frozen} (greedy, at most 400 tokens), asked about a child node:
+\promptbox{How close is this state to the goal, on a scale from 0 (no progress) to 10 (goal
+reached)? Reason briefly in at most three sentences, then end with a final line of the form:
+Score: N}
+
+\paragraph{Evaluator variants used in the ablations.}
+\emph{Steps}:
+\promptbox{Estimate the minimum number of actions still needed to reach the goal from this state.
+Reason briefly in at most three sentences, then end with a final line of the form: Steps: N}
+\emph{Vote}, after listing each child as ``Option $i$: apply \textit{<action>}. Resulting state:
+\textit{<predicted state>}'':
+\promptbox{Which option makes the most progress towards the goal? Reason briefly in at most three
+sentences, then end with a final line of the form: Best: N}
+\emph{Without state prediction}, asked at the parent node:
+\promptbox{How good is applying \textit{<action>} next for reaching the goal, on a scale from 0 (not
+applicable or useless) to 10 (certainly the right next action)? Reason briefly in at most three
+sentences, then end with a final line of the form: Score: N}

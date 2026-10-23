@@ -118,7 +118,7 @@ def main(argv=None):
             f.flush()
             acc = sum(r["correct"] for r in rows) / len(rows)
             print(f"[{i}/{len(docs)}] {instance.domain:<18} {'OK ' if verdict.correct else verdict.error or 'X':<12}"
-                  f" {str(verdict.action)[:40]:<40} running acc {acc:.3f}")
+                  f" {str(verdict.action)[:40]:<40} running acc {acc:.3f}", flush=True)
 
     summary = {"settings": {**vars(args), "params": params, "model": client.model}, **summarize(rows)}
     (out / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf8")

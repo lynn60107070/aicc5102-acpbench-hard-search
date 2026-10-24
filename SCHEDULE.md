@@ -70,7 +70,7 @@ a draft section), and we agree on the focus until the next checkpoint. Done mean
 | L1 | State-prediction test on ~5 questions → decide 8B or 70B for search | 1–2 h | **CP1** |
 | L2 | `methods/search.py` v0 with all switches (`k`, `d`, `scoring`, `predict_state`), runs on `--limit 10` | 5–6 h | **CP2** |
 | L3 | ✅ Done 23 Oct (frozen: scoring=llm, k=3, d=2, prune, 14 calls). Tune on the **validation split** (`--split validation`, 40 questions, no overlap with test), then **freeze the design**: only bug fixes after this | 3–4 h | **CP3** |
-| L4 | Main search runs: 130 × seeds 1, 2, 3 in `results/final/` | 1 h (+ run time) | **CP4** |
+| L4 | ✅ Done 24 Oct (8B + 70B). Main search runs: 130 × seeds 1, 2, 3 in `results/final/` | 1 h (+ run time) | **CP4** |
 | L5 | ✅ Done 23 Oct. `paper/` LaTeX skeleton in the NeurIPS template, with one file per section | 1 h | **CP3** |
 | L6 | Paper: abstract, introduction, research question, method & extension, discussion, conclusion | 5–6 h | **CP5** |
 | L7 | Contributions statement, AI use statement, final assembly + submission | 2 h | **CP6** |

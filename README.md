@@ -181,6 +181,23 @@ lm-eval --model local-chat-completions ^
 
 ---
 
+## 5b. Main extension results (test, 130 questions, frozen search, seeds 1–3)
+
+Quick reference. The paper's tables come from `experiments/analyze.py`.
+
+| | Llama 3.1 8B | Llama 3.1 70B |
+|---|---|---|
+| Direct generation | 0.223 | 0.377 |
+| **Search** (`scoring=llm k=3 d=2 prune`, 14 calls) | **0.159 ± 0.012** | **0.362 ± 0.015** |
+| McNemar p vs direct, per seed | 0.17 / 0.27 / 0.09 | 0.57 / 0.85 / 1.00 |
+| Correct action among root candidates (analysis only) | 0.313 | 0.590 |
+| First proposal alone (analysis only) | 0.179 | 0.280 |
+| Score separation AUC, root candidates (0.5 = chance) | 0.578 | 0.527 |
+| Calls per question | 13.4 | 11.4 |
+
+Runs: `results/final/main_search_{8b,70b}_s{1,2,3}/`. Finding: search never beats direct; the model often
+proposes a correct action but its own scores barely tell it apart from wrong ones, even at 70B.
+
 ## 6. Deadlines (Section 1)
 
 Team tasks (F1–F7, A1–A9, L1–L8) and checkpoints CP1–CP6 (whole submission done by Sun 1 Nov) are in [SCHEDULE.md](SCHEDULE.md).

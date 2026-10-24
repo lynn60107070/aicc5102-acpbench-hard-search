@@ -1,0 +1,165 @@
+[1/130] ferry              not_closer   (debark c4 l1)                           running acc 0.000
+[2/130] ferry              OK           (sail l3 l0)                             running acc 0.500
+[3/130] ferry              not_closer   (debark c33 l0)                          running acc 0.333
+[4/130] ferry              OK           (board c5 l1)                            running acc 0.500
+[5/130] ferry              not_closer   (debark c46 l1)                          running acc 0.400
+[6/130] ferry              OK           (debark c36 l0)                          running acc 0.500
+[7/130] ferry              not_closer   (sail l2 l0)                             running acc 0.429
+[8/130] ferry              OK           (board c0 l4)                            running acc 0.500
+[9/130] ferry              not_closer   (sail l1 l0)                             running acc 0.444
+[10/130] ferry              not_closer   (debark c0 l1)                           running acc 0.400
+[11/130] logistics-strips   inapplicable (load-truck p1 t0 l0-2)                  running acc 0.364
+[12/130] logistics-strips   not_closer   (unload-truck p3 t2 l2-4)                running acc 0.333
+[13/130] logistics-strips   not_closer   (drive-truck t2 l2-0 l2-7 c2)            running acc 0.308
+[14/130] logistics-strips   inapplicable (load-truck p2 t0 l0-0)                  running acc 0.286
+[15/130] logistics-strips   inapplicable (drive-truck t3 l3-1 l3-0 c3)            running acc 0.267
+[16/130] logistics-strips   inapplicable (load-truck p3 t3 l3-2)                  running acc 0.250
+[17/130] logistics-strips   inapplicable (load-truck p0 a0 l0-0)                  running acc 0.235
+[18/130] logistics-strips   not_closer   (drive-truck t1 l1-0 l1-1 c1)            running acc 0.222
+[19/130] logistics-strips   inapplicable (load-truck p2 a0 l1-0)                  running acc 0.211
+[20/130] logistics-strips   OK           (unload-truck p0 t1 l1-2)                running acc 0.250
+[21/130] blocksworld-4ops   OK           (pick-up block_2)                        running acc 0.286
+[22/130] blocksworld-4ops   OK           (unstack block_3 block_5)                running acc 0.318
+[23/130] blocksworld-4ops   OK           (put-down block_2)                       running acc 0.348
+[24/130] blocksworld-4ops   not_closer   (pick-up block_4)                        running acc 0.333
+[25/130] blocksworld-4ops   inapplicable (unstack block_3 block_7)                running acc 0.320
+[26/130] blocksworld-4ops   inapplicable (unstack block_4 block_9)                running acc 0.308
+[27/130] blocksworld-4ops   OK           (unstack block_4 block_9)                running acc 0.333
+[28/130] blocksworld-4ops   not_closer   (unstack block_1 block_3)                running acc 0.321
+[29/130] blocksworld-4ops   inapplicable (unstack block_7 block_3)                running acc 0.310
+[30/130] blocksworld-4ops   OK           (unstack block_3 block_5)                running acc 0.333
+[31/130] grid               OK           (move f1-0f f1-1f)                       running acc 0.355
+[32/130] grid               OK           (pickup f0-4f key0-2)                    running acc 0.375
+[33/130] grid               not_closer   (pickup f1-2f key0-1)                    running acc 0.364
+[34/130] grid               OK           (move f2-1f f1-1f)                       running acc 0.382
+[35/130] grid               inapplicable (move f2-0f f2-2f)                       running acc 0.371
+[36/130] grid               OK           (move f2-3f f2-2f)                       running acc 0.389
+[37/130] grid               not_closer   (move f3-3f f3-2f)                       running acc 0.378
+[38/130] grid               OK           (move f4-4f f4-3f)                       running acc 0.395
+[39/130] grid               OK           (move f0-2f f1-2f)                       running acc 0.410
+[40/130] grid               OK           (move f3-0f f3-1f)                       running acc 0.425
+[41/130] floor-tile         inapplicable (right robot1 tile_3 tile_2)             running acc 0.415
+[42/130] floor-tile         inapplicable (paint-down robot1 tile_10 tile_9 black) running acc 0.405
+[43/130] floor-tile         OK           (change-color robot1 white black)        running acc 0.419
+[44/130] floor-tile         inapplicable (paint-down robot1 tile_12 tile_8 white) running acc 0.409
+[45/130] floor-tile         OK           (change-color robot1 black white)        running acc 0.422
+[46/130] floor-tile         not_closer   (right robot2 tile_1 tile_2)             running acc 0.413
+[47/130] floor-tile         OK           (change-color robot1 white black)        running acc 0.426
+[48/130] floor-tile         inapplicable (paint-up robot1 tile_12 tile_8 white)   running acc 0.417
+[49/130] floor-tile         inapplicable (paint-up robot1 tile_2 tile_3 white)    running acc 0.408
+[50/130] floor-tile         OK           (right robot3 tile_4 tile_5)             running acc 0.420
+[51/130] gripper-strips     inapplicable (pick robot1 ball3 room1 left)           running acc 0.412
+[52/130] gripper-strips     inapplicable (drop robot1 ball1 room3 right)          running acc 0.404
+[53/130] gripper-strips     OK           (move robot1 room5 room1)                running acc 0.415
+[54/130] gripper-strips     not_closer   (move robot1 room2 room1)                running acc 0.407
+[55/130] gripper-strips     inapplicable (pick robot1 ball4 room2 right)          running acc 0.400
+[56/130] gripper-strips     not_closer   (move robot1 room3 room2)                running acc 0.393
+[57/130] gripper-strips     not_closer   (move robot1 room10 room2)               running acc 0.386
+[58/130] gripper-strips     not_closer   (move robot1 room3 room1)                running acc 0.379
+[59/130] gripper-strips     inapplicable (pick robot1 ball3 room3 left)           running acc 0.373
+[60/130] gripper-strips     not_closer   (move robot1 room2 room1)                running acc 0.367
+[61/130] rover              inapplicable (communicate_soil_data rover0 lander_gen running acc 0.361
+[62/130] rover              not_closer   (navigate rover0 waypoint2 waypoint0)    running acc 0.355
+[63/130] rover              inapplicable (communicate_soil_data rover0 lander way running acc 0.349
+[64/130] rover              OK           (communicate_rock_data rover0 general wa running acc 0.359
+[65/130] rover              inapplicable (take_image rover0 waypoint4 objective1  running acc 0.354
+[66/130] rover              inapplicable (navigate rover0 waypoint1 waypoint0)    running acc 0.348
+[67/130] rover              not_closer   (navigate rover1 waypoint2 waypoint1)    running acc 0.343
+[68/130] rover              inapplicable (communicate_rock_data rover1 lander way running acc 0.338
+[69/130] rover              OK           (navigate rover1 waypoint2 waypoint4)    running acc 0.348
+[70/130] rover              not_closer   (communicate_rock_data rover1 general wa running acc 0.343
+[71/130] grid-visit-all     OK           (move loc-x1-y1 loc-x1-y2)               running acc 0.352
+[72/130] grid-visit-all     OK           (move loc-x1-y1 loc-x1-y0)               running acc 0.361
+[73/130] grid-visit-all     inapplicable (move loc-x0-y0 loc-x1-y1)               running acc 0.356
+[74/130] grid-visit-all     not_closer   (move loc-x3-y2 loc-x2-y2)               running acc 0.351
+[75/130] grid-visit-all     OK           (move loc-x0-y3 loc-x0-y2)               running acc 0.360
+[76/130] grid-visit-all     not_closer   (move loc-x2-y2 loc-x1-y2)               running acc 0.355
+[77/130] grid-visit-all     inapplicable (move loc-x0-y2 loc-x1-y1)               running acc 0.351
+[78/130] grid-visit-all     inapplicable (move loc-x3-y3 loc-x3-y1)               running acc 0.346
+[79/130] grid-visit-all     OK           (move loc-x0-y3 loc-x1-y3)               running acc 0.354
+[80/130] grid-visit-all     OK           (move loc-x1-y2 loc-x2-y2)               running acc 0.362
+[81/130] depots             OK           (drop hoist0 crate1 pallet0 depot0)      running acc 0.370
+[82/130] depots             OK           (drop hoist0 crate1 pallet0 depot0)      running acc 0.378
+[83/130] depots             OK           (unload hoist11 crate0 truck1 distributo running acc 0.386
+[84/130] depots             inapplicable (load hoist0 crate0 truck0 depot0)       running acc 0.381
+[85/130] depots             inapplicable (lift hoist0 pallet0 depot0 pallet5)     running acc 0.376
+[86/130] depots             inapplicable (lift hoist1 crate0 depot3 pallet3)      running acc 0.372
+[87/130] depots             not_closer   (drop hoist8 crate0 pallet8 depot8)      running acc 0.368
+[88/130] depots             inapplicable (load hoist8 crate0 depot1 truck1)       running acc 0.364
+[89/130] depots             OK           (lift hoist8 crate0 pallet8 depot8)      running acc 0.371
+[90/130] depots             inapplicable (drop hoist0 crate0 pallet0 depot0)      running acc 0.367
+[91/130] gold-miner-typed   not_closer   (move f0-0f f1-0f)                       running acc 0.363
+[92/130] gold-miner-typed   inapplicable (move f0-0f)                             running acc 0.359
+[93/130] gold-miner-typed   inapplicable (pickup-laser f0-0f)                     running acc 0.355
+[94/130] gold-miner-typed   inapplicable (move f1-0 f0-0)                         running acc 0.351
+[95/130] gold-miner-typed   inapplicable (move f0-2f f0-0f)                       running acc 0.347
+[96/130] gold-miner-typed   inapplicable (pickup-laser f0-0f)                     running acc 0.344
+[97/130] gold-miner-typed   not_closer   (pickup-laser f2-0f)                     running acc 0.340
+[98/130] gold-miner-typed   inapplicable (move f0-2f f1-1f)                       running acc 0.337
+[99/130] gold-miner-typed   OK           (move f2-0f f1-0f)                       running acc 0.343
+[100/130] gold-miner-typed   inapplicable (move f1-1f)                             running acc 0.340
+[101/130] satellite          not_closer   (turn_to satellite6 star4 groundstation1 running acc 0.337
+[102/130] satellite          not_closer   (turn_to satellite5 groundstation4 star2 running acc 0.333
+[103/130] satellite          OK           (turn_to satellite6 star4 groundstation1 running acc 0.340
+[104/130] satellite          OK           (turn_to satellite5 groundstation0 star1 running acc 0.346
+[105/130] satellite          not_closer   (turn_to satellite3 planet8 star9)       running acc 0.343
+[106/130] satellite          OK           (turn_to satellite5 groundstation0 pheno running acc 0.349
+[107/130] satellite          OK           (turn_to satellite1 phenomenon6 groundst running acc 0.355
+[108/130] satellite          not_closer   (switch_on instrument3 satellite1)       running acc 0.352
+[109/130] satellite          OK           (turn_to satellite4 star10 groundstation running acc 0.358
+[110/130] satellite          OK           (turn_to satellite1 phenomenon6 groundst running acc 0.364
+[111/130] swap               OK           (swap heidi ted leek quince)             running acc 0.369
+[112/130] swap               OK           (swap xena carol frisbee whale)          running acc 0.375
+[113/130] swap               OK           (swap kevin ted leek valerian)           running acc 0.381
+[114/130] swap               not_closer   (swap xena zoe guitar zebra)             running acc 0.377
+[115/130] swap               inapplicable (swap vic iceskates alice necklace)      running acc 0.374
+[116/130] swap               OK           (swap michelle zoe iceskates quadcopter) running acc 0.379
+[117/130] swap               OK           (swap carol zoe guitar frisbee)          running acc 0.385
+[118/130] swap               OK           (swap vic michelle quadcopter slinky)    running acc 0.390
+[119/130] swap               OK           (swap steve bob book01 book03)           running acc 0.395
+[120/130] swap               OK           (swap bob liam sander pliers)            running acc 0.400
+[121/130] alfred             inapplicable (open_receptacle agent1 location5 cabine running acc 0.397
+[122/130] alfred             inapplicable (open_receptacle agent1 coffeemachine1)  running acc 0.393
+[123/130] alfred             inapplicable (validate_examine_in_light desklamp1 des running acc 0.390
+[124/130] alfred             inapplicable (validate_heat_and_place_in_receptacle e running acc 0.387
+[125/130] alfred             inapplicable (validate_heat_and_place_in_receptacle m running acc 0.384
+[126/130] alfred             inapplicable (open_receptacle agent1 cabinet6)        running acc 0.381
+[127/130] alfred             inapplicable (open_receptacle agent1 cabinet3)        running acc 0.378
+[128/130] alfred             inapplicable (go_to_location agent1 cabinet3)         running acc 0.375
+[129/130] alfred             OK           (go_to_location agent1 location22 locati running acc 0.380
+[130/130] alfred             inapplicable (open_receptacle agent1 drawer2)         running acc 0.377
+{
+  "n": 130,
+  "accuracy": 0.3769230769230769,
+  "ci95": [
+    0.29361605828920617,
+    0.46023009555694766
+  ],
+  "errors": {
+    "not_closer": 32,
+    "inapplicable": 49
+  },
+  "accuracy_by_domain": {
+    "alfred": 0.1,
+    "blocksworld-4ops": 0.5,
+    "depots": 0.4,
+    "ferry": 0.4,
+    "floor-tile": 0.4,
+    "gold-miner-typed": 0.1,
+    "grid": 0.7,
+    "grid-visit-all": 0.5,
+    "gripper-strips": 0.1,
+    "logistics-strips": 0.1,
+    "rover": 0.2,
+    "satellite": 0.6,
+    "swap": 0.8
+  },
+  "total_calls": 1484,
+  "total_tokens": 1357816,
+  "mean_calls": 11.415384615384616,
+  "mean_tokens": 10444.738461538462,
+  "providers": {
+    "Amazon Bedrock": 130
+  }
+}
+-> C:\Users\lynny\OneDrive\Desktop\uni\masters\year1\fall26\AICC5102_Principles_Of_AI\project\results\runs\main_search_70b_s3

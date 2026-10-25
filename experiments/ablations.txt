@@ -12,3 +12,4 @@ abl8b_d1         --method search --param k=3 --param d=1 --max-calls 14
 abl8b_d3         --method search --param k=3 --param d=3 --max-calls 14
 abl8b_b7         --method search --param k=3 --param d=2 --max-calls 7
 abl8b_b28        --method search --param k=3 --param d=2 --max-calls 28
+abl8b_fewshot    --method search --param k=3 --param d=2 --param fewshot=True --max-calls 14

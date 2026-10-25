@@ -30,6 +30,8 @@ Ablation switches (Aisha's sweeps call these by name, so keep them stable):
                                                 scored as if the state were unchanged
     predict_state  True | False                 False = children keep the parent's state and the
                                                 LLM scores the action itself; the search is then depth 1
+    fewshot        True | False                 True = the proposer also sees the two official in-context
+                                                examples that direct generation uses (as earlier turns)
     temperature    for the proposal call (prediction and scoring are greedy)
 """
 
@@ -37,6 +39,7 @@ import random
 import re
 from dataclasses import dataclass
 
+from common.data import fewshot_turns
 from common.interfaces import BudgetExceeded, Instance
 from common.llm import Session
 from common.validator import parse_actions
@@ -61,18 +64,21 @@ def _state_text(node: Node) -> str:
             f"After applying {' '.join(node.path)}, the current state is:\n{node.state}")
 
 
-def _ask(llm: Session, prompt: str, tag: str, temperature: float = 0.0, max_tokens: int = 600) -> str:
-    return llm.chat([{"role": "user", "content": prompt}], temperature=temperature,
+def _ask(llm: Session, prompt: str, tag: str, temperature: float = 0.0, max_tokens: int = 600,
+         prefix: list[dict] | None = None) -> str:
+    return llm.chat((prefix or []) + [{"role": "user", "content": prompt}], temperature=temperature,
                     max_tokens=max_tokens, tag=tag)
 
 
-def _propose(llm: Session, instance: Instance, node: Node, k: int, temperature: float) -> list[str]:
+def _propose(llm: Session, instance: Instance, node: Node, k: int, temperature: float,
+             fewshot: bool = False) -> list[str]:
     prompt = (f"{instance.context}\n\n{_state_text(node)}\n\n"
               f"List {k} different actions that can be applied in the current state and that could "
               f"move us towards the goal, most promising first. Write each action on its own line, "
               f"in parentheses, with the action name followed only by object names from the problem "
               f"(no other words), like the available actions above. Write only the actions.")
-    return parse_actions(_ask(llm, prompt, "propose", temperature, max_tokens=200))[:k]
+    prefix = fewshot_turns() if fewshot else None
+    return parse_actions(_ask(llm, prompt, "propose", temperature, max_tokens=200, prefix=prefix))[:k]
 
 
 NOT_APPLICABLE = "NOT APPLICABLE"
@@ -146,7 +152,8 @@ SCORINGS = ("llm", "steps", "vote", "random", "fixed")
 
 
 def solve(instance: Instance, llm: Session, k: int = 3, d: int = 2, scoring: str = "llm",
-          predict_state: bool = True, prune: bool = True, temperature: float = 0.7) -> str:
+          predict_state: bool = True, prune: bool = True, fewshot: bool = False,
+          temperature: float = 0.7) -> str:
     if scoring not in SCORINGS:
         raise ValueError(f"unknown scoring {scoring!r}")
     rng = random.Random(f"{llm.client.seed}-{instance.id}")
@@ -161,7 +168,7 @@ def solve(instance: Instance, llm: Session, k: int = 3, d: int = 2, scoring: str
             node = max(frontier, key=lambda n: n.score)  # ties: earliest proposed wins
             node.expanded = True
             children = []
-            for i, action in enumerate(_propose(llm, instance, node, k, temperature)):
+            for i, action in enumerate(_propose(llm, instance, node, k, temperature, fewshot)):
                 state = _predict(llm, instance, node, action) if predict_state else node.state
                 if predict_state and state is None and not prune:
                     state = node.state or _UNCHANGED  # keep the candidate, as if nothing changed

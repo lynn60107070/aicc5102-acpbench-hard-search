@@ -111,6 +111,14 @@ class TestSearch(unittest.TestCase):
         search.solve(INSTANCE, llm, k=3, d=2, prune=False)
         self.assertEqual(llm.budget.calls_by_tag, {"propose": 1, "predict": 3, "score": 3})
 
+    def test_fewshot_only_changes_the_proposer(self):
+        llm = FakeClient(scripted, cache_path=None).session(Budget(max_calls=7))
+        search.solve(INSTANCE, llm, k=3, d=2, fewshot=True)
+        proposer = [c for c in llm.log if c["tag"] == "propose"][0]["messages"]
+        others = [c["messages"] for c in llm.log if c["tag"] != "propose"]
+        self.assertEqual([m["role"] for m in proposer], ["user", "assistant", "user", "assistant", "user"])
+        self.assertTrue(all(len(m) == 1 for m in others))  # predictor/evaluator stay zero-shot
+
     def test_score_parsing(self):
         self.assertEqual(search._parse_score("## Step 1: Determine the number of cars"), 0.0)
         self.assertEqual(search._parse_score("The ferry is close.\nScore: 7"), 7.0)

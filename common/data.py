@@ -54,11 +54,16 @@ def official_question(context: str, question: str) -> str:
             f"and ends with closing parenthesis. Provide only the action. **Final Answer**:")
 
 
-def official_messages(instance: Instance) -> list[dict]:
-    """The exact chat messages lm-eval sends for acp_nexta_gen with --apply_chat_template."""
+def fewshot_turns() -> list[dict]:
+    """The two official in-context examples as user/assistant chat turns."""
     messages = []
     for shot in _FEWSHOT:
         messages.append({"role": "user", "content": official_question(shot["context"], shot["question"])})
         messages.append({"role": "assistant", "content": shot["answer"]})
-    messages.append({"role": "user", "content": official_question(instance.context, instance.question)})
     return messages
+
+
+def official_messages(instance: Instance) -> list[dict]:
+    """The exact chat messages lm-eval sends for acp_nexta_gen with --apply_chat_template."""
+    return fewshot_turns() + [
+        {"role": "user", "content": official_question(instance.context, instance.question)}]

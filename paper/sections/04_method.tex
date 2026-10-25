@@ -26,7 +26,10 @@ always expands the highest-scored unexpanded node with depth below $d$, and stop
 remains or as soon as the budget of $B$ LLM calls is used. The answer is the first action on the
 path to the highest-scored node. Each expansion costs at most $1 + 2k$ calls, so with the frozen
 setting $k{=}3$, $d{=}2$, $B{=}14$, the search expands the root and then only its most promising
-child: the order of expansion matters because the budget is binding.
+child. Because every node below that child shares its first action, this second expansion cannot
+change the answer: under the frozen budget the search in effect selects among the root candidates,
+and deeper predictions can only matter with a larger budget, which lets the subtrees of other
+candidates compete (we test this in the ablations).
 
 \begin{algorithm}[t]
 \caption{LLM-guided best-first search (frozen: $k{=}3$, $d{=}2$, $B{=}14$ calls)}

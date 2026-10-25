@@ -17,7 +17,13 @@ The search does find correct actions: one is among the root candidates in 31\% o
 potential, because the model's scores hardly distinguish correct from wrong candidates (AUC $0.58$
 for 8B and $0.53$ for 70B). Scale therefore helps generation but not self-evaluation: moving from 8B
 to 70B nearly doubles the rate of correct candidates, while the evaluator moves no closer to useful.
-\todo{Confirm with the ablations: random and fixed scoring vs.\ the frozen evaluator.}
+The 8B ablations (Section~\ref{sec:results}) confirm this. Trusting the proposer's own order,
+with no evaluator at all, gives $0.190$, above the frozen evaluator ($0.159$) and the steps
+($0.136$) and vote ($0.108$) variants, while random scores give $0.133$. Proposing more candidates
+hurts ($k{=}5$: $0.115$), because the evaluator then has more ways to choose wrongly, and removing
+state prediction leaves accuracy unchanged at under a third of the calls. Depth adds nothing either:
+under the frozen budget the second expansion cannot change the answer (Section~\ref{sec:method}),
+and doubling the budget to let other candidates' subtrees compete does not help ($0.154$).
 
 \paragraph{How the evaluators fail.}
 On the validation split, three failure modes stood out. The 0--10 scores of the 8B model collapse

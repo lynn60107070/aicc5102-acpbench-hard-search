@@ -23,7 +23,10 @@ with no evaluator at all, gives $0.190$, above the frozen evaluator ($0.159$) an
 hurts ($k{=}5$: $0.115$), because the evaluator then has more ways to choose wrongly, and removing
 state prediction leaves accuracy unchanged at under a third of the calls. Depth adds nothing either:
 under the frozen budget the second expansion cannot change the answer (Section~\ref{sec:method}),
-and doubling the budget to let other candidates' subtrees compete does not help ($0.154$).
+and doubling the budget to let other candidates' subtrees compete does not help ($0.154$). Nor are
+the zero-shot search prompts the cause: giving the proposer the same two in-context examples as
+direct generation slightly raises the rate of correct candidates (34\% instead of 31\%) but leaves
+search accuracy unchanged ($0.154 \pm 0.015$).
 
 \paragraph{How the evaluators fail.}
 On the validation split, three failure modes stood out. The 0--10 scores of the 8B model collapse

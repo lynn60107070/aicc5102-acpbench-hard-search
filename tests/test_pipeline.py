@@ -123,6 +123,41 @@ class TestRunner(unittest.TestCase):
         self.assertEqual(summary["accuracy"], 1.0)
         self.assertEqual(summary["total_calls"], 3)
 
+    def test_parallel_matches_sequential(self):
+        def half_right(payload):  # correct on odd-length contexts only, so the result is mixed
+            context = payload["messages"][-1]["content"].split("**Question**: ")[1]
+            doc = next(d for d in DOCS[:8] if context.startswith(d["context"]))
+            return doc["answer"]["yes"][0] if len(doc["context"]) % 2 else "(nonsense)"
+
+        results = {}
+        for workers in (1, 4):
+            with tempfile.TemporaryDirectory() as td, \
+                    mock.patch.object(run, "REPO_ROOT", Path(td)), \
+                    mock.patch.object(run.LLMClient, "from_env",
+                                      lambda **kw: FakeClient(half_right, cache_path=None)):
+                run.main(["--method", "direct", "--limit", "8", "--name", "t", "--workers", str(workers)])
+                rows = [json.loads(l) for l in (Path(td) / "results/runs/t/rows.jsonl").read_text().splitlines()]
+                results[workers] = {r["id"]: r["correct"] for r in rows}
+        self.assertEqual(results[1], results[4])
+        self.assertEqual(len(results[4]), 8)
+
+
+class TestSweep(unittest.TestCase):
+    def test_skips_finished_runs_and_adds_seeds(self):
+        from experiments import sweep
+        with tempfile.TemporaryDirectory() as td:
+            cfg = Path(td) / "cfg.txt"
+            cfg.write_text("# comment\nexp_a --method direct --limit 2\n", encoding="utf8")
+            done = Path(td) / "results/runs/exp_a_s1"
+            done.mkdir(parents=True)
+            (done / "summary.json").write_text("{}")
+            calls = []
+            with mock.patch.object(sweep, "REPO_ROOT", Path(td)), \
+                    mock.patch.object(sweep.run, "main", lambda a: calls.append(a)):
+                sweep.main([str(cfg), "--seeds", "1", "2", "--workers", "3"])
+        self.assertEqual(len(calls), 1)  # seed 1 skipped
+        self.assertEqual(calls[0][-6:], ["--seed", "2", "--name", "exp_a_s2", "--workers", "3"])
+
 
 if __name__ == "__main__":
     unittest.main()

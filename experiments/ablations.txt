@@ -1,0 +1,14 @@
+# A6 ablations of the frozen search (scoring=llm k=3 d=2 prune=True, 14 calls), Llama 3.1 8B, test split.
+# One setting changed per line. Run: python -m experiments.sweep experiments/ablations.txt --seeds 1 2 3
+abl8b_steps      --method search --param k=3 --param d=2 --param scoring=steps --max-calls 14
+abl8b_vote       --method search --param k=3 --param d=1 --param scoring=vote --max-calls 14
+abl8b_fixed      --method search --param k=3 --param d=2 --param scoring=fixed --max-calls 14
+abl8b_random     --method search --param k=3 --param d=2 --param scoring=random --max-calls 14
+abl8b_nopredict  --method search --param k=3 --param d=2 --param predict_state=False --max-calls 14
+abl8b_noprune    --method search --param k=3 --param d=2 --param prune=False --max-calls 14
+abl8b_k2         --method search --param k=2 --param d=2 --max-calls 14
+abl8b_k5         --method search --param k=5 --param d=2 --max-calls 14
+abl8b_d1         --method search --param k=3 --param d=1 --max-calls 14
+abl8b_d3         --method search --param k=3 --param d=3 --max-calls 14
+abl8b_b7         --method search --param k=3 --param d=2 --max-calls 7
+abl8b_b28        --method search --param k=3 --param d=2 --max-calls 28

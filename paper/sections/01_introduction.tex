@@ -68,11 +68,12 @@ predicted states (Section~\ref{sec:method}), and compare it with direct generati
 prompting and best-of-$N$ on the same questions, budgets and validator, together with ablations of
 each search component (Sections~\ref{sec:setup} and~\ref{sec:results}).
 
-% ---- P4: findings preview, write after the final results ----
-% Answer the RQ in one line (8B [FILL] vs 0.223 direct; 70B [FILL] vs 0.377 direct), then the
-% evaluation gap: a correct action is among the candidates in [FILL]% of questions, but the model's
-% own scores barely distinguish correct from wrong candidates.
-\todo{Findings preview (Lynn, after final results).}
+We find that search does not improve accuracy. With Llama~3.1~8B it is lower than direct generation
+in every seed ($0.159 \pm 0.012$ vs.\ $0.223$), and with 70B it is statistically indistinguishable
+($0.362 \pm 0.015$ vs.\ $0.377$). The cause is not a lack of good candidates: a correct action is
+among the search's first candidates in 31\% (8B) and 59\% (70B) of the questions, but the model's own
+scores barely separate correct from wrong candidates (AUC $0.58$ and $0.53$, where $0.5$ is chance).
+For these models, generating a correct action is easier than recognising it.
 
 Our contributions are:
 \begin{itemize}
@@ -82,6 +83,8 @@ Our contributions are:
         official validator run on Windows.
   \item An LLM-guided best-first search for open-ended Next Action that uses no planner, simulator,
         applicability checker or oracle, released with its code, tests and prompts.
-  \item \todo{Third contribution, after final results: a budget-matched comparison and ablations
-        that locate the bottleneck (expected: state evaluation rather than action generation).}
+  \item A budget-matched comparison with direct generation, structured prompting and best-of-$N$,
+        and ablations of each search component, which locate the bottleneck in state evaluation
+        rather than action generation: moving from 8B to 70B nearly doubles how often a correct
+        candidate is proposed, but does not make the model better at recognising it.
 \end{itemize}

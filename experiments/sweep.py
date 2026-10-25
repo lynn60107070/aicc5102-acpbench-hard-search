@@ -4,7 +4,8 @@
 
 Each non-empty, non-comment line of the config file is `<name> <experiments.run arguments>`.
 Every (line, seed) pair runs as results/runs/<name>_s<seed>. Runs that already have a
-summary.json are skipped, so an interrupted sweep can simply be restarted.
+summary.json (in results/runs/ or saved anywhere under results/final/) are skipped, so an
+interrupted sweep can simply be restarted.
 """
 
 import argparse
@@ -36,7 +37,9 @@ def main(argv=None):
     for name, run_args in read_config(args.config):
         for seed in args.seeds:
             out_name = f"{name}_s{seed}"
-            if (REPO_ROOT / "results" / "runs" / out_name / "summary.json").exists():
+            finished = REPO_ROOT / "results" / "runs" / out_name / "summary.json"
+            saved = list((REPO_ROOT / "results" / "final").rglob(f"{out_name}/summary.json"))
+            if finished.exists() or saved:
                 print(f"skip {out_name} (done)")
                 continue
             full = run_args + ["--seed", str(seed), "--name", out_name, "--workers", str(args.workers)]

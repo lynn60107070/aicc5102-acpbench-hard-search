@@ -1,0 +1,57 @@
+{
+  "settings": {
+    "method": "search",
+    "param": [
+      "k=3",
+      "d=1",
+      "scoring=vote"
+    ],
+    "model": "meta-llama/llama-3.1-8b-instruct",
+    "base_url": null,
+    "seed": 3,
+    "split": "test",
+    "limit": null,
+    "ids": null,
+    "max_calls": 14,
+    "max_tokens": null,
+    "name": "abl8b_vote_s3",
+    "workers": 8,
+    "params": {
+      "k": 3,
+      "d": 1,
+      "scoring": "vote"
+    }
+  },
+  "n": 130,
+  "accuracy": 0.1,
+  "ci95": [
+    0.048428988464746685,
+    0.15157101153525332
+  ],
+  "errors": {
+    "inapplicable": 100,
+    "not_closer": 17
+  },
+  "accuracy_by_domain": {
+    "alfred": 0.0,
+    "blocksworld-4ops": 0.0,
+    "depots": 0.1,
+    "ferry": 0.3,
+    "floor-tile": 0.1,
+    "gold-miner-typed": 0.0,
+    "grid": 0.2,
+    "grid-visit-all": 0.4,
+    "gripper-strips": 0.0,
+    "logistics-strips": 0.1,
+    "rover": 0.0,
+    "satellite": 0.0,
+    "swap": 0.1
+  },
+  "total_calls": 643,
+  "total_tokens": 635962,
+  "mean_calls": 4.946153846153846,
+  "mean_tokens": 4892.015384615384,
+  "providers": {
+    "CoreWeave": 130
+  }
+}

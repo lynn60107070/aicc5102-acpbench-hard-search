@@ -1,5 +1,25 @@
-% OWNER: Lynn (L7). Required by the brief: each member's contribution. Base it on SCHEDULE.md tasks.
+% OWNER: Lynn (L7). Required by the brief: each member's contribution. Based on SCHEDULE.md and the
+% git history. Each member must read and confirm their own paragraph; update the TODOs at CP6.
 \section{Author Contributions}
 \label{app:contributions}
 
-\todo{Contributions of each member (Lynn, agreed by all).}
+All members took part in experiment design discussions and reviewed each other's code through pull
+requests, so that each can explain the whole project.
+
+\paragraph{Lynn Younes (lead).}
+Project coordination and planning; reproduction setup (Llama~3.1 8B and 70B on Next Action and
+Progression); design, implementation, tuning and freezing of the LLM-guided search and its ablation
+switches; main search experiments for both models; the parallel runner and sweep tool (taken over
+from the original plan to unblock the ablations); the paper skeleton; the introduction, method,
+discussion and conclusion sections and the prompts appendix; code review of all pull requests.
+
+\paragraph{Faheema Hassan Kudukky.}
+Independent verification of the reproduction with the official evaluation harness on a second
+machine (identical answers on all 130 test questions); the structured-prompting and best-of-$N$
+baselines with their tests. \todo{Add F5 (full baseline runs), F6 (related work notes and
+bibliography) and F7 (related work and reproduction sections) once done; Faheema to confirm.}
+
+\paragraph{Aisha Suleiman Shaik.}
+The paired comparison tool with the exact McNemar test and its tests. \todo{Add A4 (analysis
+script, tables and figures), A5 (budget matching), A6/A7 if applicable, A8 (experimental setup,
+results and limitations sections) and A9 (code package) as completed; Aisha to confirm.}

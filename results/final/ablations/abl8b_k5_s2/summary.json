@@ -1,0 +1,56 @@
+{
+  "settings": {
+    "method": "search",
+    "param": [
+      "k=5",
+      "d=2"
+    ],
+    "model": "meta-llama/llama-3.1-8b-instruct",
+    "base_url": null,
+    "seed": 2,
+    "split": "test",
+    "limit": null,
+    "ids": null,
+    "max_calls": 14,
+    "max_tokens": null,
+    "name": "abl8b_k5_s2",
+    "workers": 8,
+    "params": {
+      "k": 5,
+      "d": 2
+    }
+  },
+  "n": 130,
+  "accuracy": 0.1076923076923077,
+  "ci95": [
+    0.054403739010867945,
+    0.16098087637374744
+  ],
+  "errors": {
+    "inapplicable": 76,
+    "not_closer": 28,
+    "format": 12
+  },
+  "accuracy_by_domain": {
+    "alfred": 0.0,
+    "blocksworld-4ops": 0.0,
+    "depots": 0.1,
+    "ferry": 0.4,
+    "floor-tile": 0.0,
+    "gold-miner-typed": 0.1,
+    "grid": 0.3,
+    "grid-visit-all": 0.2,
+    "gripper-strips": 0.0,
+    "logistics-strips": 0.0,
+    "rover": 0.2,
+    "satellite": 0.1,
+    "swap": 0.0
+  },
+  "total_calls": 1664,
+  "total_tokens": 1701967,
+  "mean_calls": 12.8,
+  "mean_tokens": 13092.053846153845,
+  "providers": {
+    "CoreWeave": 130
+  }
+}

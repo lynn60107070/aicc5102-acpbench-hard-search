@@ -22,15 +22,18 @@ comment's `\todo{...}` line when you write the section. Before submitting, there
 - Cite with `\citep{key}` (in brackets) or `\citet{key}` (as a noun); keys are in `refs.bib`.
 - Numbers in the text must match `results/final/`. If in doubt, check the `summary.json`.
 
-## Compiling (Overleaf)
-**Team Overleaf project:** https://www.overleaf.com/project/6adb43bef2e6e9267b35af13
-(Lynn sends the invite.)
+## How we write: GitHub is the source, Overleaf compiles
+**Main Overleaf project (Lynn's):** https://www.overleaf.com/project/6adb43bef2e6e9267b35af13
 
-No LaTeX install needed.
-1. Lynn creates an Overleaf project: **New Project → Upload Project**, with a ZIP of this `paper/`
-   folder, then **Share** with Faheema and Aisha (edit access).
-2. Everyone writes **only their own files** in Overleaf. Compiler: pdfLaTeX (the default).
-3. At each writing checkpoint (CP5, CP6) Lynn downloads the Overleaf source
-   (**Menu → Download → Source**) and commits it here, because the LaTeX source is a deliverable.
+1. Edit **only your own section files** in `paper/sections/` (and Faheema: `refs.bib`), on your
+   branch, then push and open a PR, the same as for code.
+2. Each paper PR is compile-checked (LaTeX errors, broken `\cite`/`\ref`, page count) before merging.
+3. After merging, Lynn copies the changed files into the Overleaf project, which produces the PDF.
+4. Optional, to see your section compile while writing: upload a ZIP of this `paper/` folder to a
+   free personal Overleaf project (**New Project → Upload Project**). Use it only for previewing;
+   always copy your final text back into the repo.
+
+LaTeX tips: escape `%`, `&`, `_`, `#` as `\%`, `\&`, `\_`, `\#`; cite with `\citep{key}` using keys
+from `refs.bib`; refer to sections with `Section~\ref{sec:...}`.
 
 To compile locally instead: `latexmk -pdf main.tex` (needs TeX Live or MiKTeX).

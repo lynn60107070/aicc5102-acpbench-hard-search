@@ -1,12 +1,35 @@
-% OWNER: Lynn (L6). Target: ~0.5 page.
-% Cover (update with test-set numbers):
-% - Answer the research question directly.
-% - The evaluation gap: correct candidate proposed in 55-65% of validation questions, but scores for
-%   correct and wrong candidates are about equal (8B 2.70 vs 2.71; 70B 2.84 vs 3.48).
-% - Vote position bias at 8B (picked option 1 in 3/39 votes) vs no such bias at 70B.
-% - NOT APPLICABLE judgments: 8B precise but rarely used; 70B catches more but over-prunes.
-% - What this means for LLM-guided search without external verifiers.
+% OWNER: Lynn (L6). Target: ~0.5 page. Test numbers: README section 5b / results/final/.
+% Validation-only observations are labelled as such. Update the TODOs when the ablations (A6) and
+% the control baselines (F5) are in.
 \section{Discussion}
 \label{sec:discussion}
 
-\todo{Discussion (Lynn).}
+\paragraph{Answer to the research question.}
+LLM-guided search over LLM-predicted states does not improve Next Action accuracy over direct
+generation under a matched call budget: it is lower for Llama~3.1~8B in all three seeds
+($0.159 \pm 0.012$ vs.\ $0.223$) and indistinguishable for 70B ($0.362 \pm 0.015$ vs.\ $0.377$), while
+using 11--13 times as many calls as direct generation (and, for 8B, about 8 times as many tokens).
+\todo{One sentence on structured prompting and best-of-$N$ once F5 is in.}
+
+\paragraph{Generation is not the bottleneck; evaluation is.}
+The search does find correct actions: one is among the root candidates in 31\% of the questions for
+8B and 59\% for 70B, the latter well above the 70B direct accuracy. Selection loses most of this
+potential, because the model's scores hardly distinguish correct from wrong candidates (AUC $0.58$
+for 8B and $0.53$ for 70B). Scale therefore helps generation but not self-evaluation: moving from 8B
+to 70B nearly doubles the rate of correct candidates, while the evaluator moves no closer to useful.
+\todo{Confirm with the ablations: random and fixed scoring vs.\ the frozen evaluator.}
+
+\paragraph{How the evaluators fail.}
+On the validation split, three failure modes stood out. The 0--10 scores of the 8B model collapse
+onto a few values (most often 2), so they rarely separate siblings. The comparative vote of the 8B
+model is strongly position-biased: it chose the first option in only 3 of 39 votes, although the
+proposer lists its best candidate first, which drove its accuracy to $0.05$; the 70B model showed no
+such bias. Finally, asking the predictor to flag inapplicable actions is precise but rarely used by
+8B, while 70B flags more of them but also rejects applicable ones.
+
+\paragraph{Implications.}
+Without a verifier, search can only be as good as the model's judgment of its own candidates, and
+for open-ended planning this judgment is the weak link. The large gap between the candidates found
+and the answers chosen suggests that the same search could pay off with a reliable external
+evaluator, such as a learned verifier or a cheap symbolic check, which is where approaches like
+Thought of Search~\citep{katz2024tos} and LLM+P~\citep{liu2023llmp} place the burden.

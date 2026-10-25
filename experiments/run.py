@@ -14,6 +14,7 @@ import re
 import time
 import traceback
 from collections import Counter, defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 from common import validator
@@ -55,6 +56,21 @@ def summarize(rows: list[dict]) -> dict:
     }
 
 
+def solve_one(solve, client, doc, params, args):
+    """LLM part of one question (runs in a worker thread). Scoring stays in the main thread."""
+    instance = to_instance(doc)
+    llm = client.session(Budget(max_calls=args.max_calls, max_tokens=args.max_tokens))
+    start = time.time()
+    response, crash, exhausted = "", None, False
+    try:
+        response = solve(instance, llm, **params)
+    except BudgetExceeded:
+        exhausted = True  # methods should catch this themselves and return their best guess
+    except Exception:
+        crash = traceback.format_exc()
+    return instance, llm, response, crash, exhausted, round(time.time() - start, 2)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--method", required=True, choices=sorted(METHODS))
@@ -69,6 +85,8 @@ def main(argv=None):
     ap.add_argument("--max-calls", type=int)
     ap.add_argument("--max-tokens", type=int)
     ap.add_argument("--name", help="output folder name (default derived from the settings)")
+    ap.add_argument("--workers", type=int, default=1,
+                    help="questions solved in parallel; results are identical for any value")
     args = ap.parse_args(argv)
 
     params = parse_params(args.param)
@@ -84,21 +102,16 @@ def main(argv=None):
     out.mkdir(parents=True, exist_ok=True)
 
     docs = load_docs(limit=args.limit, ids=args.ids, split=args.split)
+    docs_by_id = {str(d["id"]): d for d in docs}
     rows = []
-    with open(out / "rows.jsonl", "w", encoding="utf8") as f:
-        for i, doc in enumerate(docs, 1):
-            instance = to_instance(doc)
-            llm = client.session(Budget(max_calls=args.max_calls, max_tokens=args.max_tokens))
-            start = time.time()
-            response, crash, exhausted = "", None, False
-            try:
-                response = solve(instance, llm, **params)
-            except BudgetExceeded:
-                exhausted = True  # methods should catch this themselves and return their best guess
-            except Exception:
-                crash = traceback.format_exc()
+    with open(out / "rows.jsonl", "w", encoding="utf8") as f, \
+            ThreadPoolExecutor(max_workers=args.workers) as pool:
+        futures = [pool.submit(solve_one, solve, client, doc, params, args) for doc in docs]
+        for i, future in enumerate(as_completed(futures), 1):
+            instance, llm, response, crash, exhausted, seconds = future.result()
+            if crash:
                 print(f"  ! {instance.id} crashed:\n{crash}")
-            verdict = validator.score(doc, response)
+            verdict = validator.score(docs_by_id[instance.id], response)
             row = {
                 "id": instance.id, "domain": instance.domain, "method": args.method,
                 "params": params, "seed": args.seed, "model": client.model,
@@ -111,7 +124,7 @@ def main(argv=None):
                 "providers": sorted({str(c.get("provider")) for c in llm.log}),
                 # Every reply (no prompts), for analysis, e.g. whether a correct candidate was proposed.
                 "replies": [{"tag": c["tag"], "text": c["text"]} for c in llm.log],
-                "seconds": round(time.time() - start, 2), "crash": crash,
+                "seconds": seconds, "crash": crash,
             }
             rows.append(row)
             f.write(json.dumps(row) + "\n")

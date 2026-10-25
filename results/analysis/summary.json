@@ -1,0 +1,264 @@
+{
+  "runs": {
+    "main_search_8b_s1": {
+      "n": 130,
+      "accuracy": 0.16153846153846155,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
+        "ferry": 0.4,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.1,
+        "grid": 0.5,
+        "grid-visit-all": 0.3,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.0,
+        "satellite": 0.1,
+        "swap": 0.2
+      },
+      "errors": {
+        "format": 2,
+        "inapplicable": 76,
+        "not_closer": 31
+      },
+      "total_calls": 1783,
+      "total_prompt_tokens": 1535823,
+      "total_completion_tokens": 244919,
+      "total_tokens": 1780742,
+      "mean_calls": 13.715384615384615,
+      "mean_tokens": 13698.015384615384,
+      "candidate_coverage": 0.3384615384615385,
+      "score_separation": {
+        "auc": 0.583087822671156,
+        "mean_correct_score": 3.0833333333333335,
+        "mean_wrong_score": 2.414141414141414,
+        "n_correct_candidates": 48,
+        "n_wrong_candidates": 297
+      }
+    },
+    "main_search_8b_s2": {
+      "n": 130,
+      "accuracy": 0.16923076923076924,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.0,
+        "depots": 0.1,
+        "ferry": 0.4,
+        "floor-tile": 0.1,
+        "gold-miner-typed": 0.2,
+        "grid": 0.5,
+        "grid-visit-all": 0.7,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.2,
+        "satellite": 0.0,
+        "swap": 0.0
+      },
+      "errors": {
+        "format": 10,
+        "inapplicable": 68,
+        "not_closer": 30
+      },
+      "total_calls": 1652,
+      "total_prompt_tokens": 1488986,
+      "total_completion_tokens": 224678,
+      "total_tokens": 1713664,
+      "mean_calls": 12.707692307692307,
+      "mean_tokens": 13182.030769230769,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": 0.5715566714490674,
+        "mean_correct_score": 2.902439024390244,
+        "mean_wrong_score": 2.2720588235294117,
+        "n_correct_candidates": 41,
+        "n_wrong_candidates": 272
+      }
+    },
+    "main_search_8b_s3": {
+      "n": 130,
+      "accuracy": 0.14615384615384616,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
+        "ferry": 0.3,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.0,
+        "grid": 0.5,
+        "grid-visit-all": 0.4,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.1,
+        "satellite": 0.2,
+        "swap": 0.0
+      },
+      "errors": {
+        "inapplicable": 83,
+        "not_closer": 28
+      },
+      "total_calls": 1808,
+      "total_prompt_tokens": 1597540,
+      "total_completion_tokens": 259767,
+      "total_tokens": 1857307,
+      "mean_calls": 13.907692307692308,
+      "mean_tokens": 14286.976923076923,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": 0.5780881195908734,
+        "mean_correct_score": 2.902439024390244,
+        "mean_wrong_score": 2.261290322580645,
+        "n_correct_candidates": 41,
+        "n_wrong_candidates": 310
+      }
+    },
+    "main_search_70b_s1": {
+      "n": 130,
+      "accuracy": 0.34615384615384615,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.3,
+        "depots": 0.4,
+        "ferry": 0.5,
+        "floor-tile": 0.1,
+        "gold-miner-typed": 0.3,
+        "grid": 0.7,
+        "grid-visit-all": 0.4,
+        "gripper-strips": 0.2,
+        "logistics-strips": 0.2,
+        "rover": 0.2,
+        "satellite": 0.6,
+        "swap": 0.6
+      },
+      "errors": {
+        "inapplicable": 44,
+        "not_closer": 41
+      },
+      "total_calls": 1492,
+      "total_prompt_tokens": 1217060,
+      "total_completion_tokens": 141080,
+      "total_tokens": 1358140,
+      "mean_calls": 11.476923076923077,
+      "mean_tokens": 10447.23076923077,
+      "candidate_coverage": 0.5923076923076923,
+      "score_separation": {
+        "auc": 0.5092399673883504,
+        "mean_correct_score": 4.0120481927710845,
+        "mean_wrong_score": 3.736842105263158,
+        "n_correct_candidates": 83,
+        "n_wrong_candidates": 133
+      }
+    },
+    "main_search_70b_s2": {
+      "n": 130,
+      "accuracy": 0.36153846153846153,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.2,
+        "depots": 0.5,
+        "ferry": 0.3,
+        "floor-tile": 0.1,
+        "gold-miner-typed": 0.3,
+        "grid": 0.6,
+        "grid-visit-all": 0.7,
+        "gripper-strips": 0.2,
+        "logistics-strips": 0.2,
+        "rover": 0.3,
+        "satellite": 0.6,
+        "swap": 0.7
+      },
+      "errors": {
+        "format": 1,
+        "inapplicable": 42,
+        "not_closer": 40
+      },
+      "total_calls": 1461,
+      "total_prompt_tokens": 1162461,
+      "total_completion_tokens": 135471,
+      "total_tokens": 1297932,
+      "mean_calls": 11.238461538461538,
+      "mean_tokens": 9984.092307692308,
+      "candidate_coverage": 0.5846153846153846,
+      "score_separation": {
+        "auc": 0.512451171875,
+        "mean_correct_score": 3.8625,
+        "mean_wrong_score": 3.65625,
+        "n_correct_candidates": 80,
+        "n_wrong_candidates": 128
+      }
+    },
+    "main_search_70b_s3": {
+      "n": 130,
+      "accuracy": 0.3769230769230769,
+      "accuracy_by_domain": {
+        "alfred": 0.1,
+        "blocksworld-4ops": 0.5,
+        "depots": 0.4,
+        "ferry": 0.4,
+        "floor-tile": 0.4,
+        "gold-miner-typed": 0.1,
+        "grid": 0.7,
+        "grid-visit-all": 0.5,
+        "gripper-strips": 0.1,
+        "logistics-strips": 0.1,
+        "rover": 0.2,
+        "satellite": 0.6,
+        "swap": 0.8
+      },
+      "errors": {
+        "inapplicable": 49,
+        "not_closer": 32
+      },
+      "total_calls": 1484,
+      "total_prompt_tokens": 1213832,
+      "total_completion_tokens": 143984,
+      "total_tokens": 1357816,
+      "mean_calls": 11.415384615384616,
+      "mean_tokens": 10444.738461538462,
+      "candidate_coverage": 0.5923076923076923,
+      "score_separation": {
+        "auc": 0.5583020637898687,
+        "mean_correct_score": 3.975609756097561,
+        "mean_wrong_score": 3.4076923076923076,
+        "n_correct_candidates": 82,
+        "n_wrong_candidates": 130
+      }
+    }
+  },
+  "note": "Computed from saved result rows; no model calls performed.",
+  "aggregate_by_model": {
+    "70b": {
+      "accuracy": {
+        "mean": 0.36153846153846153,
+        "std": 0.015384615384615385
+      },
+      "candidate_coverage": {
+        "mean": 0.5897435897435898,
+        "std": 0.00444115591684326
+      },
+      "auc": {
+        "mean": 0.5266644010177397,
+        "std": 0.027446024080474512
+      },
+      "total_calls_mean": 1479,
+      "total_tokens_mean": 1337962.6666666667
+    },
+    "8b": {
+      "accuracy": {
+        "mean": 0.158974358974359,
+        "std": 0.011750194089630359
+      },
+      "candidate_coverage": {
+        "mean": 0.3128205128205128,
+        "std": 0.022205779584216392
+      },
+      "auc": {
+        "mean": 0.5775775379036989,
+        "std": 0.005782506582021952
+      },
+      "total_calls_mean": 1747.6666666666667,
+      "total_tokens_mean": 1783904.3333333333
+    }
+  }
+}

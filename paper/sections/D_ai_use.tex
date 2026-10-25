@@ -1,6 +1,34 @@
-% OWNER: Lynn (L7), with input from everyone. Required by the brief and the section guide:
-% which tool, what you asked it, what it gave back, what you changed. Each member adds their own use.
+% OWNER: Lynn (L7), each member adds their own paragraph. The section guide asks for: which tool,
+% what you asked it, what it gave back, what you changed. Be specific and honest; it protects you.
 \section{AI Use Statement}
 \label{app:ai-use}
 
-\todo{AI use statement: tool, what was asked, what it gave back, what was changed (all members).}
+\paragraph{Lynn Younes.}
+\emph{Tool:} Claude (Anthropic), model Claude Opus~5.5, used through Claude Code in VS Code, with
+access to the project repository and the ability to run code. (The proposal stage used Claude
+Opus~4.7.)
+\emph{What I asked it to do, and what it gave back:}
+(i) collect the paper, code, dataset and course links and organise the project materials;
+(ii) plan the division of work, the schedule and the checkpoints;
+(iii) build the shared experiment code (data loading with the official prompt, an LLM client with
+caching and call budgets, the scoring wrapper, the experiment runner, parallel runs and tests),
+including diagnosing why the official validator crashed on Windows and fixing it;
+(iv) run the reproduction and main experiments and report the results;
+(v) implement the search method and its ablation switches from my design, and analyse its failures
+on the validation split, which led to the scoring and pruning changes and to the evaluator variants;
+(vi) review my teammates' pull requests;
+(vii) draft outlines and text for the introduction, method, discussion and conclusion, the
+prompts appendix and this appendix, and draft team messages.
+\emph{Decisions I made:} the choice of paper and research question (proposal stage); using 8B as
+the main model with 70B as a second comparison; freezing the search design; the best-of-$N$ budget
+($N=14$); taking over the parallel runner; and running the few-shot ablation, each after reviewing
+the evidence Claude presented.
+\emph{What I changed and checked:} \todo{Lynn: describe in your own words what you rewrote in the
+drafted sections, which results and code you checked yourself, and what you changed from Claude's
+suggestions.}
+
+\paragraph{Faheema Hassan Kudukky.}
+\todo{Faheema: tool, what you asked it, what it gave back, what you changed --- or ``None''.}
+
+\paragraph{Aisha Suleiman Shaik.}
+\todo{Aisha: tool, what you asked it, what it gave back, what you changed --- or ``None''.}

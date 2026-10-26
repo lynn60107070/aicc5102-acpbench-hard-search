@@ -9,7 +9,10 @@ LLM-guided search over LLM-predicted states does not improve Next Action accurac
 generation under a matched call budget: it is lower for Llama~3.1~8B in all three seeds
 ($0.159 \pm 0.012$ vs.\ $0.223$) and indistinguishable for 70B ($0.362 \pm 0.015$ vs.\ $0.377$), while
 using 11--13 times as many calls as direct generation (and, for 8B, about 8 times as many tokens).
-\todo{One sentence on structured prompting and best-of-$N$ once F5 is in.}
+Neither control differs significantly from direct generation either (structured prompting $0.262$,
+best-of-$N$ $0.236 \pm 0.012$), but how the extra calls are spent matters: with the same budget of
+14 calls, independent samples with a majority vote beat search in all three seeds, by 9 to 11
+questions (McNemar $p = 0.05$--$0.16$).
 
 \paragraph{Generation is not the bottleneck; evaluation is.}
 The search does find correct actions: one is among the root candidates in 31\% of the questions for

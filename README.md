@@ -188,6 +188,8 @@ Quick reference. The paper's tables come from `experiments/analyze.py`.
 | | Llama 3.1 8B | Llama 3.1 70B |
 |---|---|---|
 | Direct generation | 0.223 | 0.377 |
+| Structured prompting (1 call, greedy) | 0.262 | — |
+| Best-of-N, N = 14 (same calls as search) | 0.236 ± 0.012 | — |
 | **Search** (`scoring=llm k=3 d=2 prune`, 14 calls) | **0.159 ± 0.012** | **0.362 ± 0.015** |
 | McNemar p vs direct, per seed | 0.17 / 0.27 / 0.09 | 0.57 / 0.85 / 1.00 |
 | Correct action among root candidates (analysis only) | 0.313 | 0.590 |

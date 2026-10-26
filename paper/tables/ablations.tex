@@ -6,19 +6,25 @@
 \toprule
 Setting & Accuracy ($\pm$ std.) & Mean calls / question \\
 \midrule
-budget=28 & 0.154 $\pm$ 0.020 & 23.9 \\
-budget=7 & 0.159 $\pm$ 0.012 & 6.8 \\
-depth=1 & 0.159 $\pm$ 0.012 & 6.5 \\
-depth=3 & 0.159 $\pm$ 0.012 & 13.6 \\
-few-shot & 0.154 $\pm$ 0.015 & 13.5 \\
+Frozen search (reference) & 0.159 $\pm$ 0.012 & 13.4 \\
+\multicolumn{3}{l}{\textit{Scoring variants}} \\
 scoring=fixed & 0.190 $\pm$ 0.012 & 12.8 \\
-branching=2 & 0.162 $\pm$ 0.015 & 12.2 \\
-branching=5 & 0.115 $\pm$ 0.020 & 13.2 \\
-no prediction & 0.159 $\pm$ 0.029 & 3.9 \\
-no pruning & 0.159 $\pm$ 0.012 & 13.6 \\
 scoring=random & 0.133 $\pm$ 0.031 & 12.8 \\
 scoring=steps & 0.136 $\pm$ 0.016 & 13.4 \\
 scoring=vote & 0.108 $\pm$ 0.008 & 4.8 \\
+\multicolumn{3}{l}{\textit{Tree shape ($k$, $d$)}} \\
+branching=2 & 0.162 $\pm$ 0.015 & 12.2 \\
+branching=5 & 0.115 $\pm$ 0.020 & 13.2 \\
+depth=1 & 0.159 $\pm$ 0.012 & 6.5 \\
+depth=3 & 0.159 $\pm$ 0.012 & 13.6 \\
+\multicolumn{3}{l}{\textit{Budget}} \\
+budget=7 & 0.159 $\pm$ 0.012 & 6.8 \\
+budget=28 & 0.154 $\pm$ 0.020 & 23.9 \\
+\multicolumn{3}{l}{\textit{Prompt}} \\
+few-shot & 0.154 $\pm$ 0.015 & 13.5 \\
+\multicolumn{3}{l}{\textit{Other search mechanics}} \\
+no prediction & 0.159 $\pm$ 0.029 & 3.9 \\
+no pruning & 0.159 $\pm$ 0.012 & 13.6 \\
 \bottomrule
 \end{tabular}
 \end{table}

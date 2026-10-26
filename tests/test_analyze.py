@@ -3,6 +3,7 @@ from pathlib import Path
 
 from experiments.analyze import (
     compare_direct_to_search,
+    within_95_binomial_interval,
     write_reproduction_table,
 )
 import unittest
@@ -52,7 +53,12 @@ class TestDirectSearchComparison(unittest.TestCase):
         with self.assertRaises(ValueError):
             compare_direct_to_search(direct, search)
 
+class TestWithin95BinomialInterval(unittest.TestCase):
+    def test_accuracy_inside_interval(self):
+        self.assertTrue(within_95_binomial_interval(0.25, 0.223, n=130))
 
+    def test_accuracy_outside_interval(self):
+        self.assertFalse(within_95_binomial_interval(0.25, 0.10, n=130))
 class TestReproductionTable(unittest.TestCase):
     def test_missing_runs_are_marked_pending(self):
         with tempfile.TemporaryDirectory() as temp_dir:

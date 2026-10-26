@@ -1,20 +1,18 @@
 \begin{table}[ht]
 \centering
-\caption{Direct, structured, best-of-N, and search results. Multi-seed methods report mean accuracy and sample standard deviation. McNemar exact p-values compare each available run with its model's direct baseline.}
+\caption{Direct, structured, best-of-N, and search results. Controls were run for 8B only. Multi-seed methods report mean accuracy and sample standard deviation. McNemar exact p-values compare each run with the direct baseline. Calls and tokens are reported per question.}
 \label{tab:main-results}
 \begin{tabular}{llrrrr}
 \toprule
-Model & Method & Accuracy ($\pm$ std.) & Calls & Tokens & McNemar $p$ \\
+Model & Method & Accuracy ($\pm$ std.) & Calls / question & Tokens / question & McNemar $p$ \\
 \midrule
-8B & Direct & 0.223 & 130 & 213186 & -- \\
-8B & Search & 0.159 $\pm$ 0.012 & 1747.7 & 1783904 & 0.169, 0.265, 0.087 \\
-8B & Structured & 0.262 & 130 & 269862 & 0.442 \\
-8B & Best-of-N & 0.236 $\pm$ 0.012 & 1820.0 & 2984686 & 0.453, 0.754, 1.000 \\
+8B & Direct & 0.223 & 1.0 & 1640 & -- \\
+8B & Search & 0.159 $\pm$ 0.012 & 13.4 & 13722 & 0.169, 0.265, 0.087 \\
+8B & Structured & 0.262 & 1.0 & 2076 & 0.442 \\
+8B & Best-of-N & 0.236 $\pm$ 0.012 & 14.0 & 22959 & 0.453, 0.754, 1.000 \\
 \midrule
-70B & Direct & 0.377 & 130 & 213867 & -- \\
-70B & Search & 0.362 $\pm$ 0.015 & 1479.0 & 1337963 & 0.572, 0.851, 1.000 \\
-70B & Structured & pending & -- & -- & -- \\
-70B & Best-of-N & pending & -- & -- & -- \\
+70B & Direct & 0.377 & 1.0 & 1645 & -- \\
+70B & Search & 0.362 $\pm$ 0.015 & 11.4 & 10292 & 0.572, 0.851, 1.000 \\
 \bottomrule
 \end{tabular}
 \end{table}

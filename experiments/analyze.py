@@ -14,11 +14,11 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from common import validator
 from common.data import load_docs
+from experiments.compare import match_questions, compare_correctness, mcnemar_exact
 
 
 def load_rows(path):
-    """Read saved experiment results."""
-    with open(path, "r", encoding="utf-8") as file:
+    with open(path, encoding="utf-8-sig") as file:
         return [json.loads(line) for line in file if line.strip()]
 
 
@@ -56,6 +56,28 @@ def candidate_coverage(rows, documents):
             proposed_correct += 1
 
     return proposed_correct / len(rows) if rows else 0.0
+
+def calculate_auc(scores_and_labels):
+    """Calculate pairwise AUC from (score, is_correct) pairs.
+
+    Returns None if either class is absent.
+    """
+    correct_scores = [
+        score for score, correct in scores_and_labels if correct
+    ]
+    wrong_scores = [
+        score for score, correct in scores_and_labels if not correct
+    ]
+
+    if not correct_scores or not wrong_scores:
+        return None
+
+    wins = sum(
+        1.0 if correct > wrong else 0.5 if correct == wrong else 0.0
+        for correct in correct_scores
+        for wrong in wrong_scores
+    )
+    return wins / (len(correct_scores) * len(wrong_scores))
 
 def extract_numeric_score(text):
     """Extract the final numeric Score: N value, if present."""
@@ -118,15 +140,7 @@ def score_separation(rows, documents):
     correct_scores = [score for score, correct in scores if correct]
     wrong_scores = [score for score, correct in scores if not correct]
 
-    if not correct_scores or not wrong_scores:
-        auc = None
-    else:
-        wins = sum(
-            1.0 if correct > wrong else 0.5 if correct == wrong else 0.0
-            for correct in correct_scores
-            for wrong in wrong_scores
-        )
-        auc = wins / (len(correct_scores) * len(wrong_scores))
+    auc = calculate_auc(scores)
 
     return {
         "auc": auc,
@@ -217,6 +231,52 @@ def aggregate_seed_metrics(summaries):
 
     return aggregated
 
+def compare_direct_to_search(direct_rows, search_rows):
+    """Compare one direct baseline against one search seed."""
+    run_direct, run_search = match_questions(direct_rows, search_rows)
+
+    _, direct_only, search_only, _ = compare_correctness(
+        run_direct, run_search
+    )
+
+    return {
+        "direct_accuracy": accuracy(direct_rows),
+        "search_accuracy": accuracy(search_rows),
+        "p_value": mcnemar_exact(direct_only, search_only),
+        "n_questions": len(direct_rows),
+    }
+def aggregate_ablation_runs(run_rows):
+    """Aggregate accuracy and calls across seeds for each ablation setting."""
+    groups = defaultdict(list)
+
+    for name, rows in run_rows.items():
+        match = re.fullmatch(r"(abl8b_.+)_s(\d+)", name)
+        if match:
+            groups[match.group(1)].append(rows)
+
+    aggregated = {}
+    for setting, runs in sorted(groups.items()):
+        accuracies = [accuracy(rows) for rows in runs]
+        calls_per_question = [
+            sum(row.get("calls", 0) for row in rows) / len(rows)
+            if rows else 0.0
+            for rows in runs
+        ]
+
+        aggregated[setting] = {
+            "n_seeds": len(runs),
+            "accuracy_mean": statistics.mean(accuracies),
+            "accuracy_std": (
+                statistics.stdev(accuracies) if len(accuracies) > 1 else 0.0
+            ),
+            "calls_mean": statistics.mean(calls_per_question),
+            "calls_std": (
+                statistics.stdev(calls_per_question)
+                if len(calls_per_question) > 1 else 0.0
+            ),
+        }
+
+    return aggregated
 
 def write_latex_tables(summaries, aggregated, output_dir):
     """Write cross-seed and per-domain LaTeX tables."""
@@ -225,9 +285,9 @@ def write_latex_tables(summaries, aggregated, output_dir):
         r"\centering",
         r"\caption{Search performance across random seeds.}",
         r"\begin{tabular}{lrrr}",
-        r"\hline",
+        r"\toprule",
         r"Model & Accuracy & Candidate coverage & Score AUC \\",
-        r"\hline",
+        r"\midrule",
     ]
 
     for model, metrics in aggregated.items():
@@ -243,7 +303,7 @@ def write_latex_tables(summaries, aggregated, output_dir):
         )
 
     lines.extend([
-        r"\hline",
+        r"\bottomrule",
         r"\end{tabular}",
         r"\end{table}",
         "",
@@ -266,9 +326,9 @@ def write_latex_tables(summaries, aggregated, output_dir):
         r"\centering",
         r"\caption{Accuracy by domain, averaged across seeds.}",
         r"\begin{tabular}{lrr}",
-        r"\hline",
+        r"\toprule",
         r"Domain & 8B accuracy & 70B accuracy \\",
-        r"\hline",
+        r"\midrule",
     ]
 
     for domain in sorted(domain_values):
@@ -277,7 +337,7 @@ def write_latex_tables(summaries, aggregated, output_dir):
         b = statistics.mean(values["70b"]) if values["70b"] else float("nan")
         domain_lines.append(f"{domain} & {a:.3f} & {b:.3f} \\\\")
 
-    domain_lines.extend([r"\hline", r"\end{tabular}", r"\end{table}"])
+    domain_lines.extend([r"\bottomrule", r"\end{tabular}", r"\end{table}"])
     (output_dir / "domain_table.tex").write_text(
         "\n".join(domain_lines), encoding="utf-8"
     )
@@ -293,9 +353,9 @@ def write_latex_tables(summaries, aggregated, output_dir):
         r"\centering",
         r"\caption{Calls and token usage per 130 questions. Search values are means across three seeds; direct values are single saved runs.}",
         r"\begin{tabular}{lrr}",
-        r"\hline",
+        r"\toprule",
         r"Method & Total calls & Total tokens \\",
-        r"\hline",
+        r"\midrule",
     ]
 
     for label, run_name in direct_runs.items():
@@ -312,9 +372,32 @@ def write_latex_tables(summaries, aggregated, output_dir):
             f"{metrics['total_calls_mean']:.1f} & "
             f"{metrics['total_tokens_mean']:.0f} \\\\"
         )
+    for label, run_names in {
+        "8B Structured": ["structured_8b"],
+        "8B Best-of-N (mean)": [
+            "best_of_n14_8b_s1",
+            "best_of_n14_8b_s2",
+            "best_of_n14_8b_s3",
+        ],
+    }.items():
+        run_costs = []
+        for run_name in run_names:
+            summary_path = Path("results/final") / run_name / "summary.json"
+            if summary_path.exists():
+                summary = json.loads(summary_path.read_text(encoding="utf-8-sig"))
+                run_costs.append((
+                    summary["total_calls"],
+                    summary["total_tokens"],
+                ))
 
+        if run_costs:
+            mean_calls = statistics.mean(calls for calls, _ in run_costs)
+            mean_tokens = statistics.mean(tokens for _, tokens in run_costs)
+            cost_lines.append(
+                f"{label} & {mean_calls:.1f} & {mean_tokens:.0f} " + r"\\"
+            )
     cost_lines.extend([
-        r"\hline",
+        r"\bottomrule",
         r"\end{tabular}",
         r"\end{table}",
     ])
@@ -348,9 +431,9 @@ def write_latex_tables(summaries, aggregated, output_dir):
         r"\centering",
         r"\caption{Mean evaluator error counts per 130 questions across three search seeds.}",
         r"\begin{tabular}{lrr}",
-        r"\hline",
+        r"\toprule",
         r"Error type & 8B mean & 70B mean \\",
-        r"\hline",
+        r"\midrule",
     ]
 
     for error_type in error_types:
@@ -367,7 +450,7 @@ def write_latex_tables(summaries, aggregated, output_dir):
         )
 
     error_lines.extend([
-        r"\hline",
+        r"\bottomrule",
         r"\end{tabular}",
         r"\end{table}",
     ])
@@ -377,10 +460,247 @@ def write_latex_tables(summaries, aggregated, output_dir):
     )
 
 
+def write_main_results_table(run_rows, output_dir):
+    """Write direct, structured, best-of-N, and search comparisons."""
+    direct_runs = {
+        "8b": "repro_llama31_8b_direct_bf16_coreweave",
+        "70b": "repro_llama31_70b_direct_bedrock",
+    }
+
+    lines = [
+        r"\begin{table}[ht]",
+        r"\centering",
+        r"\caption{Direct, structured, best-of-N, and search results. Multi-seed methods report mean accuracy and sample standard deviation. McNemar exact p-values compare each available run with its model's direct baseline.}",
+        r"\label{tab:main-results}",
+        r"\begin{tabular}{llrrrr}",
+        r"\toprule",
+        r"Model & Method & Accuracy ($\pm$ std.) & Calls & Tokens & McNemar $p$ \\",
+        r"\midrule",
+    ]
+
+    def cost(rows):
+        calls = sum(row.get("calls", 0) for row in rows)
+        tokens = sum(
+            row.get("prompt_tokens", 0) + row.get("completion_tokens", 0)
+            for row in rows
+        )
+        return calls, tokens
+
+    def append_single(model, method, rows, direct_rows=None):
+        if not rows:
+            lines.append(
+                f"{model.upper()} & {method} & pending & -- & -- & -- " + r"\\"
+            )
+            return
+
+        calls, tokens = cost(rows)
+        p_text = "--"
+        if direct_rows:
+            p_text = f"{compare_direct_to_search(direct_rows, rows)['p_value']:.3f}"
+
+        lines.append(
+            f"{model.upper()} & {method} & {accuracy(rows):.3f} "
+            f"& {calls} & {tokens} & {p_text} " + r"\\"
+        )
+
+    def append_multiple(model, method, runs, direct_rows=None):
+        if not runs:
+            append_single(model, method, None)
+            return
+
+        accuracies = [accuracy(rows) for _, rows in runs]
+        call_totals, token_totals = zip(*(cost(rows) for _, rows in runs))
+        p_values = (
+            [
+                compare_direct_to_search(direct_rows, rows)["p_value"]
+                for _, rows in runs
+            ]
+            if direct_rows else []
+        )
+        p_text = ", ".join(f"{p:.3f}" for p in p_values) if p_values else "--"
+
+        mean_accuracy = statistics.mean(accuracies)
+        std_accuracy = (
+            statistics.stdev(accuracies) if len(accuracies) > 1 else 0.0
+        )
+        lines.append(
+            f"{model.upper()} & {method} & {mean_accuracy:.3f} "
+            f"$\\pm$ {std_accuracy:.3f} "
+            f"& {statistics.mean(call_totals):.1f} "
+            f"& {statistics.mean(token_totals):.0f} "
+            f"& {p_text} " + r"\\"
+        )
+
+    for model in ("8b", "70b"):
+        direct_rows = run_rows.get(direct_runs[model])
+        append_single(model, "Direct", direct_rows)
+
+        search_runs = sorted(
+            [
+                (name, rows)
+                for name, rows in run_rows.items()
+                if re.fullmatch(rf"main_search_{model}_s\d+", name)
+            ],
+            key=lambda item: item[0],
+        )
+        append_multiple(model, "Search", search_runs, direct_rows)
+
+        structured_rows = run_rows.get(f"structured_{model}")
+        append_single(model, "Structured", structured_rows, direct_rows)
+
+        best_of_n_runs = sorted(
+            [
+                (name, rows)
+                for name, rows in run_rows.items()
+                if re.fullmatch(rf"best_of_n\d+_{model}_s\d+", name)
+            ],
+            key=lambda item: item[0],
+        )
+        append_multiple(model, "Best-of-N", best_of_n_runs, direct_rows)
+
+        if model == "8b":
+            lines.append(r"\midrule")
+
+    # Remove the final separator if one was added after the last model.
+    if lines[-1] == r"\midrule":
+        lines.pop()
+
+    lines.extend([
+        r"\bottomrule",
+        r"\end{tabular}",
+        r"\end{table}",
+    ])
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    (output_dir / "main_results.tex").write_text(
+        "\n".join(lines) + "\n", encoding="utf-8"
+    )
+
+
+def load_progression_score(run_name):
+    """Read the saved aggregate score for a Progression reproduction run."""
+    run_dir = Path("results/final") / run_name
+    result_files = sorted(run_dir.glob("results_*.json"))
+
+    if not result_files:
+        return None
+
+    result_data = json.loads(
+        result_files[-1].read_text(encoding="utf-8")
+    )
+    task_result = result_data.get("results", {}).get("acp_prog_gen", {})
+    return task_result.get("score,acp_grammar_parse")
+
+
+def write_reproduction_table(run_rows, output_dir):
+    """Write paper-versus-reproduced accuracy for the four reference runs."""
+    reference_runs = [
+        ("Llama 3.1 8B", "Next Action",
+         "repro_llama31_8b_direct_bf16_coreweave", 0.250),
+        ("Llama 3.1 8B", "Progression",
+         "repro_prog_llama31_8b", 0.400),
+        ("Llama 3.1 70B", "Progression",
+         "repro_prog_llama31_70b", 0.650),
+        ("Llama 3.1 70B", "Next Action",
+         "repro_llama31_70b_direct_bedrock", 0.420),
+    ]
+
+    lines = [
+        r"\begin{table}[ht]",
+        r"\centering",
+        r"\caption{Paper reference accuracies and reproduced results on ACPBench-Hard.}",
+        r"\label{tab:reproduction}",
+        r"\begin{tabular}{llrr}",
+        r"\toprule",
+        r"Model & Task & Paper accuracy & Reproduced accuracy \\",
+        r"\midrule",
+    ]
+
+    for model, task, run_name, paper_accuracy in reference_runs:
+        rows = run_rows.get(run_name)
+
+        if task == "Progression":
+            score = load_progression_score(run_name)
+            reproduced = f"{score:.3f}" if score is not None else "--"
+        else:
+            reproduced = f"{accuracy(rows):.3f}" if rows else "--"
+        lines.append(
+            f"{model} & {task} & {paper_accuracy:.3f} & {reproduced} " + r"\\"
+        )
+
+    lines.extend([
+        r"\bottomrule",
+        r"\end{tabular}",
+        r"\end{table}",
+    ])
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    (output_dir / "reproduction.tex").write_text(
+        "\n".join(lines) + "\n", encoding="utf-8"
+    )
+def write_ablation_table(ablations, output_dir):
+    """Write paper-ready ablation results using booktabs."""
+    lines = [
+        r"\begin{table}[ht]",
+        r"\centering",
+        r"\caption{Search ablations on Llama 3.1 8B. Accuracy is mean $\pm$ standard deviation across seeds; calls are mean calls per question.}",
+        r"\label{tab:ablations}",
+        r"\begin{tabular}{lrr}",
+        r"\toprule",
+        r"Setting & Accuracy ($\pm$ std.) & Mean calls / question \\",
+        r"\midrule",
+    ]
+
+    for setting, metrics in sorted(ablations.items()):
+        label = setting.removeprefix("abl8b_")
+        label_map = {
+            "b7": "budget=7",
+            "b28": "budget=28",
+            "d1": "depth=1",
+            "d3": "depth=3",
+            "fewshot": "few-shot",
+            "fixed": "scoring=fixed",
+            "k2": "branching=2",
+            "k5": "branching=5",
+            "nopredict": "no prediction",
+            "noprune": "no pruning",
+            "random": "scoring=random",
+            "steps": "scoring=steps",
+            "vote": "scoring=vote",
+        }
+        label = label_map.get(label, label.replace("_", r"\_"))
+        if metrics["n_seeds"] != 3:
+            accuracy_text = (
+                f'{metrics["accuracy_mean"]:.3f} $\\pm$ '
+                f'{metrics["accuracy_std"]:.3f} '
+                f'({metrics["n_seeds"]} seeds)'
+            )
+        else:
+            accuracy_text = (
+                f'{metrics["accuracy_mean"]:.3f} $\\pm$ '
+                f'{metrics["accuracy_std"]:.3f}'
+            )
+
+        lines.append(
+            f'{label} & {accuracy_text} & {metrics["calls_mean"]:.1f} \\\\'
+        )
+
+    lines.extend([
+        r"\bottomrule",
+        r"\end{tabular}",
+        r"\end{table}",
+    ])
+
+    (output_dir / "ablations.tex").write_text(
+        "\n".join(lines) + "\n", encoding="utf-8"
+    )
+
 def write_figures(aggregated, output_dir):
     """Create accuracy and AUC comparison figures."""
     try:
         import matplotlib.pyplot as plt
+        paper_figures_dir = Path("paper/figures")
+        paper_figures_dir.mkdir(parents=True, exist_ok=True)
     except ImportError as exc:
         print(f"Skipping figures because matplotlib is unavailable: {exc}")
         return
@@ -405,6 +725,7 @@ def write_figures(aggregated, output_dir):
         ax.set_title(title)
         fig.tight_layout()
         fig.savefig(output_dir / filename, dpi=180)
+        fig.savefig(paper_figures_dir / f"{Path(filename).stem}.pdf")
         plt.close(fig)
 
 def main():
@@ -427,7 +748,7 @@ def main():
     documents = load_documents()
     output_dir = Path(args.out)
     output_dir.mkdir(parents=True, exist_ok=True)
-
+    run_rows = {}
     summaries = {}
 
     for run_path in args.runs:
@@ -435,9 +756,22 @@ def main():
         rows_path = path / "rows.jsonl" if path.is_dir() else path
         run_name = path.name if path.is_dir() else path.parent.name
 
+        # Progression runs contain aggregate results JSON, not rows.jsonl.
+        if run_name.startswith("repro_prog_"):
+            score = load_progression_score(run_name)
+            if score is None:
+                raise FileNotFoundError(
+                    f"{run_name}: no aggregate Progression score found"
+                )
+            print(f"{run_name}: aggregate accuracy={score:.3f}")
+            continue
+
         rows = load_rows(rows_path)
-        missing = [str(row["id"]) for row in rows
-                   if str(row["id"]) not in documents]
+        run_rows[run_name] = rows
+        missing = [
+            str(row["id"]) for row in rows
+            if str(row["id"]) not in documents
+        ]
         if missing:
             raise ValueError(
                 f"{run_name}: {len(missing)} question IDs missing from dataset"
@@ -450,13 +784,20 @@ def main():
             f"AUC={summaries[run_name]['score_separation']['auc']}"
         )
 
+
     report = {
         "runs": summaries,
         "note": "Computed from saved result rows; no model calls performed.",
     }
     aggregated = aggregate_seed_metrics(summaries)
     report["aggregate_by_model"] = aggregated
+    ablations = aggregate_ablation_runs(run_rows)
+    report["ablations"] = ablations
+    paper_tables_dir = Path("paper/tables")
     write_latex_tables(summaries, aggregated, output_dir)
+    write_ablation_table(ablations, paper_tables_dir)
+    write_main_results_table(run_rows, paper_tables_dir)
+    write_reproduction_table(run_rows, paper_tables_dir)
     write_figures(aggregated, output_dir)
     print("Saved LaTeX tables and figures.")
     report_path = output_dir / "summary.json"

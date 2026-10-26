@@ -2,14 +2,16 @@
 \centering
 \caption{Calls and token usage per 130 questions. Search values are means across three seeds; direct values are single saved runs.}
 \begin{tabular}{lrr}
-\hline
+\toprule
 Method & Total calls & Total tokens \\
-\hline
+\midrule
 8B direct (CoreWeave BF16) & 130 & 213186 \\
 8B direct (mixed providers) & 130 & 215498 \\
 70B direct (Bedrock) & 130 & 213867 \\
 70B search (mean) & 1479.0 & 1337963 \\
 8B search (mean) & 1747.7 & 1783904 \\
-\hline
+8B Structured & 130.0 & 269862 \\
+8B Best-of-N (mean) & 1820.0 & 2984686 \\
+\bottomrule
 \end{tabular}
 \end{table}

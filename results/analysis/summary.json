@@ -1,5 +1,117 @@
 {
   "runs": {
+    "main_search_70b_s1": {
+      "n": 130,
+      "accuracy": 0.34615384615384615,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.3,
+        "depots": 0.4,
+        "ferry": 0.5,
+        "floor-tile": 0.1,
+        "gold-miner-typed": 0.3,
+        "grid": 0.7,
+        "grid-visit-all": 0.4,
+        "gripper-strips": 0.2,
+        "logistics-strips": 0.2,
+        "rover": 0.2,
+        "satellite": 0.6,
+        "swap": 0.6
+      },
+      "errors": {
+        "inapplicable": 44,
+        "not_closer": 41
+      },
+      "total_calls": 1492,
+      "total_prompt_tokens": 1217060,
+      "total_completion_tokens": 141080,
+      "total_tokens": 1358140,
+      "mean_calls": 11.476923076923077,
+      "mean_tokens": 10447.23076923077,
+      "candidate_coverage": 0.5923076923076923,
+      "score_separation": {
+        "auc": 0.5092399673883504,
+        "mean_correct_score": 4.0120481927710845,
+        "mean_wrong_score": 3.736842105263158,
+        "n_correct_candidates": 83,
+        "n_wrong_candidates": 133
+      }
+    },
+    "main_search_70b_s2": {
+      "n": 130,
+      "accuracy": 0.36153846153846153,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.2,
+        "depots": 0.5,
+        "ferry": 0.3,
+        "floor-tile": 0.1,
+        "gold-miner-typed": 0.3,
+        "grid": 0.6,
+        "grid-visit-all": 0.7,
+        "gripper-strips": 0.2,
+        "logistics-strips": 0.2,
+        "rover": 0.3,
+        "satellite": 0.6,
+        "swap": 0.7
+      },
+      "errors": {
+        "format": 1,
+        "inapplicable": 42,
+        "not_closer": 40
+      },
+      "total_calls": 1461,
+      "total_prompt_tokens": 1162461,
+      "total_completion_tokens": 135471,
+      "total_tokens": 1297932,
+      "mean_calls": 11.238461538461538,
+      "mean_tokens": 9984.092307692308,
+      "candidate_coverage": 0.5846153846153846,
+      "score_separation": {
+        "auc": 0.512451171875,
+        "mean_correct_score": 3.8625,
+        "mean_wrong_score": 3.65625,
+        "n_correct_candidates": 80,
+        "n_wrong_candidates": 128
+      }
+    },
+    "main_search_70b_s3": {
+      "n": 130,
+      "accuracy": 0.3769230769230769,
+      "accuracy_by_domain": {
+        "alfred": 0.1,
+        "blocksworld-4ops": 0.5,
+        "depots": 0.4,
+        "ferry": 0.4,
+        "floor-tile": 0.4,
+        "gold-miner-typed": 0.1,
+        "grid": 0.7,
+        "grid-visit-all": 0.5,
+        "gripper-strips": 0.1,
+        "logistics-strips": 0.1,
+        "rover": 0.2,
+        "satellite": 0.6,
+        "swap": 0.8
+      },
+      "errors": {
+        "inapplicable": 49,
+        "not_closer": 32
+      },
+      "total_calls": 1484,
+      "total_prompt_tokens": 1213832,
+      "total_completion_tokens": 143984,
+      "total_tokens": 1357816,
+      "mean_calls": 11.415384615384616,
+      "mean_tokens": 10444.738461538462,
+      "candidate_coverage": 0.5923076923076923,
+      "score_separation": {
+        "auc": 0.5583020637898687,
+        "mean_correct_score": 3.975609756097561,
+        "mean_wrong_score": 3.4076923076923076,
+        "n_correct_candidates": 82,
+        "n_wrong_candidates": 130
+      }
+    },
     "main_search_8b_s1": {
       "n": 130,
       "accuracy": 0.16153846153846155,
@@ -113,116 +225,1698 @@
         "n_wrong_candidates": 310
       }
     },
-    "main_search_70b_s1": {
+    "abl8b_b28_s1": {
       "n": 130,
-      "accuracy": 0.34615384615384615,
+      "accuracy": 0.17692307692307693,
       "accuracy_by_domain": {
         "alfred": 0.0,
-        "blocksworld-4ops": 0.3,
-        "depots": 0.4,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
         "ferry": 0.5,
-        "floor-tile": 0.1,
-        "gold-miner-typed": 0.3,
-        "grid": 0.7,
-        "grid-visit-all": 0.4,
-        "gripper-strips": 0.2,
-        "logistics-strips": 0.2,
-        "rover": 0.2,
-        "satellite": 0.6,
-        "swap": 0.6
+        "floor-tile": 0.3,
+        "gold-miner-typed": 0.1,
+        "grid": 0.4,
+        "grid-visit-all": 0.3,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.0,
+        "satellite": 0.1,
+        "swap": 0.3
       },
       "errors": {
-        "inapplicable": 44,
-        "not_closer": 41
+        "format": 2,
+        "inapplicable": 80,
+        "not_closer": 25
       },
-      "total_calls": 1492,
-      "total_prompt_tokens": 1217060,
-      "total_completion_tokens": 141080,
-      "total_tokens": 1358140,
-      "mean_calls": 11.476923076923077,
-      "mean_tokens": 10447.23076923077,
-      "candidate_coverage": 0.5923076923076923,
+      "total_calls": 3189,
+      "total_prompt_tokens": 2824055,
+      "total_completion_tokens": 460105,
+      "total_tokens": 3284160,
+      "mean_calls": 24.53076923076923,
+      "mean_tokens": 25262.76923076923,
+      "candidate_coverage": 0.3384615384615385,
       "score_separation": {
-        "auc": 0.5092399673883504,
-        "mean_correct_score": 4.0120481927710845,
-        "mean_wrong_score": 3.736842105263158,
-        "n_correct_candidates": 83,
-        "n_wrong_candidates": 133
+        "auc": 0.583087822671156,
+        "mean_correct_score": 3.0833333333333335,
+        "mean_wrong_score": 2.414141414141414,
+        "n_correct_candidates": 48,
+        "n_wrong_candidates": 297
       }
     },
-    "main_search_70b_s2": {
+    "abl8b_b28_s2": {
       "n": 130,
-      "accuracy": 0.36153846153846153,
+      "accuracy": 0.13846153846153847,
       "accuracy_by_domain": {
         "alfred": 0.0,
-        "blocksworld-4ops": 0.2,
-        "depots": 0.5,
-        "ferry": 0.3,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
+        "ferry": 0.2,
         "floor-tile": 0.1,
-        "gold-miner-typed": 0.3,
-        "grid": 0.6,
+        "gold-miner-typed": 0.2,
+        "grid": 0.4,
         "grid-visit-all": 0.7,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.0,
+        "satellite": 0.0,
+        "swap": 0.0
+      },
+      "errors": {
+        "format": 10,
+        "inapplicable": 77,
+        "not_closer": 25
+      },
+      "total_calls": 2927,
+      "total_prompt_tokens": 2778567,
+      "total_completion_tokens": 428619,
+      "total_tokens": 3207186,
+      "mean_calls": 22.515384615384615,
+      "mean_tokens": 24670.66153846154,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": 0.5715566714490674,
+        "mean_correct_score": 2.902439024390244,
+        "mean_wrong_score": 2.2720588235294117,
+        "n_correct_candidates": 41,
+        "n_wrong_candidates": 272
+      }
+    },
+    "abl8b_b28_s3": {
+      "n": 130,
+      "accuracy": 0.14615384615384616,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.0,
+        "depots": 0.1,
+        "ferry": 0.4,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.0,
+        "grid": 0.4,
+        "grid-visit-all": 0.4,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.2,
+        "satellite": 0.1,
+        "swap": 0.0
+      },
+      "errors": {
+        "inapplicable": 88,
+        "not_closer": 23
+      },
+      "total_calls": 3223,
+      "total_prompt_tokens": 2949696,
+      "total_completion_tokens": 476561,
+      "total_tokens": 3426257,
+      "mean_calls": 24.79230769230769,
+      "mean_tokens": 26355.823076923076,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": 0.5780881195908734,
+        "mean_correct_score": 2.902439024390244,
+        "mean_wrong_score": 2.261290322580645,
+        "n_correct_candidates": 41,
+        "n_wrong_candidates": 310
+      }
+    },
+    "abl8b_b7_s1": {
+      "n": 130,
+      "accuracy": 0.16153846153846155,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
+        "ferry": 0.4,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.1,
+        "grid": 0.5,
+        "grid-visit-all": 0.3,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.0,
+        "satellite": 0.1,
+        "swap": 0.2
+      },
+      "errors": {
+        "format": 2,
+        "inapplicable": 76,
+        "not_closer": 31
+      },
+      "total_calls": 898,
+      "total_prompt_tokens": 713478,
+      "total_completion_tokens": 119369,
+      "total_tokens": 832847,
+      "mean_calls": 6.907692307692308,
+      "mean_tokens": 6406.515384615384,
+      "candidate_coverage": 0.3384615384615385,
+      "score_separation": {
+        "auc": 0.583087822671156,
+        "mean_correct_score": 3.0833333333333335,
+        "mean_wrong_score": 2.414141414141414,
+        "n_correct_candidates": 48,
+        "n_wrong_candidates": 297
+      }
+    },
+    "abl8b_b7_s2": {
+      "n": 130,
+      "accuracy": 0.16923076923076924,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.0,
+        "depots": 0.1,
+        "ferry": 0.4,
+        "floor-tile": 0.1,
+        "gold-miner-typed": 0.2,
+        "grid": 0.5,
+        "grid-visit-all": 0.7,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.2,
+        "satellite": 0.0,
+        "swap": 0.0
+      },
+      "errors": {
+        "format": 10,
+        "inapplicable": 68,
+        "not_closer": 30
+      },
+      "total_calls": 847,
+      "total_prompt_tokens": 704283,
+      "total_completion_tokens": 112929,
+      "total_tokens": 817212,
+      "mean_calls": 6.515384615384615,
+      "mean_tokens": 6286.246153846154,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": 0.5715566714490674,
+        "mean_correct_score": 2.902439024390244,
+        "mean_wrong_score": 2.2720588235294117,
+        "n_correct_candidates": 41,
+        "n_wrong_candidates": 272
+      }
+    },
+    "abl8b_b7_s3": {
+      "n": 130,
+      "accuracy": 0.14615384615384616,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
+        "ferry": 0.3,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.0,
+        "grid": 0.5,
+        "grid-visit-all": 0.4,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.1,
+        "satellite": 0.2,
+        "swap": 0.0
+      },
+      "errors": {
+        "inapplicable": 83,
+        "not_closer": 28
+      },
+      "total_calls": 910,
+      "total_prompt_tokens": 736655,
+      "total_completion_tokens": 124353,
+      "total_tokens": 861008,
+      "mean_calls": 7.0,
+      "mean_tokens": 6623.138461538461,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": 0.5780881195908734,
+        "mean_correct_score": 2.902439024390244,
+        "mean_wrong_score": 2.261290322580645,
+        "n_correct_candidates": 41,
+        "n_wrong_candidates": 310
+      }
+    },
+    "abl8b_d1_s1": {
+      "n": 130,
+      "accuracy": 0.16153846153846155,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
+        "ferry": 0.4,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.1,
+        "grid": 0.5,
+        "grid-visit-all": 0.3,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.0,
+        "satellite": 0.1,
+        "swap": 0.2
+      },
+      "errors": {
+        "format": 2,
+        "inapplicable": 76,
+        "not_closer": 31
+      },
+      "total_calls": 857,
+      "total_prompt_tokens": 668935,
+      "total_completion_tokens": 116172,
+      "total_tokens": 785107,
+      "mean_calls": 6.592307692307692,
+      "mean_tokens": 6039.284615384616,
+      "candidate_coverage": 0.3384615384615385,
+      "score_separation": {
+        "auc": 0.583087822671156,
+        "mean_correct_score": 3.0833333333333335,
+        "mean_wrong_score": 2.414141414141414,
+        "n_correct_candidates": 48,
+        "n_wrong_candidates": 297
+      }
+    },
+    "abl8b_d1_s2": {
+      "n": 130,
+      "accuracy": 0.16923076923076924,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.0,
+        "depots": 0.1,
+        "ferry": 0.4,
+        "floor-tile": 0.1,
+        "gold-miner-typed": 0.2,
+        "grid": 0.5,
+        "grid-visit-all": 0.7,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.2,
+        "satellite": 0.0,
+        "swap": 0.0
+      },
+      "errors": {
+        "format": 10,
+        "inapplicable": 68,
+        "not_closer": 30
+      },
+      "total_calls": 801,
+      "total_prompt_tokens": 660674,
+      "total_completion_tokens": 107870,
+      "total_tokens": 768544,
+      "mean_calls": 6.161538461538462,
+      "mean_tokens": 5911.876923076923,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": 0.5715566714490674,
+        "mean_correct_score": 2.902439024390244,
+        "mean_wrong_score": 2.2720588235294117,
+        "n_correct_candidates": 41,
+        "n_wrong_candidates": 272
+      }
+    },
+    "abl8b_d1_s3": {
+      "n": 130,
+      "accuracy": 0.14615384615384616,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
+        "ferry": 0.3,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.0,
+        "grid": 0.5,
+        "grid-visit-all": 0.4,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.1,
+        "satellite": 0.2,
+        "swap": 0.0
+      },
+      "errors": {
+        "inapplicable": 83,
+        "not_closer": 28
+      },
+      "total_calls": 869,
+      "total_prompt_tokens": 697607,
+      "total_completion_tokens": 121009,
+      "total_tokens": 818616,
+      "mean_calls": 6.684615384615385,
+      "mean_tokens": 6297.046153846154,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": 0.5780881195908734,
+        "mean_correct_score": 2.902439024390244,
+        "mean_wrong_score": 2.261290322580645,
+        "n_correct_candidates": 41,
+        "n_wrong_candidates": 310
+      }
+    },
+    "abl8b_d3_s1": {
+      "n": 130,
+      "accuracy": 0.16153846153846155,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
+        "ferry": 0.4,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.1,
+        "grid": 0.5,
+        "grid-visit-all": 0.3,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.0,
+        "satellite": 0.1,
+        "swap": 0.2
+      },
+      "errors": {
+        "format": 2,
+        "inapplicable": 76,
+        "not_closer": 31
+      },
+      "total_calls": 1794,
+      "total_prompt_tokens": 1550693,
+      "total_completion_tokens": 247466,
+      "total_tokens": 1798159,
+      "mean_calls": 13.8,
+      "mean_tokens": 13831.992307692308,
+      "candidate_coverage": 0.3384615384615385,
+      "score_separation": {
+        "auc": 0.583087822671156,
+        "mean_correct_score": 3.0833333333333335,
+        "mean_wrong_score": 2.414141414141414,
+        "n_correct_candidates": 48,
+        "n_wrong_candidates": 297
+      }
+    },
+    "abl8b_d3_s2": {
+      "n": 130,
+      "accuracy": 0.16923076923076924,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.0,
+        "depots": 0.1,
+        "ferry": 0.4,
+        "floor-tile": 0.1,
+        "gold-miner-typed": 0.2,
+        "grid": 0.5,
+        "grid-visit-all": 0.7,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.2,
+        "satellite": 0.0,
+        "swap": 0.0
+      },
+      "errors": {
+        "format": 10,
+        "inapplicable": 68,
+        "not_closer": 30
+      },
+      "total_calls": 1680,
+      "total_prompt_tokens": 1520997,
+      "total_completion_tokens": 228486,
+      "total_tokens": 1749483,
+      "mean_calls": 12.923076923076923,
+      "mean_tokens": 13457.561538461538,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": 0.5715566714490674,
+        "mean_correct_score": 2.902439024390244,
+        "mean_wrong_score": 2.2720588235294117,
+        "n_correct_candidates": 41,
+        "n_wrong_candidates": 272
+      }
+    },
+    "abl8b_d3_s3": {
+      "n": 130,
+      "accuracy": 0.14615384615384616,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
+        "ferry": 0.3,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.0,
+        "grid": 0.5,
+        "grid-visit-all": 0.4,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.1,
+        "satellite": 0.2,
+        "swap": 0.0
+      },
+      "errors": {
+        "inapplicable": 83,
+        "not_closer": 28
+      },
+      "total_calls": 1816,
+      "total_prompt_tokens": 1609334,
+      "total_completion_tokens": 261994,
+      "total_tokens": 1871328,
+      "mean_calls": 13.96923076923077,
+      "mean_tokens": 14394.83076923077,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": 0.5780881195908734,
+        "mean_correct_score": 2.902439024390244,
+        "mean_wrong_score": 2.261290322580645,
+        "n_correct_candidates": 41,
+        "n_wrong_candidates": 310
+      }
+    },
+    "abl8b_fewshot_s1": {
+      "n": 130,
+      "accuracy": 0.16923076923076924,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.0,
+        "depots": 0.0,
+        "ferry": 0.4,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.2,
+        "grid": 0.5,
+        "grid-visit-all": 0.2,
         "gripper-strips": 0.2,
         "logistics-strips": 0.2,
-        "rover": 0.3,
-        "satellite": 0.6,
-        "swap": 0.7
+        "rover": 0.1,
+        "satellite": 0.1,
+        "swap": 0.1
+      },
+      "errors": {
+        "inapplicable": 79,
+        "not_closer": 29
+      },
+      "total_calls": 1801,
+      "total_prompt_tokens": 1856452,
+      "total_completion_tokens": 244207,
+      "total_tokens": 2100659,
+      "mean_calls": 13.853846153846154,
+      "mean_tokens": 16158.915384615384,
+      "candidate_coverage": 0.36153846153846153,
+      "score_separation": {
+        "auc": 0.6457969326344399,
+        "mean_correct_score": 3.5098039215686274,
+        "mean_wrong_score": 2.31023102310231,
+        "n_correct_candidates": 51,
+        "n_wrong_candidates": 303
+      }
+    },
+    "abl8b_fewshot_s2": {
+      "n": 130,
+      "accuracy": 0.15384615384615385,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.0,
+        "depots": 0.0,
+        "ferry": 0.4,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.1,
+        "grid": 0.5,
+        "grid-visit-all": 0.6,
+        "gripper-strips": 0.1,
+        "logistics-strips": 0.1,
+        "rover": 0.0,
+        "satellite": 0.0,
+        "swap": 0.0
+      },
+      "errors": {
+        "format": 6,
+        "inapplicable": 76,
+        "not_closer": 28
+      },
+      "total_calls": 1705,
+      "total_prompt_tokens": 1763538,
+      "total_completion_tokens": 228799,
+      "total_tokens": 1992337,
+      "mean_calls": 13.115384615384615,
+      "mean_tokens": 15325.66923076923,
+      "candidate_coverage": 0.3230769230769231,
+      "score_separation": {
+        "auc": 0.5537159124962541,
+        "mean_correct_score": 2.8085106382978724,
+        "mean_wrong_score": 2.3380281690140845,
+        "n_correct_candidates": 47,
+        "n_wrong_candidates": 284
+      }
+    },
+    "abl8b_fewshot_s3": {
+      "n": 130,
+      "accuracy": 0.13846153846153847,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.0,
+        "ferry": 0.4,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.2,
+        "grid": 0.6,
+        "grid-visit-all": 0.2,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.0,
+        "satellite": 0.0,
+        "swap": 0.1
       },
       "errors": {
         "format": 1,
-        "inapplicable": 42,
-        "not_closer": 40
+        "inapplicable": 80,
+        "not_closer": 31
       },
-      "total_calls": 1461,
-      "total_prompt_tokens": 1162461,
-      "total_completion_tokens": 135471,
-      "total_tokens": 1297932,
-      "mean_calls": 11.238461538461538,
-      "mean_tokens": 9984.092307692308,
-      "candidate_coverage": 0.5846153846153846,
+      "total_calls": 1773,
+      "total_prompt_tokens": 1800594,
+      "total_completion_tokens": 232435,
+      "total_tokens": 2033029,
+      "mean_calls": 13.638461538461538,
+      "mean_tokens": 15638.684615384615,
+      "candidate_coverage": 0.3384615384615385,
       "score_separation": {
-        "auc": 0.512451171875,
-        "mean_correct_score": 3.8625,
-        "mean_wrong_score": 3.65625,
-        "n_correct_candidates": 80,
-        "n_wrong_candidates": 128
+        "auc": 0.5565070999853609,
+        "mean_correct_score": 2.717391304347826,
+        "mean_wrong_score": 2.2962962962962963,
+        "n_correct_candidates": 46,
+        "n_wrong_candidates": 297
       }
     },
-    "main_search_70b_s3": {
+    "abl8b_fixed_s1": {
+      "n": 130,
+      "accuracy": 0.19230769230769232,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.0,
+        "ferry": 0.4,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.1,
+        "grid": 0.5,
+        "grid-visit-all": 0.6,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.1,
+        "satellite": 0.0,
+        "swap": 0.4
+      },
+      "errors": {
+        "format": 2,
+        "inapplicable": 66,
+        "not_closer": 37
+      },
+      "total_calls": 1696,
+      "total_prompt_tokens": 1453788,
+      "total_completion_tokens": 298105,
+      "total_tokens": 1751893,
+      "mean_calls": 13.046153846153846,
+      "mean_tokens": 13476.1,
+      "candidate_coverage": 0.3384615384615385,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "abl8b_fixed_s2": {
+      "n": 130,
+      "accuracy": 0.2,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.0,
+        "depots": 0.1,
+        "ferry": 0.4,
+        "floor-tile": 0.3,
+        "gold-miner-typed": 0.2,
+        "grid": 0.6,
+        "grid-visit-all": 0.6,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.2,
+        "satellite": 0.1,
+        "swap": 0.0
+      },
+      "errors": {
+        "format": 10,
+        "inapplicable": 64,
+        "not_closer": 30
+      },
+      "total_calls": 1563,
+      "total_prompt_tokens": 1417321,
+      "total_completion_tokens": 276729,
+      "total_tokens": 1694050,
+      "mean_calls": 12.023076923076923,
+      "mean_tokens": 13031.153846153846,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "abl8b_fixed_s3": {
+      "n": 130,
+      "accuracy": 0.17692307692307693,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.3,
+        "depots": 0.0,
+        "ferry": 0.3,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.1,
+        "grid": 0.5,
+        "grid-visit-all": 0.5,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.1,
+        "satellite": 0.2,
+        "swap": 0.1
+      },
+      "errors": {
+        "inapplicable": 77,
+        "not_closer": 30
+      },
+      "total_calls": 1721,
+      "total_prompt_tokens": 1514278,
+      "total_completion_tokens": 313268,
+      "total_tokens": 1827546,
+      "mean_calls": 13.238461538461538,
+      "mean_tokens": 14058.046153846153,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "abl8b_k2_s1": {
+      "n": 130,
+      "accuracy": 0.17692307692307693,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.0,
+        "depots": 0.1,
+        "ferry": 0.4,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.0,
+        "grid": 0.6,
+        "grid-visit-all": 0.5,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.2,
+        "rover": 0.1,
+        "satellite": 0.0,
+        "swap": 0.2
+      },
+      "errors": {
+        "format": 3,
+        "inapplicable": 69,
+        "not_closer": 35
+      },
+      "total_calls": 1606,
+      "total_prompt_tokens": 1394904,
+      "total_completion_tokens": 210585,
+      "total_tokens": 1605489,
+      "mean_calls": 12.353846153846154,
+      "mean_tokens": 12349.915384615384,
+      "candidate_coverage": 0.2846153846153846,
+      "score_separation": {
+        "auc": 0.6124581939799331,
+        "mean_correct_score": 3.5128205128205128,
+        "mean_wrong_score": 2.391304347826087,
+        "n_correct_candidates": 39,
+        "n_wrong_candidates": 184
+      }
+    },
+    "abl8b_k2_s2": {
+      "n": 130,
+      "accuracy": 0.16153846153846155,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.0,
+        "depots": 0.1,
+        "ferry": 0.3,
+        "floor-tile": 0.1,
+        "gold-miner-typed": 0.3,
+        "grid": 0.5,
+        "grid-visit-all": 0.5,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.1,
+        "satellite": 0.0,
+        "swap": 0.1
+      },
+      "errors": {
+        "format": 9,
+        "inapplicable": 79,
+        "not_closer": 21
+      },
+      "total_calls": 1515,
+      "total_prompt_tokens": 1391497,
+      "total_completion_tokens": 200429,
+      "total_tokens": 1591926,
+      "mean_calls": 11.653846153846153,
+      "mean_tokens": 12245.584615384616,
+      "candidate_coverage": 0.23076923076923078,
+      "score_separation": {
+        "auc": 0.5672401685393258,
+        "mean_correct_score": 2.96875,
+        "mean_wrong_score": 2.241573033707865,
+        "n_correct_candidates": 32,
+        "n_wrong_candidates": 178
+      }
+    },
+    "abl8b_k2_s3": {
+      "n": 130,
+      "accuracy": 0.14615384615384616,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.0,
+        "depots": 0.1,
+        "ferry": 0.3,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.0,
+        "grid": 0.5,
+        "grid-visit-all": 0.4,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.0,
+        "satellite": 0.2,
+        "swap": 0.1
+      },
+      "errors": {
+        "format": 4,
+        "inapplicable": 71,
+        "not_closer": 36
+      },
+      "total_calls": 1624,
+      "total_prompt_tokens": 1382411,
+      "total_completion_tokens": 213857,
+      "total_tokens": 1596268,
+      "mean_calls": 12.492307692307692,
+      "mean_tokens": 12278.984615384616,
+      "candidate_coverage": 0.2230769230769231,
+      "score_separation": {
+        "auc": 0.6157453936348408,
+        "mean_correct_score": 3.1333333333333333,
+        "mean_wrong_score": 2.1557788944723617,
+        "n_correct_candidates": 30,
+        "n_wrong_candidates": 199
+      }
+    },
+    "abl8b_k5_s1": {
+      "n": 130,
+      "accuracy": 0.13846153846153847,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.0,
+        "depots": 0.1,
+        "ferry": 0.4,
+        "floor-tile": 0.0,
+        "gold-miner-typed": 0.2,
+        "grid": 0.4,
+        "grid-visit-all": 0.2,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.0,
+        "satellite": 0.1,
+        "swap": 0.3
+      },
+      "errors": {
+        "format": 4,
+        "inapplicable": 76,
+        "not_closer": 32
+      },
+      "total_calls": 1768,
+      "total_prompt_tokens": 1497286,
+      "total_completion_tokens": 255840,
+      "total_tokens": 1753126,
+      "mean_calls": 13.6,
+      "mean_tokens": 13485.584615384616,
+      "candidate_coverage": 0.4153846153846154,
+      "score_separation": {
+        "auc": 0.5920837367700578,
+        "mean_correct_score": 3.180327868852459,
+        "mean_wrong_score": 2.433808553971487,
+        "n_correct_candidates": 61,
+        "n_wrong_candidates": 491
+      }
+    },
+    "abl8b_k5_s2": {
+      "n": 130,
+      "accuracy": 0.1076923076923077,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.0,
+        "depots": 0.1,
+        "ferry": 0.4,
+        "floor-tile": 0.0,
+        "gold-miner-typed": 0.1,
+        "grid": 0.3,
+        "grid-visit-all": 0.2,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.2,
+        "satellite": 0.1,
+        "swap": 0.0
+      },
+      "errors": {
+        "format": 12,
+        "inapplicable": 76,
+        "not_closer": 28
+      },
+      "total_calls": 1664,
+      "total_prompt_tokens": 1457658,
+      "total_completion_tokens": 244309,
+      "total_tokens": 1701967,
+      "mean_calls": 12.8,
+      "mean_tokens": 13092.053846153845,
+      "candidate_coverage": 0.34615384615384615,
+      "score_separation": {
+        "auc": 0.5599736668861093,
+        "mean_correct_score": 2.7551020408163267,
+        "mean_wrong_score": 2.2881720430107526,
+        "n_correct_candidates": 49,
+        "n_wrong_candidates": 465
+      }
+    },
+    "abl8b_k5_s3": {
+      "n": 130,
+      "accuracy": 0.1,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
+        "ferry": 0.3,
+        "floor-tile": 0.1,
+        "gold-miner-typed": 0.0,
+        "grid": 0.4,
+        "grid-visit-all": 0.2,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.1,
+        "satellite": 0.0,
+        "swap": 0.0
+      },
+      "errors": {
+        "format": 7,
+        "inapplicable": 76,
+        "not_closer": 34
+      },
+      "total_calls": 1729,
+      "total_prompt_tokens": 1410383,
+      "total_completion_tokens": 251433,
+      "total_tokens": 1661816,
+      "mean_calls": 13.3,
+      "mean_tokens": 12783.2,
+      "candidate_coverage": 0.3384615384615385,
+      "score_separation": {
+        "auc": 0.5419183673469388,
+        "mean_correct_score": 2.7346938775510203,
+        "mean_wrong_score": 2.396,
+        "n_correct_candidates": 49,
+        "n_wrong_candidates": 500
+      }
+    },
+    "abl8b_nopredict_s1": {
+      "n": 130,
+      "accuracy": 0.19230769230769232,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
+        "ferry": 0.3,
+        "floor-tile": 0.5,
+        "gold-miner-typed": 0.0,
+        "grid": 0.4,
+        "grid-visit-all": 0.4,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.1,
+        "satellite": 0.1,
+        "swap": 0.4
+      },
+      "errors": {
+        "format": 2,
+        "inapplicable": 77,
+        "not_closer": 26
+      },
+      "total_calls": 512,
+      "total_prompt_tokens": 352712,
+      "total_completion_tokens": 40975,
+      "total_tokens": 393687,
+      "mean_calls": 3.9384615384615387,
+      "mean_tokens": 3028.3615384615387,
+      "candidate_coverage": 0.3384615384615385,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "abl8b_nopredict_s2": {
+      "n": 130,
+      "accuracy": 0.13846153846153847,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
+        "ferry": 0.4,
+        "floor-tile": 0.3,
+        "gold-miner-typed": 0.0,
+        "grid": 0.5,
+        "grid-visit-all": 0.1,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.1,
+        "satellite": 0.1,
+        "swap": 0.0
+      },
+      "errors": {
+        "format": 10,
+        "inapplicable": 75,
+        "not_closer": 27
+      },
+      "total_calls": 488,
+      "total_prompt_tokens": 354069,
+      "total_completion_tokens": 40082,
+      "total_tokens": 394151,
+      "mean_calls": 3.753846153846154,
+      "mean_tokens": 3031.9307692307693,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "abl8b_nopredict_s3": {
+      "n": 130,
+      "accuracy": 0.14615384615384616,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
+        "ferry": 0.3,
+        "floor-tile": 0.0,
+        "gold-miner-typed": 0.0,
+        "grid": 0.4,
+        "grid-visit-all": 0.4,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.2,
+        "rover": 0.1,
+        "satellite": 0.2,
+        "swap": 0.1
+      },
+      "errors": {
+        "inapplicable": 87,
+        "not_closer": 24
+      },
+      "total_calls": 517,
+      "total_prompt_tokens": 365172,
+      "total_completion_tokens": 42682,
+      "total_tokens": 407854,
+      "mean_calls": 3.976923076923077,
+      "mean_tokens": 3137.3384615384616,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "abl8b_noprune_s1": {
+      "n": 130,
+      "accuracy": 0.16153846153846155,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
+        "ferry": 0.4,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.1,
+        "grid": 0.5,
+        "grid-visit-all": 0.3,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.0,
+        "satellite": 0.1,
+        "swap": 0.2
+      },
+      "errors": {
+        "format": 2,
+        "inapplicable": 76,
+        "not_closer": 31
+      },
+      "total_calls": 1794,
+      "total_prompt_tokens": 1536803,
+      "total_completion_tokens": 245695,
+      "total_tokens": 1782498,
+      "mean_calls": 13.8,
+      "mean_tokens": 13711.523076923077,
+      "candidate_coverage": 0.3384615384615385,
+      "score_separation": {
+        "auc": 0.583087822671156,
+        "mean_correct_score": 3.0833333333333335,
+        "mean_wrong_score": 2.414141414141414,
+        "n_correct_candidates": 48,
+        "n_wrong_candidates": 297
+      }
+    },
+    "abl8b_noprune_s2": {
+      "n": 130,
+      "accuracy": 0.16923076923076924,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.0,
+        "depots": 0.1,
+        "ferry": 0.4,
+        "floor-tile": 0.1,
+        "gold-miner-typed": 0.2,
+        "grid": 0.5,
+        "grid-visit-all": 0.7,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.2,
+        "satellite": 0.0,
+        "swap": 0.0
+      },
+      "errors": {
+        "format": 10,
+        "inapplicable": 69,
+        "not_closer": 29
+      },
+      "total_calls": 1686,
+      "total_prompt_tokens": 1509356,
+      "total_completion_tokens": 228427,
+      "total_tokens": 1737783,
+      "mean_calls": 12.96923076923077,
+      "mean_tokens": 13367.561538461538,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": 0.5715566714490674,
+        "mean_correct_score": 2.902439024390244,
+        "mean_wrong_score": 2.2720588235294117,
+        "n_correct_candidates": 41,
+        "n_wrong_candidates": 272
+      }
+    },
+    "abl8b_noprune_s3": {
+      "n": 130,
+      "accuracy": 0.14615384615384616,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
+        "ferry": 0.3,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.0,
+        "grid": 0.5,
+        "grid-visit-all": 0.4,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.1,
+        "satellite": 0.2,
+        "swap": 0.0
+      },
+      "errors": {
+        "inapplicable": 83,
+        "not_closer": 28
+      },
+      "total_calls": 1816,
+      "total_prompt_tokens": 1598216,
+      "total_completion_tokens": 260951,
+      "total_tokens": 1859167,
+      "mean_calls": 13.96923076923077,
+      "mean_tokens": 14301.284615384615,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": 0.5780881195908734,
+        "mean_correct_score": 2.902439024390244,
+        "mean_wrong_score": 2.261290322580645,
+        "n_correct_candidates": 41,
+        "n_wrong_candidates": 310
+      }
+    },
+    "abl8b_random_s1": {
+      "n": 130,
+      "accuracy": 0.11538461538461539,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.0,
+        "ferry": 0.0,
+        "floor-tile": 0.3,
+        "gold-miner-typed": 0.0,
+        "grid": 0.2,
+        "grid-visit-all": 0.4,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.0,
+        "satellite": 0.0,
+        "swap": 0.4
+      },
+      "errors": {
+        "format": 2,
+        "inapplicable": 92,
+        "not_closer": 21
+      },
+      "total_calls": 1696,
+      "total_prompt_tokens": 1454663,
+      "total_completion_tokens": 297439,
+      "total_tokens": 1752102,
+      "mean_calls": 13.046153846153846,
+      "mean_tokens": 13477.707692307693,
+      "candidate_coverage": 0.3384615384615385,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "abl8b_random_s2": {
+      "n": 130,
+      "accuracy": 0.16923076923076924,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.2,
+        "depots": 0.1,
+        "ferry": 0.2,
+        "floor-tile": 0.3,
+        "gold-miner-typed": 0.0,
+        "grid": 0.4,
+        "grid-visit-all": 0.6,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.2,
+        "satellite": 0.1,
+        "swap": 0.0
+      },
+      "errors": {
+        "format": 10,
+        "inapplicable": 75,
+        "not_closer": 23
+      },
+      "total_calls": 1563,
+      "total_prompt_tokens": 1420330,
+      "total_completion_tokens": 279827,
+      "total_tokens": 1700157,
+      "mean_calls": 12.023076923076923,
+      "mean_tokens": 13078.13076923077,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "abl8b_random_s3": {
+      "n": 130,
+      "accuracy": 0.11538461538461539,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.0,
+        "ferry": 0.2,
+        "floor-tile": 0.1,
+        "gold-miner-typed": 0.0,
+        "grid": 0.2,
+        "grid-visit-all": 0.5,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.1,
+        "satellite": 0.1,
+        "swap": 0.1
+      },
+      "errors": {
+        "inapplicable": 92,
+        "not_closer": 23
+      },
+      "total_calls": 1721,
+      "total_prompt_tokens": 1517092,
+      "total_completion_tokens": 317146,
+      "total_tokens": 1834238,
+      "mean_calls": 13.238461538461538,
+      "mean_tokens": 14109.523076923077,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "abl8b_steps_s1": {
+      "n": 130,
+      "accuracy": 0.15384615384615385,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
+        "ferry": 0.4,
+        "floor-tile": 0.0,
+        "gold-miner-typed": 0.0,
+        "grid": 0.4,
+        "grid-visit-all": 0.3,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.1,
+        "satellite": 0.2,
+        "swap": 0.3
+      },
+      "errors": {
+        "format": 2,
+        "inapplicable": 82,
+        "not_closer": 26
+      },
+      "total_calls": 1783,
+      "total_prompt_tokens": 1554348,
+      "total_completion_tokens": 264855,
+      "total_tokens": 1819203,
+      "mean_calls": 13.715384615384615,
+      "mean_tokens": 13993.86923076923,
+      "candidate_coverage": 0.3384615384615385,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "abl8b_steps_s2": {
+      "n": 130,
+      "accuracy": 0.12307692307692308,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.0,
+        "depots": 0.1,
+        "ferry": 0.0,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.1,
+        "grid": 0.3,
+        "grid-visit-all": 0.4,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.2,
+        "rover": 0.1,
+        "satellite": 0.2,
+        "swap": 0.0
+      },
+      "errors": {
+        "format": 10,
+        "inapplicable": 82,
+        "not_closer": 22
+      },
+      "total_calls": 1652,
+      "total_prompt_tokens": 1490430,
+      "total_completion_tokens": 242736,
+      "total_tokens": 1733166,
+      "mean_calls": 12.707692307692307,
+      "mean_tokens": 13332.046153846153,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "abl8b_steps_s3": {
+      "n": 130,
+      "accuracy": 0.13076923076923078,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.1,
+        "ferry": 0.3,
+        "floor-tile": 0.0,
+        "gold-miner-typed": 0.0,
+        "grid": 0.3,
+        "grid-visit-all": 0.4,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.2,
+        "rover": 0.0,
+        "satellite": 0.2,
+        "swap": 0.1
+      },
+      "errors": {
+        "inapplicable": 90,
+        "not_closer": 23
+      },
+      "total_calls": 1808,
+      "total_prompt_tokens": 1604384,
+      "total_completion_tokens": 275951,
+      "total_tokens": 1880335,
+      "mean_calls": 13.907692307692308,
+      "mean_tokens": 14464.115384615385,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "abl8b_vote_s1": {
+      "n": 130,
+      "accuracy": 0.11538461538461539,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.2,
+        "depots": 0.1,
+        "ferry": 0.3,
+        "floor-tile": 0.1,
+        "gold-miner-typed": 0.0,
+        "grid": 0.2,
+        "grid-visit-all": 0.1,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.0,
+        "satellite": 0.1,
+        "swap": 0.3
+      },
+      "errors": {
+        "format": 2,
+        "inapplicable": 93,
+        "not_closer": 20
+      },
+      "total_calls": 635,
+      "total_prompt_tokens": 518261,
+      "total_completion_tokens": 95760,
+      "total_tokens": 614021,
+      "mean_calls": 4.884615384615385,
+      "mean_tokens": 4723.238461538462,
+      "candidate_coverage": 0.3384615384615385,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "abl8b_vote_s2": {
+      "n": 130,
+      "accuracy": 0.1076923076923077,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.3,
+        "depots": 0.1,
+        "ferry": 0.0,
+        "floor-tile": 0.0,
+        "gold-miner-typed": 0.0,
+        "grid": 0.4,
+        "grid-visit-all": 0.3,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.2,
+        "satellite": 0.1,
+        "swap": 0.0
+      },
+      "errors": {
+        "format": 10,
+        "inapplicable": 87,
+        "not_closer": 19
+      },
+      "total_calls": 595,
+      "total_prompt_tokens": 503611,
+      "total_completion_tokens": 89263,
+      "total_tokens": 592874,
+      "mean_calls": 4.576923076923077,
+      "mean_tokens": 4560.569230769231,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "abl8b_vote_s3": {
+      "n": 130,
+      "accuracy": 0.1,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.0,
+        "depots": 0.1,
+        "ferry": 0.3,
+        "floor-tile": 0.1,
+        "gold-miner-typed": 0.0,
+        "grid": 0.2,
+        "grid-visit-all": 0.4,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.0,
+        "satellite": 0.0,
+        "swap": 0.1
+      },
+      "errors": {
+        "inapplicable": 100,
+        "not_closer": 17
+      },
+      "total_calls": 643,
+      "total_prompt_tokens": 536345,
+      "total_completion_tokens": 99617,
+      "total_tokens": 635962,
+      "mean_calls": 4.946153846153846,
+      "mean_tokens": 4892.015384615384,
+      "candidate_coverage": 0.3,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "repro_llama31_8b_direct_bf16_coreweave": {
+      "n": 130,
+      "accuracy": 0.2230769230769231,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.2,
+        "depots": 0.2,
+        "ferry": 0.4,
+        "floor-tile": 0.1,
+        "gold-miner-typed": 0.2,
+        "grid": 0.6,
+        "grid-visit-all": 0.5,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.1,
+        "rover": 0.1,
+        "satellite": 0.3,
+        "swap": 0.2
+      },
+      "errors": {
+        "inapplicable": 69,
+        "not_closer": 32
+      },
+      "total_calls": 130,
+      "total_prompt_tokens": 211684,
+      "total_completion_tokens": 1502,
+      "total_tokens": 213186,
+      "mean_calls": 1.0,
+      "mean_tokens": 1639.8923076923077,
+      "candidate_coverage": 0.0,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "repro_llama31_70b_direct_bedrock": {
       "n": 130,
       "accuracy": 0.3769230769230769,
       "accuracy_by_domain": {
         "alfred": 0.1,
-        "blocksworld-4ops": 0.5,
-        "depots": 0.4,
+        "blocksworld-4ops": 0.2,
+        "depots": 0.3,
         "ferry": 0.4,
-        "floor-tile": 0.4,
-        "gold-miner-typed": 0.1,
-        "grid": 0.7,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.5,
+        "grid": 0.5,
         "grid-visit-all": 0.5,
         "gripper-strips": 0.1,
-        "logistics-strips": 0.1,
-        "rover": 0.2,
-        "satellite": 0.6,
-        "swap": 0.8
+        "logistics-strips": 0.3,
+        "rover": 0.3,
+        "satellite": 0.5,
+        "swap": 1.0
       },
       "errors": {
-        "inapplicable": 49,
+        "inapplicable": 35,
+        "not_closer": 46
+      },
+      "total_calls": 130,
+      "total_prompt_tokens": 212204,
+      "total_completion_tokens": 1663,
+      "total_tokens": 213867,
+      "mean_calls": 1.0,
+      "mean_tokens": 1645.1307692307691,
+      "candidate_coverage": 0.0,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "best_of_n14_8b_s1": {
+      "n": 130,
+      "accuracy": 0.24615384615384617,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.2,
+        "depots": 0.2,
+        "ferry": 0.4,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.2,
+        "grid": 0.6,
+        "grid-visit-all": 0.7,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.1,
+        "satellite": 0.4,
+        "swap": 0.2
+      },
+      "errors": {
+        "inapplicable": 73,
+        "not_closer": 25
+      },
+      "total_calls": 1820,
+      "total_prompt_tokens": 2963576,
+      "total_completion_tokens": 21070,
+      "total_tokens": 2984646,
+      "mean_calls": 14.0,
+      "mean_tokens": 22958.815384615384,
+      "candidate_coverage": 0.0,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "best_of_n14_8b_s2": {
+      "n": 130,
+      "accuracy": 0.23846153846153847,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.2,
+        "ferry": 0.4,
+        "floor-tile": 0.2,
+        "gold-miner-typed": 0.2,
+        "grid": 0.5,
+        "grid-visit-all": 0.6,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.1,
+        "satellite": 0.4,
+        "swap": 0.4
+      },
+      "errors": {
+        "inapplicable": 67,
         "not_closer": 32
       },
-      "total_calls": 1484,
-      "total_prompt_tokens": 1213832,
-      "total_completion_tokens": 143984,
-      "total_tokens": 1357816,
-      "mean_calls": 11.415384615384616,
-      "mean_tokens": 10444.738461538462,
-      "candidate_coverage": 0.5923076923076923,
+      "total_calls": 1820,
+      "total_prompt_tokens": 2963576,
+      "total_completion_tokens": 21127,
+      "total_tokens": 2984703,
+      "mean_calls": 14.0,
+      "mean_tokens": 22959.253846153846,
+      "candidate_coverage": 0.0,
       "score_separation": {
-        "auc": 0.5583020637898687,
-        "mean_correct_score": 3.975609756097561,
-        "mean_wrong_score": 3.4076923076923076,
-        "n_correct_candidates": 82,
-        "n_wrong_candidates": 130
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "best_of_n14_8b_s3": {
+      "n": 130,
+      "accuracy": 0.2230769230769231,
+      "accuracy_by_domain": {
+        "alfred": 0.0,
+        "blocksworld-4ops": 0.1,
+        "depots": 0.2,
+        "ferry": 0.5,
+        "floor-tile": 0.1,
+        "gold-miner-typed": 0.2,
+        "grid": 0.5,
+        "grid-visit-all": 0.5,
+        "gripper-strips": 0.0,
+        "logistics-strips": 0.0,
+        "rover": 0.1,
+        "satellite": 0.4,
+        "swap": 0.3
+      },
+      "errors": {
+        "inapplicable": 74,
+        "not_closer": 27
+      },
+      "total_calls": 1820,
+      "total_prompt_tokens": 2963576,
+      "total_completion_tokens": 21134,
+      "total_tokens": 2984710,
+      "mean_calls": 14.0,
+      "mean_tokens": 22959.30769230769,
+      "candidate_coverage": 0.0,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
+      }
+    },
+    "structured_8b": {
+      "n": 130,
+      "accuracy": 0.26153846153846155,
+      "accuracy_by_domain": {
+        "alfred": 0.1,
+        "blocksworld-4ops": 0.2,
+        "depots": 0.2,
+        "ferry": 0.5,
+        "floor-tile": 0.1,
+        "gold-miner-typed": 0.0,
+        "grid": 0.5,
+        "grid-visit-all": 0.5,
+        "gripper-strips": 0.1,
+        "logistics-strips": 0.4,
+        "rover": 0.3,
+        "satellite": 0.3,
+        "swap": 0.2
+      },
+      "errors": {
+        "format": 2,
+        "inapplicable": 63,
+        "not_closer": 31
+      },
+      "total_calls": 130,
+      "total_prompt_tokens": 224164,
+      "total_completion_tokens": 45698,
+      "total_tokens": 269862,
+      "mean_calls": 1.0,
+      "mean_tokens": 2075.8615384615387,
+      "candidate_coverage": 0.0,
+      "score_separation": {
+        "auc": null,
+        "mean_correct_score": null,
+        "mean_wrong_score": null,
+        "n_correct_candidates": 0,
+        "n_wrong_candidates": 0
       }
     }
   },
@@ -259,6 +1953,99 @@
       },
       "total_calls_mean": 1747.6666666666667,
       "total_tokens_mean": 1783904.3333333333
+    }
+  },
+  "ablations": {
+    "abl8b_b28": {
+      "n_seeds": 3,
+      "accuracy_mean": 0.15384615384615385,
+      "accuracy_std": 0.020351933162035315,
+      "calls_mean": 23.946153846153845,
+      "calls_std": 1.2459638981539383
+    },
+    "abl8b_b7": {
+      "n_seeds": 3,
+      "accuracy_mean": 0.158974358974359,
+      "accuracy_std": 0.011750194089630359,
+      "calls_mean": 6.8076923076923075,
+      "calls_std": 0.2573189028258113
+    },
+    "abl8b_d1": {
+      "n_seeds": 3,
+      "accuracy_mean": 0.158974358974359,
+      "accuracy_std": 0.011750194089630359,
+      "calls_mean": 6.47948717948718,
+      "calls_std": 0.27919297618084493
+    },
+    "abl8b_d3": {
+      "n_seeds": 3,
+      "accuracy_mean": 0.158974358974359,
+      "accuracy_std": 0.011750194089630359,
+      "calls_mean": 13.564102564102564,
+      "calls_std": 0.5615560236101649
+    },
+    "abl8b_fewshot": {
+      "n_seeds": 3,
+      "accuracy_mean": 0.15384615384615385,
+      "accuracy_std": 0.015384615384615385,
+      "calls_mean": 13.535897435897436,
+      "calls_std": 0.3797642785963823
+    },
+    "abl8b_fixed": {
+      "n_seeds": 3,
+      "accuracy_mean": 0.18974358974358976,
+      "accuracy_std": 0.011750194089630359,
+      "calls_mean": 12.769230769230768,
+      "calls_std": 0.6533029417718936
+    },
+    "abl8b_k2": {
+      "n_seeds": 3,
+      "accuracy_mean": 0.16153846153846155,
+      "accuracy_std": 0.015384615384615385,
+      "calls_mean": 12.166666666666666,
+      "calls_std": 0.44947920773424516
+    },
+    "abl8b_k5": {
+      "n_seeds": 3,
+      "accuracy_mean": 0.11538461538461539,
+      "accuracy_std": 0.020351933162035315,
+      "calls_mean": 13.233333333333334,
+      "calls_std": 0.40414518843273756
+    },
+    "abl8b_nopredict": {
+      "n_seeds": 3,
+      "accuracy_mean": 0.158974358974359,
+      "accuracy_std": 0.029122606901539866,
+      "calls_mean": 3.8897435897435897,
+      "calls_std": 0.11925144568444608
+    },
+    "abl8b_noprune": {
+      "n_seeds": 3,
+      "accuracy_mean": 0.158974358974359,
+      "accuracy_std": 0.011750194089630359,
+      "calls_mean": 13.57948717948718,
+      "calls_std": 0.5352283886416057
+    },
+    "abl8b_random": {
+      "n_seeds": 3,
+      "accuracy_mean": 0.13333333333333333,
+      "accuracy_std": 0.031088091417902926,
+      "calls_mean": 12.769230769230768,
+      "calls_std": 0.6533029417718936
+    },
+    "abl8b_steps": {
+      "n_seeds": 3,
+      "accuracy_mean": 0.13589743589743591,
+      "accuracy_std": 0.016012815380508715,
+      "calls_mean": 13.443589743589744,
+      "calls_std": 0.644518688053724
+    },
+    "abl8b_vote": {
+      "n_seeds": 3,
+      "accuracy_mean": 0.1076923076923077,
+      "accuracy_std": 0.007692307692307693,
+      "calls_mean": 4.802564102564102,
+      "calls_std": 0.19781847714857376
     }
   }
 }

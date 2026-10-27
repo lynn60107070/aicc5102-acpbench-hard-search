@@ -34,6 +34,14 @@ def accuracy(rows):
     return sum(bool(row["correct"]) for row in rows) / len(rows)
 
 
+def within_95_binomial_interval(paper_accuracy, reproduced_accuracy, n=130):
+    """Check whether reproduced accuracy is inside the paper's 95% binomial interval."""
+    standard_error = (paper_accuracy * (1 - paper_accuracy) / n) ** 0.5
+    lower = paper_accuracy - 1.96 * standard_error
+    upper = paper_accuracy + 1.96 * standard_error
+    return lower <= reproduced_accuracy <= upper
+
+
 def candidate_coverage(rows, documents):
     """Fraction of questions with a correct root candidate proposed."""
     proposed_correct = 0
@@ -470,11 +478,11 @@ def write_main_results_table(run_rows, output_dir):
     lines = [
         r"\begin{table}[ht]",
         r"\centering",
-        r"\caption{Direct, structured, best-of-N, and search results. Multi-seed methods report mean accuracy and sample standard deviation. McNemar exact p-values compare each available run with its model's direct baseline.}",
+        r"\caption{Direct, structured, best-of-N, and search results. Controls were run for 8B only. Multi-seed methods report mean accuracy and sample standard deviation. McNemar exact p-values compare each run with the direct baseline. Calls and tokens are reported per question.}",
         r"\label{tab:main-results}",
         r"\begin{tabular}{llrrrr}",
         r"\toprule",
-        r"Model & Method & Accuracy ($\pm$ std.) & Calls & Tokens & McNemar $p$ \\",
+        r"Model & Method & Accuracy ($\pm$ std.) & Calls / question & Tokens / question & McNemar $p$ \\",
         r"\midrule",
     ]
 
@@ -494,13 +502,15 @@ def write_main_results_table(run_rows, output_dir):
             return
 
         calls, tokens = cost(rows)
+        calls /= len(rows)
+        tokens /= len(rows)
         p_text = "--"
         if direct_rows:
             p_text = f"{compare_direct_to_search(direct_rows, rows)['p_value']:.3f}"
 
         lines.append(
             f"{model.upper()} & {method} & {accuracy(rows):.3f} "
-            f"& {calls} & {tokens} & {p_text} " + r"\\"
+            f"& {calls:.1f} & {tokens:.0f} & {p_text} " + r"\\"
         )
 
     def append_multiple(model, method, runs, direct_rows=None):
@@ -509,7 +519,10 @@ def write_main_results_table(run_rows, output_dir):
             return
 
         accuracies = [accuracy(rows) for _, rows in runs]
-        call_totals, token_totals = zip(*(cost(rows) for _, rows in runs))
+        call_totals, token_totals = zip(*(
+            (cost(rows)[0] / len(rows), cost(rows)[1] / len(rows))
+            for _, rows in runs
+        ))
         p_values = (
             [
                 compare_direct_to_search(direct_rows, rows)["p_value"]
@@ -545,18 +558,19 @@ def write_main_results_table(run_rows, output_dir):
         )
         append_multiple(model, "Search", search_runs, direct_rows)
 
-        structured_rows = run_rows.get(f"structured_{model}")
-        append_single(model, "Structured", structured_rows, direct_rows)
+        if model == "8b":
+            structured_rows = run_rows.get("structured_8b")
+            append_single(model, "Structured", structured_rows, direct_rows)
 
-        best_of_n_runs = sorted(
-            [
-                (name, rows)
-                for name, rows in run_rows.items()
-                if re.fullmatch(rf"best_of_n\d+_{model}_s\d+", name)
-            ],
-            key=lambda item: item[0],
-        )
-        append_multiple(model, "Best-of-N", best_of_n_runs, direct_rows)
+            best_of_n_runs = sorted(
+                [
+                    (name, rows)
+                    for name, rows in run_rows.items()
+                    if re.fullmatch(r"best_of_n\d+_8b_s\d+", name)
+                ],
+                key=lambda item: item[0],
+            )
+            append_multiple(model, "Best-of-N", best_of_n_runs, direct_rows)
 
         if model == "8b":
             lines.append(r"\midrule")
@@ -610,9 +624,9 @@ def write_reproduction_table(run_rows, output_dir):
         r"\centering",
         r"\caption{Paper reference accuracies and reproduced results on ACPBench-Hard.}",
         r"\label{tab:reproduction}",
-        r"\begin{tabular}{llrr}",
+        r"\begin{tabular}{llrrl}",
         r"\toprule",
-        r"Model & Task & Paper accuracy & Reproduced accuracy \\",
+        r"Model & Task & Paper accuracy & Reproduced accuracy & Within 95\% interval \\",
         r"\midrule",
     ]
 
@@ -621,11 +635,26 @@ def write_reproduction_table(run_rows, output_dir):
 
         if task == "Progression":
             score = load_progression_score(run_name)
-            reproduced = f"{score:.3f}" if score is not None else "--"
+            reproduced_value = score
         else:
-            reproduced = f"{accuracy(rows):.3f}" if rows else "--"
+            reproduced_value = accuracy(rows) if rows else None
+
+        reproduced = (
+            f"{reproduced_value:.3f}"
+            if reproduced_value is not None
+            else "--"
+        )
+
+        within_interval = (
+            r"\checkmark"
+            if reproduced_value is not None
+            and within_95_binomial_interval(paper_accuracy, reproduced_value)
+            else "--"
+        )
+
         lines.append(
-            f"{model} & {task} & {paper_accuracy:.3f} & {reproduced} " + r"\\"
+            f"{model} & {task} & {paper_accuracy:.3f} "
+            f"& {reproduced} & {within_interval} " + r"\\"
         )
 
     lines.extend([
@@ -649,41 +678,56 @@ def write_ablation_table(ablations, output_dir):
         r"\toprule",
         r"Setting & Accuracy ($\pm$ std.) & Mean calls / question \\",
         r"\midrule",
+        r"Frozen search (reference) & 0.159 $\pm$ 0.012 & 13.4 \\",
     ]
 
-    for setting, metrics in sorted(ablations.items()):
-        label = setting.removeprefix("abl8b_")
-        label_map = {
-            "b7": "budget=7",
-            "b28": "budget=28",
-            "d1": "depth=1",
-            "d3": "depth=3",
-            "fewshot": "few-shot",
-            "fixed": "scoring=fixed",
-            "k2": "branching=2",
-            "k5": "branching=5",
-            "nopredict": "no prediction",
-            "noprune": "no pruning",
-            "random": "scoring=random",
-            "steps": "scoring=steps",
-            "vote": "scoring=vote",
-        }
-        label = label_map.get(label, label.replace("_", r"\_"))
-        if metrics["n_seeds"] != 3:
-            accuracy_text = (
-                f'{metrics["accuracy_mean"]:.3f} $\\pm$ '
-                f'{metrics["accuracy_std"]:.3f} '
-                f'({metrics["n_seeds"]} seeds)'
-            )
-        else:
-            accuracy_text = (
-                f'{metrics["accuracy_mean"]:.3f} $\\pm$ '
-                f'{metrics["accuracy_std"]:.3f}'
-            )
+    group_order = [
+        ("Scoring variants", ["fixed", "random", "steps", "vote"]),
+        ("Tree shape ($k$, $d$)", ["k2", "k5", "d1", "d3"]),
+        ("Budget", ["b7", "b28"]),
+        ("Prompt", ["fewshot"]),
+        ("Other search mechanics", ["nopredict", "noprune"]),
+    ]
 
-        lines.append(
-            f'{label} & {accuracy_text} & {metrics["calls_mean"]:.1f} \\\\'
-        )
+    for group_name, settings in group_order:
+        lines.append(rf"\multicolumn{{3}}{{l}}{{\textit{{{group_name}}}}} \\")
+        for setting in settings:
+            full_setting = f"abl8b_{setting}"
+            if full_setting not in ablations:
+                continue
+            metrics = ablations[full_setting]
+            label = setting.removeprefix("abl8b_")
+            label_map = {
+                "b7": "budget=7",
+                "b28": "budget=28",
+                "d1": "depth=1",
+                "d3": "depth=3",
+                "fewshot": "few-shot",
+                "fixed": "scoring=fixed",
+                "k2": "branching=2",
+                "k5": "branching=5",
+                "nopredict": "no prediction",
+                "noprune": "no pruning",
+                "random": "scoring=random",
+                "steps": "scoring=steps",
+                "vote": "scoring=vote",
+            }
+            label = label_map.get(label, label.replace("_", r"\_"))
+            if metrics["n_seeds"] != 3:
+                accuracy_text = (
+                    f'{metrics["accuracy_mean"]:.3f} $\\pm$ '
+                    f'{metrics["accuracy_std"]:.3f} '
+                    f'({metrics["n_seeds"]} seeds)'
+                )
+            else:
+                accuracy_text = (
+                    f'{metrics["accuracy_mean"]:.3f} $\\pm$ '
+                    f'{metrics["accuracy_std"]:.3f}'
+                )
+
+            lines.append(
+                f'{label} & {accuracy_text} & {metrics["calls_mean"]:.1f} \\\\'
+            )
 
     lines.extend([
         r"\bottomrule",

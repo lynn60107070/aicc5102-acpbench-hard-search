@@ -478,11 +478,12 @@ def write_main_results_table(run_rows, output_dir):
     lines = [
         r"\begin{table}[ht]",
         r"\centering",
-        r"\caption{Direct, structured, best-of-N, and search results. Controls were run for 8B only. Multi-seed methods report mean accuracy and sample standard deviation. McNemar exact p-values compare each run with the direct baseline. Calls and tokens are reported per question.}",
+        r"\small",
+        r"\caption{Direct, structured, best-of-N, and search results. Controls were run for 8B only. Multi-seed methods report mean accuracy and sample standard deviation. McNemar exact p-values compare each run with the direct baseline. Calls and tokens are per question.}",
         r"\label{tab:main-results}",
         r"\begin{tabular}{llrrrr}",
         r"\toprule",
-        r"Model & Method & Accuracy ($\pm$ std.) & Calls / question & Tokens / question & McNemar $p$ \\",
+        r"Model & Method & Accuracy ($\pm$ std.) & Calls & Tokens & McNemar $p$ \\",
         r"\midrule",
     ]
 

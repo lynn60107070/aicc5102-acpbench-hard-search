@@ -30,3 +30,6 @@ paper/*.synctex.gz
 
 # byte-identical duplicate of proposal/AICC_project_proposal.pdf
 proposal/AICC_project_proposal (1).pdf
+
+# local editor/assistant settings
+.claude/

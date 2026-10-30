@@ -167,10 +167,10 @@ lm-eval --model local-chat-completions ^
 | D1 | Model access not specified per model (API, or HF transformers on 2×A100) | Llama 3.1 8B via OpenRouter, pinned to CoreWeave (bf16) with `ACP_PROVIDER` | No local GPU; Groq retired the model 16 Aug 2026. Unpinned, OpenRouter mixed providers: run 1 (21 Oct) went to Groq 97 / DeepInfra 23 / Novita 9 / Cloudflare 1, and 3 of those 4 serve fp8 | Mixed run 0.192 vs bf16 run 0.223 (paper 0.25). The two runs disagree on 16 questions (6 right only in run 1, 10 right only in run 2): precision visibly changes answers, but the accuracy difference is not significant (exact McNemar p = 0.45, `experiments/compare.py`) |
 | D1b | (same as D1) | Llama 3.1 70B via OpenRouter → Amazon Bedrock | Only 70B providers are DeepInfra (fp8, blocked) and Bedrock (precision unspecified) | Progression 0.608 vs paper 0.65, inside the interval |
 | D2 | 5 stop sequences (A.5) | lm-eval's API mode sends only the first 4 (drops `"Q:"`) | OpenAI-style APIs accept at most 4 | Probably negligible |
-| D3 | Chat template use not stated | `--apply_chat_template` (chat messages) | Required by the chat API | Unknown; if outside the interval, rerun without it |
+| D3 | Chat template use not stated | `--apply_chat_template` (chat messages) | Required by the chat API | All four results inside the interval, so kept |
 | D4 | Paper's own YAML is in its supplementary material | lm-eval's built-in `acpbench` task config | Supplementary not yet checked | Likely identical (same authors) — verify |
 | D5 | Paper ran on Linux | Windows, with the temp-file fix to the official validator | Plain lm-eval crashes on Windows | None: same scoring code, verified against the answer key |
-| D6 | Dataset as of paper (v2, Feb 2026) | `ibm-research/acp_bench` as of download date | Dataset may have been updated | Size matches (130); record the download date/revision |
+| D6 | Dataset as of paper (v2, Feb 2026) | `ibm-research/acp_bench` as of download date | Dataset may have been updated | Revision `05e5883`, downloaded 4 Oct 2026. Size matches (130); the independent macOS run gave identical answers |
 
 **What can't be reproduced, and why (for the limitations section)**
 - Closed-model rows: API versions change or are retired (o1-preview is gone), so the original models no longer exist.

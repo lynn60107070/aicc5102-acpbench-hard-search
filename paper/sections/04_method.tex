@@ -53,11 +53,7 @@ candidates compete (we test this in the ablations).
 \paragraph{What the search may not use.}
 Every state and every judgment in the search comes from the LLM: there is no planner, simulator,
 applicability checker, PDDL description, or oracle, and the official validator is used only to score
-final answers. This distinguishes our setting from approaches that delegate planning or state
-expansion to symbolic tools, such as LLM+P~\citep{liu2023llmp} and Thought of
-Search~\citep{katz2024tos}, and extends search over LLM-generated states, as in Tree of
-Thoughts~\citep{yao2023tot} and RAP~\citep{hao2023rap}, to open-ended Next Action without a
-verifier.
+final answers (Section~\ref{sec:related}).
 
 \paragraph{Evaluator variants.}
 To test which component matters, we compare the frozen evaluator with alternatives that keep the

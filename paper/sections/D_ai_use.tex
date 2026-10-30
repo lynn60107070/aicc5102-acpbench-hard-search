@@ -34,7 +34,7 @@ suggestions.}
 (i) provide the macOS-compatible shell script equivalent of the Windows batch file to run the official 
 evaluation harness across all 130 test instances;
 (ii) assist in drafting, structuring and formatting the implementation code and prompt templates for 
-the structured-prompting baseline and the best-$N$ sampling baseline;
+the structured-prompting baseline and the best-of-$N$ sampling baseline;
 (iii) assist in analyzing and interpreting output metrics, score discrepancies and comparison logs from 
 the baseline reproduction runs across all 130 test instances;
 (iv) compile literature review notes, reference details and bibliographic entries for the Related Work
@@ -42,7 +42,7 @@ the baseline reproduction runs across all 130 test instances;
 (v) draft and refine the Related Work narrative and the reproduction methodology section which I then checked
 and corrected against our proposal, results and code.
 \emph{Decisions I made:} verifying the exact configuration settings for the baseline execution; deciding to build 
-upon `official_messages(instance)` rather than `instance.context` or `instance.question`.
+upon \texttt{official\_messages(instance)} rather than \texttt{instance.context} or \texttt{instance.question}.
 \emph{What I changed and checked:} Manually verified all code implementations and prompt templates 
 against the official repository constraints; checked all output metrics and validation logs from the 
 secondary machine runs; and thoroughly rewrote and edited the drafted sections to ensure they accurately 

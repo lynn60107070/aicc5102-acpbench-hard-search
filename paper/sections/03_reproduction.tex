@@ -1,4 +1,4 @@
-% OWNER: Faheema (F7). Target: ~0.75 page. Source of truth: README section 5 (fidelity log) and
+% OWNER: Faheema (F7). Target: ~0.6 page. Source of truth: README section 5 (fidelity log) and
 % results/final/. Cite the paper AND the code (required by the brief): \citep{kokel2025acpbenchhard},
 % \citep{acpbench_code}, the harness \citep{gao2024lmeval}, the dataset \citep{acpbench_data}.
 % Cover:
@@ -21,42 +21,33 @@ We reproduce the Next Action task of ACPBench-Hard~\citep{kokel2025acpbenchhard}
 authors' code~\citep{acpbench_code}, the dataset configuration \texttt{acp\_nexta\_gen}
 \citep{acpbench_data} and the LM Evaluation Harness~\citep{gao2024lmeval}.
 
-\paragraph{Task and validator:} 
+\paragraph{Task and validator.}
 A question describes a state and a goal in words, and the model answers with one action. An action
 that takes state $s$ to state $t$ is correct if it is applicable in $s$ and
 $h^*(s)-h^*(t)=1$, where $h^*$ is the optimal distance to the goal, that is, the minimum number of
 actions still needed. Only the validator uses $h^*$; the model never sees it. The test set has 130
 questions, ten from each of 13 domains.
 
-\paragraph{Setup:}
+\paragraph{Setup.}
 We follow the task configuration of the LM Evaluation Harness (version 0.4.13): the official
-2-shot prompt, greedy decoding and at most 1000 generated tokens. Because the model is served
-through a chat API, we use the chat template. Llama~3.1~8B Instruct \citep{dubey2024llama3} is
-served through OpenRouter and pinned to a provider that runs it in bf16 (CoreWeave).
+2-shot prompt, greedy decoding and at most 1000 generated tokens. Because the models are served
+through a chat API, we use the chat template. Llama~3.1~8B Instruct~\citep{dubey2024llama3} is
+served through OpenRouter, pinned to a provider that runs it in bf16 (CoreWeave), and Llama~3.1~70B
+Instruct through Amazon Bedrock. As a sanity check we also reproduce the Progression task.
 
-\paragraph{Match criterion:}
+\paragraph{Match criterion and results.}
 We count a result as reproduced if it lies inside the 95\% binomial confidence interval around the
-value reported in the paper, computed for our number of questions ($n=130$).
-
-\paragraph{Results:}
-As summarized in Table~\ref{tab:reproduction}, all four reproduction targets successfully 
-fall within their respective 95\% confidence intervals around the paper's values.
+value reported in the paper, computed for our $n=130$ questions. All four results fall inside
+their intervals (Table~\ref{tab:reproduction}). An independent run of the official harness on a
+second machine (macOS) gave identical answers on all 130 questions; a checking script
+(\texttt{scripts/check\_official\_run.py}) confirmed that it used the paper's settings.
 
 \input{tables/reproduction}
 
-\paragraph{Independent check:}
-We also ran the official LM Evaluation Harness on a second machine (macOS). It gave identical
-answers on all 130 questions. The checking script (\texttt{scripts/check\_official\_run.py})
-confirmed that the run used the paper's settings on all 130 questions and compared it with our
-run.
-
 \paragraph{Discrepancies.}
-Our setup differs from the paper's in a few small ways. The paper does not say how it ran the
-models. We use OpenRouter, which can send a request to different providers, and some of them run
-the model in a lower-precision format (fp8). A run that mixed providers scored 0.192 and the run
-pinned to a bf16 provider scored 0.223. The two runs gave different answers on 16 questions, but
-the difference in accuracy is not significant (exact McNemar $p=0.45$), so we pinned the provider.
-The paper uses five stop sequences, but the API accepts only four, so one is dropped. The paper
-also does not say whether it used the chat template. We do, because the chat API requires it.
-Finally, the validator crashes on Windows, so we fixed how it writes a temporary file. The scoring
-itself is unchanged.
+The paper does not say which models were run through an API and which locally. OpenRouter can
+route a request to providers that run the model in fp8: a run that mixed providers scored 0.192,
+against 0.223 when pinned to bf16. The runs disagree on 16 questions; although the difference is
+not significant (exact McNemar $p=0.45$), precision visibly changes answers, so we pinned the bf16
+provider. The API accepts only four of the paper's five stop sequences, and we use the chat
+template, which the paper does not mention. Appendix~\ref{app:fidelity} lists all deviations.

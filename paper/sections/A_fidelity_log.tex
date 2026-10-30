@@ -2,22 +2,22 @@
 \section{Reproduction Fidelity Log}
 \label{app:fidelity}
 
-\begin{table*}[t]
+\begin{table}[ht]
 \centering
-\caption{Known deviations from the original paper's setup and their expected effects.}
-\label{app:fidelity}
-\small
-\begin{tabular}{|p{0.03\textwidth}|p{0.22\textwidth}|p{0.22\textwidth}|p{0.25\textwidth}|p{0.18\textwidth}|}
-\hline
-\textbf{\#} & \textbf{Paper} & \textbf{Ours} & \textbf{Why} & \textbf{Expected Effect} \\ \hline
-D1 & Model access not specified per model (API or HF transformers on $2\times$A100) & Llama 3.1 8B via OpenRouter, pinned to CoreWeave (bf16) with \texttt{ACP\_PROVIDER} & No local GPU; Groq retired the model on Aug 16, 2026. Unpinned OpenRouter mixed providers (fp8 vs bf16). & Mixed run 0.192 vs bf16 run 0.223 (paper 0.25). Precision visibly changes answers, but accuracy difference is not significant (exact McNemar $p = 0.45$). \\ \hline
-D1b & (same as D1) & Llama 3.1 70B via OpenRouter $\rightarrow$ Amazon Bedrock & Only 70B providers are DeepInfra (fp8, blocked) and Bedrock (precision unspecified). & Progression 0.608 vs paper 0.65, inside the interval. \\ \hline
-D2 & 5 stop sequences (A.5) & lm-eval's API mode sends only the first 4 (drops \texttt{"Q:"}) & OpenAI-style APIs accept at most 4. & Probably negligible. \\ \hline
-D3 & Chat template use not stated & \texttt{--apply\_chat\_template} (chat messages) & Required by the chat API. & Unknown; if outside the interval, rerun without it. \\ \hline
-D4 & Paper's own YAML is in its supplementary material & lm-eval's built-in \texttt{acpbench} task config & Supplementary not yet checked. & Likely identical (same authors) --- verify. \\ \hline
-D5 & Paper ran on Linux & Windows, with the temp-file fix to the official validator & Plain lm-eval crashes on Windows. & None: same scoring code, verified against the answer key. \\ \hline
-D6 & Dataset as of paper (v2, Feb 2026) & \texttt{ibm-research/acp\_bench} as of download date & Dataset may have been updated. & Size matches (130); record download date/revision. \\ \hline
+\caption{Known deviations from the original paper's setup and their effects.}
+\label{tab:fidelity}
+\footnotesize
+\begin{tabular}{@{}p{0.04\textwidth}p{0.17\textwidth}p{0.22\textwidth}p{0.21\textwidth}p{0.23\textwidth}@{}}
+\toprule
+\# & Paper & Ours & Why & Effect \\
+\midrule
+D1 & Model access not specified per model (API or HF transformers on $2\times$A100) & Llama 3.1 8B via OpenRouter, pinned to CoreWeave (bf16) & No local GPU; Groq retired the model on 16 Aug 2026. Unpinned, OpenRouter mixed fp8 and bf16 providers & Mixed run 0.192 vs bf16 run 0.223 (paper 0.25). Precision changes answers, but the difference is not significant (exact McNemar $p = 0.45$) \\
+D1b & (same as D1) & Llama 3.1 70B via OpenRouter, pinned to Amazon Bedrock & The only other 70B provider (DeepInfra) serves fp8; Bedrock's precision is unspecified & Next Action 0.377 vs 0.42 and Progression 0.608 vs 0.65, both inside the interval \\
+D2 & 5 stop sequences & lm-eval's API mode sends the first 4 (drops \texttt{"Q:"}) & OpenAI-style APIs accept at most 4 & Probably negligible \\
+D3 & Chat template use not stated & \texttt{--apply\_chat\_template} & Required by the chat API & All four results inside the interval, so kept \\
+D4 & Paper's own task YAML in its supplementary material & lm-eval's built-in \texttt{acpbench} task config & Supplementary material not checked & Likely identical (same authors) \\
+D5 & Linux & Windows, with a temporary-file fix to the official validator & The unmodified validator crashes on Windows & None: same scoring code, verified against the answer key \\
+D6 & Dataset as of the paper (v2, Feb 2026) & \texttt{ibm-research/\allowbreak acp\_bench}, revision \texttt{05e5883}, downloaded 4 Oct 2026 & The dataset may have been updated & Same size (130); the independent macOS run gave identical answers \\
+\bottomrule
 \end{tabular}
-\end{table*}
-
-
+\end{table}

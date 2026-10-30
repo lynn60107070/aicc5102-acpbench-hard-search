@@ -68,5 +68,5 @@ action grammar takes the first action it finds and the reasoning contains a cand
 
 \paragraph{Best-of-$N$.}
 There is no new prompt: each of the $N$ calls uses the direct-generation prompt as it is, with the
-official stop sequences, sampled at temperature $0.7$ and at most 1000 tokens. Each response is parsed to extract the action in bechmark's required format
+official stop sequences, sampled at temperature $0.7$ and at most 1000 tokens. Each response is parsed to extract the action in the benchmark's required format
 and the most frequent action is returned ($N=14$ in the main comparison).

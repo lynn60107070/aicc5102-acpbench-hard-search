@@ -50,3 +50,23 @@ sentences, then end with a final line of the form: Best: N}
 \promptbox{How good is applying \textit{<action>} next for reaching the goal, on a scale from 0 (not
 applicable or useless) to 10 (certainly the right next action)? Reason briefly in at most three
 sentences, then end with a final line of the form: Score: N}
+
+\subsection{Structured prompting and best-of-$N$}
+
+\paragraph{Structured prompting.}
+The direct-generation chat, with the instruction below added to the last user message only, so the
+two in-context examples stay unchanged. One greedy call, at most 1000 tokens with no stop sequence:
+\promptbox{Please solve this by reasoning step by step. You must write out your reasoning before
+giving the final answer:\\
+1. State: Summarize the current state based on the context.\\
+2. Goal: State the objective to be achieved.\\
+3. Candidate action: Propose a potential next action.\\
+4. Progress: Explain how this action makes progress toward the goal.\\
+5. Final action: Provide the final action in the exact format: Final action: (your action here)}
+Before scoring, only the text after the last ``Final action:'' is kept, because the benchmark's
+action grammar takes the first action it finds and the reasoning contains a candidate action earlier.
+
+\paragraph{Best-of-$N$.}
+There is no new prompt: each of the $N$ calls uses the direct-generation prompt as it is, with the
+official stop sequences, sampled at temperature $0.7$ and at most 1000 tokens. Each response is parsed to extract the action in bechmark's required format
+and the most frequent action is returned ($N=14$ in the main comparison).

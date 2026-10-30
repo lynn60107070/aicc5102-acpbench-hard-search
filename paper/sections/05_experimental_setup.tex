@@ -1,4 +1,4 @@
-% OWNER: Aisha (A8). Target: ~0.5 page.
+﻿% OWNER: Aisha (A8). Target: ~0.5 page.
 % Cover:
 % - Data: test split (130) for all reported results; validation split (40, disjoint) for tuning only.
 % - Models: Llama 3.1 8B Instruct (main, bf16) and 70B (second comparison).
@@ -11,4 +11,8 @@
 \section{Experimental Setup}
 \label{sec:setup}
 
-To compare methods under similar inference budgets, we set the Best-of-N parameter to $N = 14$, producing 14 candidates per question. This approximately matches the search method's mean of 13.4 LLM calls per question for Llama 3.1 8B and 11.4 for Llama 3.1 70B. The Best-of-N 8B runs used an average of 14.0 calls and 22,959 tokens per question. We report both calls and token usage to make the computational cost of each method explicit.
+We evaluate the methods on a test split of 130 questions, reserving a disjoint validation split of 40 questions for tuning. Our experiments use Llama~3.1~8B Instruct as the primary model and Llama~3.1~70B for a second comparison. We compare direct generation, structured prompting, Best-of-$N$, and LLM-guided search, including search ablations.
+
+For the main comparison, we set the search call budget to $B=14$ and the Best-of-$N$ parameter to $N=14$. On Llama~3.1~8B, search averages 13.4 calls per question because some searches terminate early, while Best-of-$N$ averages 14.0 calls. Their token costs differ: search uses an average of 13,722 tokens per question, compared with 22,959 for Best-of-$N$. We therefore also examine robustness under a shared cap of 14,000 tokens per question. Under this cap, search averages approximately 11,230 tokens and Best-of-$N$ approximately 12,348 tokens per question.
+
+We report accuracy, resource use in calls and tokens, and error categories (format errors, inapplicable actions, and actions that do not move closer to the goal). For search, we also measure whether a correct candidate is proposed, as an analysis metric that uses the answer key and is not available at inference time. Sampled methods are evaluated with seeds 1, 2, and 3, with results summarised by their mean and standard deviation; direct generation is greedy and deterministic. We use the per-question paired exact McNemar test to compare methods, implemented in \texttt{experiments/compare.py} \citep{mcnemar1947}.

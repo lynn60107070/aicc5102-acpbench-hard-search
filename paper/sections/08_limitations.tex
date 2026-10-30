@@ -1,11 +1,7 @@
-% OWNER: Aisha (A8). Target: ~0.4 page. Draw on README section 5 ("What can't be reproduced").
-% Cover:
-% - Reproduction scope: one task in full (+ Progression); closed-model rows not reproducible
-%   (retired API versions); exact numbers not bit-for-bit reproducible across hardware/precision;
-%   unreported settings (chat template, precision); 70B via a provider with unstated precision.
-% - Extension: two model sizes, one benchmark task, 130 test questions (wide intervals); prompts
-%   tuned on 40 validation questions; budgets limited by cost.
+% OWNER: Aisha (A8). Target: ~0.4 page.
 \section{Limitations}
 \label{sec:limitations}
 
-\todo{Limitations (Aisha).}
+Our reproduction has several limitations. We reproduced one benchmark task in full, together with the Progression task, but some closed-model results could not be reproduced because the original API versions had been retired. Exact numerical replication is also difficult across hardware and numerical precision settings. Some implementation details, including the chat template and precision used in the original experiments, were not reported. The 70B results were obtained through a provider whose numerical precision was not specified.
+
+Our extensions are also limited in scope. We evaluate two model sizes on a single benchmark task with 130 test questions, so the results may not generalise to other tasks or models, and the relatively small test set limits statistical precision. Prompt choices were tuned using 40 validation questions, which may influence performance on this benchmark. Finally, financial constraints limited the inference budgets and the number of experiments we could run. These findings should therefore be interpreted as evidence about the tested setup rather than as a general conclusion about search methods for language models.

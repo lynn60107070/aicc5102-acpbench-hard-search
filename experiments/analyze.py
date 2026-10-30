@@ -425,8 +425,10 @@ def write_latex_tables(summaries, aggregated, output_dir):
             continue
 
         model = match.group(1)
-        for error_type, count in summary.get("errors", {}).items():
-            error_counts[model][error_type].append(count)
+        for error_type in ("format", "inapplicable", "not_closer"):
+            error_counts[model][error_type].append(
+                summary.get("errors", {}).get(error_type, 0)
+            )
 
     error_types = sorted({
         error_type

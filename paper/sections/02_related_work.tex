@@ -11,4 +11,55 @@
 \section{Related Work}
 \label{sec:related}
 
-\todo{Related work (Faheema).}
+paragraph{Planning benchmarks for LLMs:}
+PlanBench~\citep{valmeekam2023planbench} evaluates LLMs on a set of planning and
+reasoning-about-change tasks, such as plan generation, plan verification and reasoning about plan
+execution, using domains such as Blocksworld and Logistics. ACPBench~\citep{kokel2025acpbench} instead 
+breaks the complex task of generating a plan into separate small reasoning tasks, in the simplest form 
+of yes/no or multiple-choice questions. ACPBench-Hard \citep{kokel2025acpbenchhard} turns these into 
+open-ended generative questions over 13 PDDL domains, adds the Next Action task and scores answers with 
+symbolic validators; it evaluates direct
+generation only. We do not propose a new benchmark. We reproduce the Next Action baseline of
+ACPBench-Hard and ask whether LLM-guided search over LLM-predicted states improves on it.
+
+\paragraph{Search over LLM-generated states:}
+Tree of Thoughts~\citep{yao2023tot} lets the LLM propose intermediate thoughts and evaluate them,
+either by scoring each one or by voting among several and test them on Game of~24,
+Creative Writing and Mini Crosswords. Reasoning via Planning~\citep{hao2023rap} uses the LLM as a
+world model that predicts the state after each action and uses Monte Carlo Tree Search with
+rewards scores and task-specific heuristics to choose between different paths. Our search is
+closest to RAP, but it is a best-first search scored option under a call budget instead of MCTS,
+and we apply it to open-ended Next Action across the 13 domains (130 test questions) of
+ACPBench-Hard, with no planner, simulator, applicability checker or oracle: every state and every
+judgment, including which actions are inapplicable, comes from the LLM.
+\citet{katz2024tos} analyse such LLM-driven searches, including Tree of Thoughts and RAP, and found these methods 
+as neither sound nor complete and examine their cost in LLM calls. We therefore report total calls and tokens, since state-prediction 
+and scoring calls are longer.
+
+\paragraph{LLMs combined with planners and symbolic tools:}
+LLM+P~\citep{liu2023llmp} converts a natural-language problem into PDDL, solves it with a classical
+planner and translates the plan back. Thought of Search~\citep{katz2024tos} uses the LLM only to
+write the successor function and goal test as code, after which a standard search runs without
+further LLM calls. \citet{correa2025heuristics} have the LLM generate domain-specific heuristic
+functions as Python code, pick the best on training tasks and use it in a greedy best-first
+search planner. In all three, the LLM produces a formal artefact (a PDDL file, search code or a
+heuristic program) that a symbolic system executes, so states are computed rather than predicted.
+Our search has no such component: it uses no planner, simulator, applicability checker, PDDL
+description or oracle and the official validator only scores final answers. Without such a
+component, the search depends on the model's own judgment of its candidates
+(Section~\ref{sec:discussion}).
+
+\paragraph{Fair evaluation under cost.}
+\citet{kapoor2024agents} argue that agent evaluations must be cost-controlled: repeatedly calling a
+model, for example with a majority vote, already raises accuracy and simple baselines can match
+complex agents at much lower cost. Our extension, the LLM-guided search, is such a case: it uses
+up to 14 calls per question, 11--13 times as many as direct generation. We therefore report calls
+and tokens for every method and compare the search with best-of-$N$ at the same budget of 14
+calls, using direct generation and structured prompting as single-call references. Best-of-$N$
+with majority vote controls for gains from extra candidates alone; with Llama~3.1~8B it scores
+higher than search in all three seeds, in line with their point that a simple use of extra calls
+can beat a more elaborate one.
+
+
+
+

@@ -1,9 +1,9 @@
-﻿% OWNER: Aisha (A8). Target: ~0.5 page.
+% OWNER: Aisha (A8). Target: ~0.5 page.
 % Cover:
 % - Data: test split (130) for all reported results; validation split (40, disjoint) for tuning only.
 % - Models: Llama 3.1 8B Instruct (main, bf16) and 70B (second comparison).
 % - Methods compared: direct, structured, best-of-N, search (+ ablations).
-% - Budget matching: equal LLM calls (main) and equal tokens (robustness check, A7); report both.
+% - Budget matching: equal LLM calls (main) and equal tokens (robustness check); report both.
 % - Seeds: sampled methods use seeds 1, 2, 3; report mean +/- std. Direct is greedy (deterministic).
 % - Statistics: per-question paired exact McNemar test \citep{mcnemar1947} (experiments/compare.py).
 % - Metrics: accuracy; error types (format / inapplicable / not closer); calls and tokens;
@@ -11,4 +11,20 @@
 \section{Experimental Setup}
 \label{sec:setup}
 
-To compare methods under a matched call budget, we set the Best-of-N parameter to $N = 14$, producing 14 candidates per question to match Search's call budget of $B = 14$. Search averages 13.4 LLM calls per question on Llama 3.1 8B because some searches terminate early. Best-of-N on 8B uses an average of 14.0 calls and 22,959 tokens per question, approximately 1.7 times Search's 13,722 tokens per question. This difference motivates the token-budget-matched robustness check in A7, which uses $N = 8$. We report both calls and token usage to make the computational cost of each method explicit.
+We evaluate on the 130 test questions and use the disjoint 40-question validation split only for
+tuning. Llama~3.1~8B Instruct is the main model and Llama~3.1~70B a second comparison. We compare
+direct generation, structured prompting, best-of-$N$ and LLM-guided search, plus search ablations.
+
+\paragraph{Budget matching.}
+In the main comparison, search has a budget of $B=14$ calls and best-of-$N$ uses $N=14$. Search
+averages 13.4 calls on 8B, because some searches stop early, but best-of-$N$ uses more tokens
+(22,959 vs.\ 13,722 per question). We therefore repeat the comparison under a shared cap of 14,000
+tokens per question, with $N=8$; the cap also stops some searches early (12.2 calls on average).
+
+\paragraph{Metrics and statistics.}
+We report accuracy, calls and tokens per question, and error types (format errors, inapplicable
+actions, and actions that do not move closer to the goal). For search we also measure whether a
+correct candidate is proposed, an analysis metric that uses the answer key and is not available
+at inference time. Sampled methods are run with seeds 1, 2 and 3 and reported as mean $\pm$
+standard deviation; direct generation is greedy. Methods are compared per question with the exact
+McNemar test~\citep{mcnemar1947}.

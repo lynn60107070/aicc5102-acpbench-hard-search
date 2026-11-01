@@ -12,7 +12,7 @@ using 11--13 times as many calls as direct generation (and, for 8B, about 8 time
 Neither control differs significantly from direct generation either (structured prompting $0.262$,
 best-of-$N$ $0.236 \pm 0.012$), but how the extra calls are spent matters: with the same budget of
 14 calls, independent samples with a majority vote beat search in all three seeds, by 9 to 11
-questions (McNemar $p = 0.05$--$0.16$).
+questions (McNemar $p = 0.05$--$0.16$), and they still do when both share the same token cap.
 
 \paragraph{Generation is not the bottleneck; evaluation is.}
 The search does find correct actions: one is among the root candidates in 31\% of the questions for

@@ -1,4 +1,4 @@
-% OWNER: Aisha (A8). Target: ~0.5 page.
+﻿% OWNER: Aisha (A8). Target: ~0.5 page.
 % Cover:
 % - Data: test split (130) for all reported results; validation split (40, disjoint) for tuning only.
 % - Models: Llama 3.1 8B Instruct (main, bf16) and 70B (second comparison).
@@ -11,4 +11,4 @@
 \section{Experimental Setup}
 \label{sec:setup}
 
-To compare methods under similar inference budgets, we set the Best-of-N parameter to $N = 14$, producing 14 candidates per question. This approximately matches the search method's mean of 13.4 LLM calls per question for Llama 3.1 8B and 11.4 for Llama 3.1 70B. The Best-of-N 8B runs used an average of 14.0 calls and 22,959 tokens per question. We report both calls and token usage to make the computational cost of each method explicit.
+To compare methods under a matched call budget, we set the Best-of-N parameter to $N = 14$, producing 14 candidates per question to match Search's call budget of $B = 14$. Search averages 13.4 LLM calls per question on Llama 3.1 8B because some searches terminate early. Best-of-N on 8B uses an average of 14.0 calls and 22,959 tokens per question, approximately 1.7 times Search's 13,722 tokens per question. This difference motivates the token-budget-matched robustness check in A7, which uses $N = 8$. We report both calls and token usage to make the computational cost of each method explicit.

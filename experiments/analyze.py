@@ -481,7 +481,7 @@ def write_main_results_table(run_rows, output_dir):
         r"\begin{table}[ht]",
         r"\centering",
         r"\small",
-        r"\caption{Direct, structured, best-of-N, and search results. Controls were run for 8B only. Multi-seed methods report mean accuracy and sample standard deviation. McNemar exact p-values compare each run with the direct baseline. Calls and tokens are per question.}",
+        r"\caption{Direct, structured, best-of-N, and search results. Controls were run for 8B only. Multi-seed methods report mean accuracy and sample standard deviation. McNemar exact p-values compare each run with the direct baseline. Calls and tokens are per question. The 14k-token-cap rows share a cap of 14,000 tokens per question.}",
         r"\label{tab:main-results}",
         r"\begin{tabular}{llrrrr}",
         r"\toprule",
@@ -573,7 +573,25 @@ def write_main_results_table(run_rows, output_dir):
                 ],
                 key=lambda item: item[0],
             )
-            append_multiple(model, "Best-of-N", best_of_n_runs, direct_rows)
+            append_multiple(
+                model, "Best-of-N ($N{=}14$)", best_of_n_runs, direct_rows
+            )
+
+            # Token-matched check: both methods share a 14,000-token cap.
+            for label, pattern in (
+                ("Search, 14k-token cap", r"a7_search_s\d+"),
+                (r"Best-of-N ($N{=}8$), 14k-token cap", r"a7_bon_s\d+"),
+            ):
+                capped_runs = sorted(
+                    [
+                        (name, rows)
+                        for name, rows in run_rows.items()
+                        if re.fullmatch(pattern, name)
+                    ],
+                    key=lambda item: item[0],
+                )
+                if capped_runs:
+                    append_multiple(model, label, capped_runs, direct_rows)
 
         if model == "8b":
             lines.append(r"\midrule")

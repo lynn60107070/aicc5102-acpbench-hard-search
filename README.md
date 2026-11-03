@@ -146,6 +146,44 @@ lm-eval --model local-chat-completions ^
 
 ---
 
+## 4b. Reproduce every result in the paper
+
+Setup: on Windows, clone with `git -c core.longpaths=true clone <repo-url>` (or into a short
+path such as `C:\acp`); otherwise some files under `results/` have paths too long to check out.
+Create the environment (section 3), copy `.env.example` to `.env` and add an OpenRouter key.
+`.env` already sets Llama 3.1 8B with `ACP_PROVIDER=CoreWeave` (bf16). For 70B, also set
+`ACP_PROVIDER=Amazon Bedrock` and pass `--model meta-llama/llama-3.1-70b-instruct`. Commands are for
+cmd.exe; on macOS use `/` in paths. Every run writes `rows.jsonl` + `summary.json` to
+`results/runs/<name>/`; the runs used in the paper are copied in `results/final/`.
+
+```bat
+:: Reproduction (Table 1): official harness, then our pipeline with the same prompt
+scripts\reproduce_official.bat
+python -m experiments.run --method direct --name repro_llama31_8b_direct_bf16_coreweave
+python -m experiments.run --method direct --model meta-llama/llama-3.1-70b-instruct --name repro_llama31_70b_direct_bedrock
+
+:: Main comparison (Table 2), 8B; search and best-of-N with seeds 1, 2, 3
+python -m experiments.run --method structured --name structured_8b
+python -m experiments.run --method best_of_n --param n=14 --seed 1 --name best_of_n14_8b_s1
+python -m experiments.run --method search --param k=3 --param d=2 --max-calls 14 --seed 1 --name main_search_8b_s1
+:: 70B search: same as the line above with --model meta-llama/llama-3.1-70b-instruct --name main_search_70b_s1
+
+:: Token-matched rows and ablations (each line x seeds 1-3)
+python -m experiments.sweep experiments\a7_token_matched.txt --seeds 1 2 3
+python -m experiments.sweep experiments\ablations.txt --seeds 1 2 3
+
+:: Paper tables (paper/tables/) from the saved runs; no API calls
+python -m experiments.analyze --runs results\final\repro_* results\final\structured_8b results\final\best_of_n14_8b_s* results\final\main_search_* results\final\a7\* results\final\ablations\abl8b_*_s* --out results\analysis
+python -m unittest
+```
+
+The last two commands need no API key: they rebuild every table in the paper from `results/final/`.
+`experiments.sweep` skips runs that already have a `summary.json` under `results/final/`, so to
+re-run them from scratch, rename `results/final/` first. Full re-runs cost API credit (the whole
+project, including development runs, spent about $5–6 on OpenRouter).
+
+---
+
 ## 5. Reproduction fidelity log (feeds the paper's discrepancy + limitations sections)
 
 **Principle:** match the paper as closely as possible, record every deviation as it happens, and report honestly what could not be reproduced and why. A match means the score falls within the 95% interval, not that it equals the paper's number exactly.

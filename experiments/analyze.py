@@ -5,6 +5,7 @@ Uses existing JSONL results. Does not make model API calls.
 """
 
 import argparse
+import glob
 import json
 import re
 import statistics
@@ -816,7 +817,13 @@ def main():
     run_rows = {}
     summaries = {}
 
-    for run_path in args.runs:
+    # cmd.exe does not expand wildcards, so expand them here.
+    run_paths = []
+    for pattern in args.runs:
+        matches = sorted(glob.glob(pattern)) if glob.has_magic(pattern) else [pattern]
+        run_paths.extend(matches)
+
+    for run_path in run_paths:
         path = Path(run_path)
         rows_path = path / "rows.jsonl" if path.is_dir() else path
         run_name = path.name if path.is_dir() else path.parent.name

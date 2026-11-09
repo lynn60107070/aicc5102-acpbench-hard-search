@@ -1,0 +1,44 @@
+{
+  "settings": {
+    "method": "structured_vote",
+    "param": [],
+    "model": "meta-llama/llama-3.1-8b-instruct",
+    "base_url": null,
+    "seed": 3,
+    "split": "validation",
+    "limit": null,
+    "ids": null,
+    "max_calls": 14,
+    "max_tokens": null,
+    "name": "val_sv_s3",
+    "workers": 8,
+    "params": {}
+  },
+  "n": 40,
+  "accuracy": 0.375,
+  "ci95": [
+    0.22496875325453036,
+    0.5250312467454696
+  ],
+  "errors": {
+    "inapplicable": 16,
+    "not_closer": 9
+  },
+  "accuracy_by_domain": {
+    "blocksworld-4ops": 0.4,
+    "ferry": 0.2,
+    "floor-tile": 0.0,
+    "grid": 0.2,
+    "grid-visit-all": 0.8,
+    "gripper-strips": 0.8,
+    "logistics-strips": 0.4,
+    "rover": 0.2
+  },
+  "total_calls": 560,
+  "total_tokens": 1048473,
+  "mean_calls": 14.0,
+  "mean_tokens": 26211.825,
+  "providers": {
+    "CoreWeave": 40
+  }
+}

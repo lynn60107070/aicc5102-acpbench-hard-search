@@ -172,6 +172,15 @@ python -m experiments.run --method search --param k=3 --param d=2 --max-calls 14
 python -m experiments.sweep experiments\a7_token_matched.txt --seeds 1 2 3
 python -m experiments.sweep experiments\ablations.txt --seeds 1 2 3
 
+:: Post-hoc follow-ups (Appendix D): validation first, test only for the one that passed
+python -m experiments.run --method vote_check --split validation --max-calls 14 --seed 1 --name val_vc_s1
+python -m experiments.run --method structured_vote --split validation --max-calls 14 --seed 1 --name val_sv_s1
+python -m experiments.run --method structured_vote --max-calls 14 --seed 1 --name followup_sv_8b_s1
+python -m experiments.run --method structured_vote --max-calls 14 --max-tokens 14000 --seed 1 --name followup_sv14k_8b_s1
+:: Appendix D analysis numbers (validator used after the runs only; no API calls)
+python scripts\followup_headroom.py
+python scripts\followup_check_quality.py
+
 :: Paper tables (paper/tables/) from the saved runs; no API calls
 python -m experiments.analyze --runs results\final\repro_* results\final\structured_8b results\final\best_of_n14_8b_s* results\final\main_search_* results\final\a7\* results\final\ablations\abl8b_*_s* --out results\analysis
 python -m unittest

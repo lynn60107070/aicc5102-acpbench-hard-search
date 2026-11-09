@@ -1,0 +1,61 @@
+% Post-hoc follow-ups (9 Nov 2026), run after the main results and the progress check.
+% Numbers: results/final/followup_*; scripts/followup_headroom.py and scripts/followup_check_quality.py.
+\clearpage  % place the ablation table before this section
+\section{Post-hoc Follow-ups}
+\label{app:followups}
+
+Both follow-ups were added after the main results, so they are post-hoc and do not replace the
+frozen extension. Each was tuned only on the validation split, with a go/no-go criterion fixed in
+its code before running: it goes to the test split only if it beats the relevant baselines by at
+least three of the 40 validation questions, averaged over seeds 1--3. Both use at most 14 calls
+per question, the same budget as search and best-of-$N$.
+
+\paragraph{Voting with an applicability check (did not pass).}
+Most wrong best-of-$N$ answers are inapplicable actions (67 to 74 of 130 per seed). At least one of
+the 14 samples is correct in about half of the test questions, and voting over only the truly
+applicable samples would reach 0.38. The search's predictor rarely says NOT APPLICABLE: it catches
+14\% of the inapplicable root candidates (108 of 781). We therefore sampled 11 answers and asked the
+LLM to check the preconditions of the three most-voted actions in turn, answering with the first
+one it accepted. On the validation split it was correct on 8, 7 and 7 of 40 questions against 9 of
+40 for best-of-$N$ ($N{=}14$), so it did not go to the test split. The check caught 69\% of the
+inapplicable actions but also rejected 42\% of the applicable ones, discarding correct answers.
+Like its progress scores, the LLM's applicability judgments are too unreliable to filter its own
+candidates.
+
+\paragraph{Structured prompting with majority vote (passed).}
+This combines the two strongest baselines: it samples the structured prompt 14 times at temperature
+0.7 and returns the most common final action. On the validation split it was correct on 16, 14 and
+15 of 40 questions, against 9 for both best-of-$N$ and greedy structured prompting.
+Table~\ref{tab:followups} gives the test results. With 14 calls it reaches $0.331 \pm 0.013$, above
+the paper's 0.25 and the best result in this project. It beats direct generation in every seed
+($p = 0.02, 0.02, 0.05$, exact McNemar) and best-of-$N$ ($p = 0.07, 0.03, 0.05$), but it does not
+significantly beat greedy structured prompting ($p = 0.05, 0.08, 0.19$). It uses 26\% more tokens
+than best-of-$N$ (29,009 against 22,959 per question). Under the shared 14,000-token cap it still
+leads ($0.297 \pm 0.012$ against 0.228), though not significantly ($p = 0.42, 0.05, 0.19$). Because
+its calls are longer, the cap overshoots more: 15,052 tokens per question on average, against
+12,348 for best-of-$N$. The gain
+comes from sampling and voting over explicit reasoning, not from search, which is consistent with
+our main finding that the LLM's judgments of its own candidates are the bottleneck.
+
+\begin{table}[!ht]
+\centering
+\caption{Post-hoc follow-up on the test split (8B, 130 questions, seeds 1--3). The other rows are
+from Table~\ref{tab:main-results}.}
+\label{tab:followups}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Method & Accuracy & Calls & Tokens \\
+\midrule
+Direct generation & 0.223 & 1.0 & 1,640 \\
+Structured prompting & 0.262 & 1.0 & 2,076 \\
+Best-of-N ($N{=}14$) & 0.236 $\pm$ 0.012 & 14.0 & 22,959 \\
+Search & 0.159 $\pm$ 0.012 & 13.4 & 13,722 \\
+\textbf{Structured + vote} ($N{=}14$) & \textbf{0.331 $\pm$ 0.013} & 14.0 & 29,009 \\
+\midrule
+Best-of-N ($N{=}8$), 14k-token cap & 0.228 $\pm$ 0.022 & 7.7 & 12,348 \\
+Search, 14k-token cap & 0.151 $\pm$ 0.018 & 12.2 & 11,230 \\
+Structured + vote, 14k-token cap & 0.297 $\pm$ 0.012 & 7.5 & 15,052 \\
+\bottomrule
+\end{tabular}
+\end{table}

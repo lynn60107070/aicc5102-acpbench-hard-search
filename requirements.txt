@@ -7,3 +7,4 @@ lark==1.1.9
 kstar-planner==1.6.0
 PyYAML==6.0.3
 requests==2.34.2
+matplotlib==3.11.2

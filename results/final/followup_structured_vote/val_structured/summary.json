@@ -1,0 +1,45 @@
+{
+  "settings": {
+    "method": "structured",
+    "param": [],
+    "model": "meta-llama/llama-3.1-8b-instruct",
+    "base_url": null,
+    "seed": 1,
+    "split": "validation",
+    "limit": null,
+    "ids": null,
+    "max_calls": null,
+    "max_tokens": null,
+    "name": "val_structured",
+    "workers": 8,
+    "params": {}
+  },
+  "n": 40,
+  "accuracy": 0.225,
+  "ci95": [
+    0.09558989606680629,
+    0.3544101039331937
+  ],
+  "errors": {
+    "not_closer": 10,
+    "inapplicable": 20,
+    "format": 1
+  },
+  "accuracy_by_domain": {
+    "blocksworld-4ops": 0.0,
+    "ferry": 0.0,
+    "floor-tile": 0.0,
+    "grid": 0.0,
+    "grid-visit-all": 0.6,
+    "gripper-strips": 0.6,
+    "logistics-strips": 0.4,
+    "rover": 0.2
+  },
+  "total_calls": 40,
+  "total_tokens": 75202,
+  "mean_calls": 1.0,
+  "mean_tokens": 1880.05,
+  "providers": {
+    "CoreWeave": 40
+  }
+}

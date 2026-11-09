@@ -1,0 +1,49 @@
+{
+  "settings": {
+    "method": "structured_vote",
+    "param": [],
+    "model": "meta-llama/llama-3.1-8b-instruct",
+    "base_url": null,
+    "seed": 3,
+    "split": "test",
+    "limit": null,
+    "ids": null,
+    "max_calls": 14,
+    "max_tokens": 14000,
+    "name": "followup_sv14k_8b_s3",
+    "workers": 8,
+    "params": {}
+  },
+  "n": 130,
+  "accuracy": 0.2846153846153846,
+  "ci95": [
+    0.20704724433871635,
+    0.36218352489205285
+  ],
+  "errors": {
+    "not_closer": 38,
+    "inapplicable": 55
+  },
+  "accuracy_by_domain": {
+    "alfred": 0.0,
+    "blocksworld-4ops": 0.2,
+    "depots": 0.3,
+    "ferry": 0.4,
+    "floor-tile": 0.0,
+    "gold-miner-typed": 0.1,
+    "grid": 0.4,
+    "grid-visit-all": 0.6,
+    "gripper-strips": 0.2,
+    "logistics-strips": 0.6,
+    "rover": 0.1,
+    "satellite": 0.4,
+    "swap": 0.4
+  },
+  "total_calls": 981,
+  "total_tokens": 1960433,
+  "mean_calls": 7.546153846153846,
+  "mean_tokens": 15080.253846153846,
+  "providers": {
+    "CoreWeave": 130
+  }
+}

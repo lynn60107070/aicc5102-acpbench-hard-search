@@ -62,7 +62,7 @@ a draft section), and we agree on the focus until the next checkpoint. Done mean
 | A6 | ✅ Done 25 Oct **by Lynn** (run with the A3 sweep; results in `results/final/ablations/`). Ablations of the frozen search (frozen 23 Oct: `scoring=llm k=3 d=2 prune=True --max-calls 14`), 8B, test split, 3 seeds each, changing one setting at a time: `scoring=steps`, `scoring=vote` (with `d=1`), `scoring=fixed`, `scoring=random`, `predict_state=False`, `prune=False`, `k=2` / `k=5`, `d=1` / `d=3`, `--max-calls 7` / `28` | 1 h (+ run time) | **CP4** |
 | A7 | ✅ Done 29 Oct by Aisha (PR #22; best-of-N N=8 0.228 vs search 0.151 at a shared 14k-token cap). Token-matched robustness check (main comparison with equal tokens instead of equal calls) | 1 h (+ run time) | **CP4** |
 | A8 | ✅ Done 30 Oct by Aisha (PR #25, incl. an error-aggregation fix; assembled by Lynn in PR #26). Paper: experimental setup, results, ablations, limitations | 4–5 h | **CP5** |
-| A9 | Code ZIP: README reproduce commands tested on a **fresh clone** in a new folder | 2 h | **CP6** |
+| A9 | ✅ Done 3 Nov by Lynn (fresh long-path clone regenerates every paper table byte-for-byte, PR #29; ZIP via `git archive`, rebuilt after the follow-ups). Code ZIP: README reproduce commands tested on a **fresh clone** in a new folder | 2 h | **CP6** |
 
 ### Lynn: lead, search extension
 | ID | Task | Effort | Due |
@@ -73,7 +73,8 @@ a draft section), and we agree on the focus until the next checkpoint. Done mean
 | L4 | ✅ Done 24 Oct (8B + 70B). Main search runs: 130 × seeds 1, 2, 3 in `results/final/` | 1 h (+ run time) | **CP4** |
 | L5 | ✅ Done 23 Oct. `paper/` LaTeX skeleton in the NeurIPS template, with one file per section | 1 h | **CP3** |
 | L6 | ✅ Drafted (personalisation pending). Paper: abstract, introduction, research question, method & extension, discussion, conclusion | 5–6 h | **CP5** |
-| L7 | Contributions statement, AI use statement, final assembly + submission | 2 h | **CP6** |
+| L7 | 🚧 Contributions done; AI use statement needs Lynn's own "What I changed and checked". Contributions statement, AI use statement, final assembly + submission | 2 h | **CP6** |
+| L9 | ✅ Done 9 Nov (bonus suggested at the 3 Nov progress check; PRs #30–#32). Post-hoc follow-ups, validation first with a fixed go/no-go: vote + applicability check (failed on validation); structured prompting + majority vote (passed; test 0.331 ± 0.013). Appendix D | — | after 3 Nov |
 | L8 | Top up the API account at CP2, based on everyone's planned full runs | 10 min | **CP2** |
 
 ### Everyone

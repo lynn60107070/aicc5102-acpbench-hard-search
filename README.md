@@ -265,13 +265,13 @@ Team tasks (F1–F7, A1–A9, L1–L8) and checkpoints CP1–CP6 (whole submissi
 
 ---
 
-## 7. Open to-dos before 3 Nov
+## 7. Early to-dos (all done)
 
 - [x] Choose how to serve Llama 3.1 8B → OpenRouter (Groq retired the model; no local GPU).
 - [x] Shared pipeline + Windows validator fix + tests (see `CONTRIBUTING.md`).
 - [x] OpenRouter key in `.env`; live test passed.
 - [x] Full 130-instance baseline: 0.223 bf16 (match), 0.192 mixed-provider run kept as evidence for D1.
-- [ ] Faheema: independent check of the reproduction through the official harness (`scripts\reproduce_official.bat`, or `bash scripts/reproduce_official.sh` on macOS).
-- [ ] Push the repo to GitHub and add Faheema and Aisha; fill their usernames into `.github/CODEOWNERS`.
-- [ ] Settle the HF dataset citation (`ibm-research/acp_bench` vs `ibm/ACPBench`).
-- [ ] Prototype the best-first search extension (k candidates, depth d, call budget).
+- [x] Faheema: independent check of the reproduction through the official harness (`scripts\reproduce_official.bat`, or `bash scripts/reproduce_official.sh` on macOS).
+- [x] Push the repo to GitHub and add Faheema and Aisha; fill their usernames into `.github/CODEOWNERS`.
+- [x] Settle the HF dataset citation: `ibm-research/acp_bench`, revision `05e5883` (D6).
+- [x] Prototype the best-first search extension (k candidates, depth d, call budget); frozen 23 Oct.

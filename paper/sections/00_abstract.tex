@@ -11,6 +11,8 @@ Llama~3.1~8B, search is lower than direct generation in every seed ($0.159$ vs.\
 70B it is on par ($0.362$ vs.\ $0.377$), while best-of-$N$ sampling with the same budget does better
 than search. The model often proposes a correct action (in 31\% of questions for 8B and 59\% for
 70B) but cannot recognise it: its scores barely separate correct from wrong candidates, and
-trusting the proposer's own order beats every evaluator we tried. For open-ended planning without
+trusting the proposer's own order beats every evaluator we tried. A post-hoc follow-up that never
+judges its own candidates, majority voting over structured reasoning, reaches $0.331$ with the same
+budget. For open-ended planning without
 a verifier, evaluation rather than generation is the bottleneck.
 \end{abstract}

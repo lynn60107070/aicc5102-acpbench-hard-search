@@ -2,7 +2,7 @@
 
 **Goal: the whole submission (all experiments, the full paper draft and the code ZIP) is done by
 Sun 1 Nov.** Mon 2 Nov is a buffer + rehearsal, and Tue 3 Nov is the course progress check. After that,
-only instructor feedback, slides, defence prep and the peer review remain.
+only the final checks, submission, slides and defence prep remain: see [Final week](#final-week-17-24-nov).
 
 We work through weekends. Effort estimates are hands-on time; full runs also need waiting time,
 so start them early and work on something else while they run.
@@ -73,7 +73,7 @@ a draft section), and we agree on the focus until the next checkpoint. Done mean
 | L4 | ✅ Done 24 Oct (8B + 70B). Main search runs: 130 × seeds 1, 2, 3 in `results/final/` | 1 h (+ run time) | **CP4** |
 | L5 | ✅ Done 23 Oct. `paper/` LaTeX skeleton in the NeurIPS template, with one file per section | 1 h | **CP3** |
 | L6 | ✅ Drafted (personalisation pending). Paper: abstract, introduction, research question, method & extension, discussion, conclusion | 5–6 h | **CP5** |
-| L7 | 🚧 Contributions done; AI use statement needs Lynn's own "What I changed and checked". Contributions statement, AI use statement, final assembly + submission | 2 h | **CP6** |
+| L7 | 🚧 Contributions done; AI use statement needs Lynn's own "What I changed and checked" (P1). Final assembly and submission handed to Faheema and Aisha on 17 Nov (P2–P5). Contributions statement, AI use statement, final assembly + submission | 2 h | **CP6** |
 | L9 | ✅ Done 9 Nov (bonus suggested at the 3 Nov progress check; PRs #30–#32). Post-hoc follow-ups, validation first with a fixed go/no-go: vote + applicability check (failed on validation); structured prompting + majority vote (passed; test 0.331 ± 0.013). Appendix D | — | after 3 Nov |
 | L8 | Top up the API account at CP2, based on everyone's planned full runs | 10 min | **CP2** |
 
@@ -98,10 +98,43 @@ a draft section), and we agree on the focus until the next checkpoint. Done mean
 If a task slips, say so at the checkpoint and **cut scope rather than move the date**. For example, test
 fewer k/d values or drop A7. Everything after CP3 depends on L3 (search frozen) being on time.
 
-## After 3 Nov (light work only)
-| When | What |
-|---|---|
-| 4–6 Nov | Apply instructor feedback, then submit (deadline Tue 17 Nov) |
-| by 20 Nov | Presentation slides |
-| before 24 Nov / 1 Dec | Individual defence prep |
-| TBA | Peer review of another team (4%) |
+## Final week (17–24 Nov)
+
+**Owners from 17 Nov:** Faheema and Aisha own the paper and its submission; Aisha owns the code ZIP;
+Lynn owns the presentation. Everyone prepares for the individual defence.
+
+**Single source of truth:** the paper is edited in one place only (Overleaf or the repo). Before
+submission, the final `.tex` files go back into `paper/` through a PR, so the repo, the ZIP and the
+submitted PDF match.
+
+| ID | Task | Owner | Due |
+|---|---|---|---|
+| **Paper** | | | |
+| P1 | Write the "What I changed and checked" paragraph of the AI use statement in her own words; hand it to the paper owners | Lynn | Wed 18 |
+| P2 | Full read-through against the rubric checklist below; check every number against `paper/tables/` and README §5/§5b | Faheema, Aisha | Thu 19 |
+| P3 | Apply fixes; insert P1; recompile; main text still ends on page 6; no red `[TODO]`, no `??` references or citations | Faheema, Aisha | Fri 20 |
+| P4 | Final `.tex` back into the repo (PR), reviewed and merged | Faheema, Aisha (Lynn approves) | Fri 20 |
+| P5 | Submit the PDF and LaTeX source on D2L | Faheema, Aisha | Sat 21, or the D2L deadline if earlier |
+| **Code** | | | |
+| C1 | Merge #33 (matplotlib dependency) | Lynn approves | Wed 18 |
+| C2 | Stop the repeated ablation sweep; do not commit duplicate runs (all 39 are in `results/final/ablations/`) | Aisha | Wed 18 |
+| C3 | After P4, fresh clone of `main`: `python -m unittest` passes and the README analyze command regenerates the tables; build the ZIP with `git archive --format=zip --prefix=acpbench-llm-search/ -o acpbench-llm-search.zip main` | Aisha | Fri 20 |
+| C4 | Submit the code ZIP with the paper | Aisha | with P5 |
+| **Presentation** | | | |
+| S1 | Check the slot length on D2L; trim the 11 slides if needed | Lynn | Wed 18 |
+| S2 | Share the deck with Faheema and Aisha (Share menu) | Lynn | Wed 18 |
+| S3 | First timed run-through; fix slides that run long | Lynn | Fri 20 |
+| S4 | Second timed run-through with mock questions from the team | Everyone | Sun 22 |
+| S5 | Export a PDF copy of the deck as a backup for the room | Lynn | Mon 23 |
+| **Defence (individual)** | | | |
+| T4 | Each member can explain their own tasks and the main finding, the follow-up, and the limitations, without notes | Everyone | Mon 23 |
+| — | Presentation + individual defence | Everyone | **Tue 24** |
+
+**Rubric checklist (from the brief; used for P2 and C3):**
+- [ ] Six-page NeurIPS paper with abstract, research question, related work, method and extension, experiments, limitations, conclusion
+- [ ] Cites the paper **and** its code (`kokel2025acpbenchhard`, `acpbench_code`)
+- [ ] Names, IDs, section on the title page; each member's contribution (Appendix E)
+- [ ] AI use statement for every member: tool, what was asked, what it gave back, what was changed (Appendix F)
+- [ ] Same problems for the baseline and the extension; ablations; ≥ 3 seeds with mean ± std; negative results reported honestly
+- [ ] LaTeX source submitted with the PDF
+- [ ] Code ZIP with a README of reproduce commands that work on a fresh clone; tests pass

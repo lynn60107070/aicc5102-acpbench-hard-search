@@ -108,7 +108,7 @@ back into `paper/` through a PR, so the repo, the ZIP and the submitted PDF matc
 
 | Day | Faheema and Aisha | Lynn |
 |---|---|---|
-| **Tue 17** | Nothing new; every earlier task (F1–F7, A1–A9) is done. Aisha: stop the repeated ablation sweep and don't commit its runs (all 39 are in `results/final/ablations/`) | Finish what still needs her: the "What I changed and checked" paragraph of the AI use statement, merge #33 and #34. Post the new schedule in the group |
+| **Tue 17** | Nothing new; every earlier task (F1–F7, A1–A9) is done | Finish what still needs her: the "What I changed and checked" paragraph of the AI use statement, merge #33 and #34. Post the new schedule in the group |
 | **Wed 18** | Verify the paper and code, day 1, against the rubric checklist below: check every number against `paper/tables/` and README §5/§5b | Skeleton outline of the presentation and who presents which slides; share it for their feedback |
 | **Thu 19** | Verify the paper and code, day 2: fresh clone of `main`, `python -m unittest` passes, the README analyze command regenerates the tables; report or fix anything found (PR) | After their green light on the outline: build the slides (design, animations, content) and the Q&A sheet |
 | **Fri 20** | Send feedback on the slides **by end of day** | Finish the slides and send them for feedback. Final check of the code and paper against the rubric; fix anything that comes up |

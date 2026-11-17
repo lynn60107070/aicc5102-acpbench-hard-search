@@ -73,7 +73,7 @@ a draft section), and we agree on the focus until the next checkpoint. Done mean
 | L4 | ✅ Done 24 Oct (8B + 70B). Main search runs: 130 × seeds 1, 2, 3 in `results/final/` | 1 h (+ run time) | **CP4** |
 | L5 | ✅ Done 23 Oct. `paper/` LaTeX skeleton in the NeurIPS template, with one file per section | 1 h | **CP3** |
 | L6 | ✅ Drafted (personalisation pending). Paper: abstract, introduction, research question, method & extension, discussion, conclusion | 5–6 h | **CP5** |
-| L7 | 🚧 Contributions done; AI use statement needs Lynn's own "What I changed and checked" (P1). Final assembly and submission handed to Faheema and Aisha on 17 Nov (P2–P5). Contributions statement, AI use statement, final assembly + submission | 2 h | **CP6** |
+| L7 | 🚧 Contributions done; AI use statement needs Lynn's own "What I changed and checked" (Tue 17 in the final week). Paper and code verification handed to Faheema and Aisha on 17 Nov; submission Tue 24 Nov. Contributions statement, AI use statement, final assembly + submission | 2 h | **CP6** |
 | L9 | ✅ Done 9 Nov (bonus suggested at the 3 Nov progress check; PRs #30–#32). Post-hoc follow-ups, validation first with a fixed go/no-go: vote + applicability check (failed on validation); structured prompting + majority vote (passed; test 0.331 ± 0.013). Appendix D | — | after 3 Nov |
 | L8 | Top up the API account at CP2, based on everyone's planned full runs | 10 min | **CP2** |
 
@@ -100,37 +100,24 @@ fewer k/d values or drop A7. Everything after CP3 depends on L3 (search frozen) 
 
 ## Final week (17–24 Nov)
 
-**Owners from 17 Nov:** Faheema and Aisha own the paper and its submission; Aisha owns the code ZIP;
-Lynn owns the presentation. Everyone prepares for the individual defence.
+**Owners from 17 Nov:** Faheema and Aisha verify the paper and the code; Lynn owns the presentation and
+makes the final check. Everything is submitted on **Tue 24 Nov before class at 5 pm**.
 
-**Single source of truth:** the paper is edited in one place only (Overleaf or the repo). Before
-submission, the final `.tex` files go back into `paper/` through a PR, so the repo, the ZIP and the
-submitted PDF match.
+**Single source of truth:** the paper is edited in one place only (Overleaf or the repo). Fixes go
+back into `paper/` through a PR, so the repo, the ZIP and the submitted PDF match.
 
-| ID | Task | Owner | Due |
-|---|---|---|---|
-| **Paper** | | | |
-| P1 | Write the "What I changed and checked" paragraph of the AI use statement in her own words; hand it to the paper owners | Lynn | Wed 18 |
-| P2 | Full read-through against the rubric checklist below; check every number against `paper/tables/` and README §5/§5b | Faheema, Aisha | Thu 19 |
-| P3 | Apply fixes; insert P1; recompile; main text still ends on page 6; no red `[TODO]`, no `??` references or citations | Faheema, Aisha | Fri 20 |
-| P4 | Final `.tex` back into the repo (PR), reviewed and merged | Faheema, Aisha (Lynn approves) | Fri 20 |
-| P5 | Submit the PDF and LaTeX source on D2L | Faheema, Aisha | Sat 21, or the D2L deadline if earlier |
-| **Code** | | | |
-| C1 | Merge #33 (matplotlib dependency) | Lynn approves | Wed 18 |
-| C2 | Stop the repeated ablation sweep; do not commit duplicate runs (all 39 are in `results/final/ablations/`) | Aisha | Wed 18 |
-| C3 | After P4, fresh clone of `main`: `python -m unittest` passes and the README analyze command regenerates the tables; build the ZIP with `git archive --format=zip --prefix=acpbench-llm-search/ -o acpbench-llm-search.zip main` | Aisha | Fri 20 |
-| C4 | Submit the code ZIP with the paper | Aisha | with P5 |
-| **Presentation** | | | |
-| S1 | Check the slot length on D2L; trim the 11 slides if needed | Lynn | Wed 18 |
-| S2 | Share the deck with Faheema and Aisha (Share menu) | Lynn | Wed 18 |
-| S3 | First timed run-through; fix slides that run long | Lynn | Fri 20 |
-| S4 | Second timed run-through with mock questions from the team | Everyone | Sun 22 |
-| S5 | Export a PDF copy of the deck as a backup for the room | Lynn | Mon 23 |
-| **Defence (individual)** | | | |
-| T4 | Each member can explain their own tasks and the main finding, the follow-up, and the limitations, without notes | Everyone | Mon 23 |
-| — | Presentation + individual defence | Everyone | **Tue 24** |
+| Day | Faheema and Aisha | Lynn |
+|---|---|---|
+| **Tue 17** | Nothing new; every earlier task (F1–F7, A1–A9) is done. Aisha: stop the repeated ablation sweep and don't commit its runs (all 39 are in `results/final/ablations/`) | Finish what still needs her: the "What I changed and checked" paragraph of the AI use statement, merge #33 and #34. Post the new schedule in the group |
+| **Wed 18** | Verify the paper and code, day 1, against the rubric checklist below: check every number against `paper/tables/` and README §5/§5b | Skeleton outline of the presentation and who presents which slides; share it for their feedback |
+| **Thu 19** | Verify the paper and code, day 2: fresh clone of `main`, `python -m unittest` passes, the README analyze command regenerates the tables; report or fix anything found (PR) | After their green light on the outline: build the slides (design, animations, content) and the Q&A sheet |
+| **Fri 20** | Send feedback on the slides **by end of day** | Finish the slides and send them for feedback. Final check of the code and paper against the rubric; fix anything that comes up |
+| **Sat 21** | | Apply their feedback; finalise each person's script for their slides and the Q&A sheet. Fix the practice-meeting times for Mon 23 and Tue 24 |
+| **Sun 22** | Day off: each person memorises and practises their script and slides, and checks they can explain their own part without notes | Same |
+| **Mon 23** | Practice meeting (online or in person), at least 1 hour | Same |
+| **Tue 24** | In-person practice before class, at least 1 hour, at least one full run | Same. **Submit everything before class at 5 pm:** paper PDF and LaTeX source, code ZIP built from final `main` with `git archive --format=zip --prefix=acpbench-llm-search/ -o acpbench-llm-search.zip main`, and a PDF copy of the slides as a backup. Then present |
 
-**Rubric checklist (from the brief; used for P2 and C3):**
+**Rubric checklist (from the brief; used on Wed 18, Thu 19 and in Lynn's final check):**
 - [ ] Six-page NeurIPS paper with abstract, research question, related work, method and extension, experiments, limitations, conclusion
 - [ ] Cites the paper **and** its code (`kokel2025acpbenchhard`, `acpbench_code`)
 - [ ] Names, IDs, section on the title page; each member's contribution (Appendix E)

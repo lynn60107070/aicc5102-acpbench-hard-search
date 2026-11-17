@@ -260,7 +260,7 @@ Team tasks (F1–F7, A1–A9, L1–L8) and checkpoints CP1–CP6 (whole submissi
 |---|---|---|
 | Proposal | 29 Sep 2026 ✅ | 4% |
 | **Progress check (required, ungraded): show code + early results** | **Tue 3 Nov 2026** | n/a |
-| Paper (PDF + LaTeX) and code ZIP with README + results | Tue 17 Nov 2026 | Paper 6% + Code/tests 8% (section guide says report 10%) |
+| Paper (PDF + LaTeX) and code ZIP with README + results | **Tue 24 Nov 2026, before 5 pm** | Paper 6% + Code/tests 8% (section guide says report 10%) |
 | Presentation + individual defence | **Tue 24 Nov 2026** | 8% |
 
 **Final submission must include:** six-page NeurIPS paper (abstract, research question, related work, method and extension, experiments, limitations, conclusion; cite the paper **and** the code); LaTeX source; code ZIP with a README of reproduce commands; names, IDs, section, each member's contribution; an **AI use statement** (tool, what you asked, what it gave back, what you changed).

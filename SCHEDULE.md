@@ -2,7 +2,7 @@
 
 **Goal: the whole submission (all experiments, the full paper draft and the code ZIP) is done by
 Sun 1 Nov.** Mon 2 Nov is a buffer + rehearsal, and Tue 3 Nov is the course progress check. After that,
-only instructor feedback, slides, defence prep and the peer review remain.
+only the final checks, submission, slides and defence prep remain: see [Final week](#final-week-17-24-nov).
 
 We work through weekends. Effort estimates are hands-on time; full runs also need waiting time,
 so start them early and work on something else while they run.
@@ -73,7 +73,7 @@ a draft section), and we agree on the focus until the next checkpoint. Done mean
 | L4 | ✅ Done 24 Oct (8B + 70B). Main search runs: 130 × seeds 1, 2, 3 in `results/final/` | 1 h (+ run time) | **CP4** |
 | L5 | ✅ Done 23 Oct. `paper/` LaTeX skeleton in the NeurIPS template, with one file per section | 1 h | **CP3** |
 | L6 | ✅ Drafted (personalisation pending). Paper: abstract, introduction, research question, method & extension, discussion, conclusion | 5–6 h | **CP5** |
-| L7 | 🚧 Contributions done; AI use statement needs Lynn's own "What I changed and checked". Contributions statement, AI use statement, final assembly + submission | 2 h | **CP6** |
+| L7 | 🚧 Contributions done; AI use statement needs Lynn's own "What I changed and checked" (Tue 17 in the final week). Paper and code verification handed to Faheema and Aisha on 17 Nov; submission Tue 24 Nov. Contributions statement, AI use statement, final assembly + submission | 2 h | **CP6** |
 | L9 | ✅ Done 9 Nov (bonus suggested at the 3 Nov progress check; PRs #30–#32). Post-hoc follow-ups, validation first with a fixed go/no-go: vote + applicability check (failed on validation); structured prompting + majority vote (passed; test 0.331 ± 0.013). Appendix D | — | after 3 Nov |
 | L8 | Top up the API account at CP2, based on everyone's planned full runs | 10 min | **CP2** |
 
@@ -98,10 +98,30 @@ a draft section), and we agree on the focus until the next checkpoint. Done mean
 If a task slips, say so at the checkpoint and **cut scope rather than move the date**. For example, test
 fewer k/d values or drop A7. Everything after CP3 depends on L3 (search frozen) being on time.
 
-## After 3 Nov (light work only)
-| When | What |
-|---|---|
-| 4–6 Nov | Apply instructor feedback, then submit (deadline Tue 17 Nov) |
-| by 20 Nov | Presentation slides |
-| before 24 Nov / 1 Dec | Individual defence prep |
-| TBA | Peer review of another team (4%) |
+## Final week (17–24 Nov)
+
+**Owners from 17 Nov:** Faheema and Aisha verify the paper and the code; Lynn owns the presentation and
+makes the final check. Everything is submitted on **Tue 24 Nov before class at 5 pm**.
+
+**Single source of truth:** the paper is edited in one place only (Overleaf or the repo). Fixes go
+back into `paper/` through a PR, so the repo, the ZIP and the submitted PDF match.
+
+| Day | Faheema and Aisha | Lynn |
+|---|---|---|
+| **Tue 17** | Nothing new; every earlier task (F1–F7, A1–A9) is done | Finish what still needs her: the "What I changed and checked" paragraph of the AI use statement, merge #33 and #34. Post the new schedule in the group |
+| **Wed 18** | Verify the paper and code, day 1, against the rubric checklist below: check every number against `paper/tables/` and README §5/§5b | Skeleton outline of the presentation and who presents which slides; share it for their feedback |
+| **Thu 19** | Verify the paper and code, day 2: fresh clone of `main`, `python -m unittest` passes, the README analyze command regenerates the tables; report or fix anything found (PR) | After their green light on the outline: build the slides (design, animations, content) and the Q&A sheet |
+| **Fri 20** | Send feedback on the slides **by end of day** | Finish the slides and send them for feedback. Final check of the code and paper against the rubric; fix anything that comes up |
+| **Sat 21** | | Apply their feedback; finalise each person's script for their slides and the Q&A sheet. Fix the practice-meeting times for Mon 23 and Tue 24 |
+| **Sun 22** | Day off: each person memorises and practises their script and slides, and checks they can explain their own part without notes | Same |
+| **Mon 23** | Practice meeting (online or in person), at least 1 hour | Same |
+| **Tue 24** | In-person practice before class, at least 1 hour, at least one full run | Same. **Submit everything before class at 5 pm:** paper PDF and LaTeX source, code ZIP built from final `main` with `git archive --format=zip --prefix=acpbench-llm-search/ -o acpbench-llm-search.zip main`, and a PDF copy of the slides as a backup. Then present |
+
+**Rubric checklist (from the brief; used on Wed 18, Thu 19 and in Lynn's final check):**
+- [ ] Six-page NeurIPS paper with abstract, research question, related work, method and extension, experiments, limitations, conclusion
+- [ ] Cites the paper **and** its code (`kokel2025acpbenchhard`, `acpbench_code`)
+- [ ] Names, IDs, section on the title page; each member's contribution (Appendix E)
+- [ ] AI use statement for every member: tool, what was asked, what it gave back, what was changed (Appendix F)
+- [ ] Same problems for the baseline and the extension; ablations; ≥ 3 seeds with mean ± std; negative results reported honestly
+- [ ] LaTeX source submitted with the PDF
+- [ ] Code ZIP with a README of reproduce commands that work on a fresh clone; tests pass

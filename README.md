@@ -247,6 +247,11 @@ Quick reference. The paper's tables come from `experiments/analyze.py`.
 Runs: `results/final/main_search_{8b,70b}_s{1,2,3}/`. Finding: search never beats direct; the model often
 proposes a correct action but its own scores barely tell it apart from wrong ones, even at 70B.
 
+Post-hoc follow-up (paper Appendix D, after the progress check): structured prompting with a majority
+vote over 14 samples reaches **0.331 ± 0.013** on the 8B test set (paper's direct result: 0.25), at the same
+14 calls. It is significant against direct (p ≤ 0.05 in every seed) but not against greedy structured
+prompting, and uses 26% more tokens than best-of-N. Runs: `results/final/followup_structured_vote/`.
+
 ## 6. Deadlines (Section 1)
 
 Team tasks (F1–F7, A1–A9, L1–L8) and checkpoints CP1–CP6 (whole submission done by Sun 1 Nov) are in [SCHEDULE.md](SCHEDULE.md).
@@ -255,9 +260,8 @@ Team tasks (F1–F7, A1–A9, L1–L8) and checkpoints CP1–CP6 (whole submissi
 |---|---|---|
 | Proposal | 29 Sep 2026 ✅ | 4% |
 | **Progress check (required, ungraded): show code + early results** | **Tue 3 Nov 2026** | n/a |
-| Paper (PDF + LaTeX) and code ZIP with README + results | Tue 17 Nov 2026 | Paper 6% + Code/tests 8% (section guide says report 10%) |
-| Presentation + individual defence | 24 Nov or 1 Dec 2026 | 8% |
-| Peer review of another team | TBA | 4% |
+| Paper (PDF + LaTeX) and code ZIP with README + results | **Tue 24 Nov 2026, before 5 pm** | Paper 6% + Code/tests 8% (section guide says report 10%) |
+| Presentation + individual defence | **Tue 24 Nov 2026** | 8% |
 
 **Final submission must include:** six-page NeurIPS paper (abstract, research question, related work, method and extension, experiments, limitations, conclusion; cite the paper **and** the code); LaTeX source; code ZIP with a README of reproduce commands; names, IDs, section, each member's contribution; an **AI use statement** (tool, what you asked, what it gave back, what you changed).
 

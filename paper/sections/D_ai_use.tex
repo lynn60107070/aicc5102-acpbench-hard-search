@@ -27,9 +27,16 @@ criterion fixed before its validation run.
 the main model with 70B as a second comparison; freezing the search design; the best-of-$N$ budget
 ($N=14$); taking over the parallel runner; and running the few-shot ablation, each after reviewing
 the evidence Claude presented.
-\emph{What I changed and checked:} \todo{Lynn: describe in your own words what you rewrote in the
-drafted sections, which results and code you checked yourself, and what you changed from Claude's
-suggestions.}
+\emph{What I changed and checked:} I chose the research question, designed the search method and
+made the decisions listed above; Claude's plans, code and drafts were proposals that I reviewed,
+questioned and often sent back, not final results. The work was iterative: I described what I
+wanted, Claude implemented it, and we went back and forth over errors, discrepancies between runs,
+and gaps in my own reasoning, where Claude pointed out a flaw in my logic and we worked out how to
+fix it before going further. Claude also made mistakes, for example numbers written from memory that
+did not match the run files, so every number in the paper was checked against
+\texttt{results/final/} before merging, and every pull request was reviewed before it was merged. I
+rewrote the drafted sections to say what I meant, and I can explain every part of the code and
+paper.
 
 \paragraph{Faheema Hassan Kudukky.}
 \emph{Tool:} Gemini (3.8 Flash), used through the browser interface, with access to project files; and

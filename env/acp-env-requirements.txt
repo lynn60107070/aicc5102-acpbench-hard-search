@@ -100,3 +100,4 @@ word2number==1.1
 xxhash==4.0.1
 yarl==1.25.1
 zstandard==0.25.0
+matplotlib==3.11.2

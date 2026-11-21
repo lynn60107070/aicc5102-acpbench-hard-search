@@ -189,7 +189,7 @@ python -m unittest
 The last two commands need no API key: they rebuild every table in the paper from `results/final/`.
 `experiments.sweep` skips runs that already have a `summary.json` under `results/final/`, so to
 re-run them from scratch, rename `results/final/` first. Full re-runs cost API credit (the whole
-project, including development runs, spent about $5–6 on OpenRouter).
+project, including development runs and the follow-ups, used about $21 of OpenRouter credit).
 
 ---
 

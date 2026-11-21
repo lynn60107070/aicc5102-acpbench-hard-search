@@ -52,9 +52,12 @@
 \bibliographystyle{plainnat}
 \bibliography{refs}
 
+% Start the appendices on a fresh page so the fidelity-log table stays inside Appendix A.
+\clearpage
 \appendix
 \input{sections/A_fidelity_log}
 \input{sections/B_prompts}
+\clearpage % keeps the Search Ablations heading with its table
 \input{sections/B2_ablations}
 \input{sections/B3_followups}
 \input{sections/C_contributions}

@@ -13,40 +13,40 @@
     "max_calls": null,
     "max_tokens": null,
     "name": "best_of_n14_8b_s1",
-    "workers": 1,
+    "workers": 8,
     "params": {
       "n": 14
     }
   },
   "n": 130,
-  "accuracy": 0.24615384615384617,
+  "accuracy": 0.23076923076923078,
   "ci95": [
-    0.17210316292373884,
-    0.3202045293839535
+    0.1583420350481606,
+    0.303196426490301
   ],
   "errors": {
-    "inapplicable": 73,
-    "not_closer": 25
+    "inapplicable": 66,
+    "not_closer": 34
   },
   "accuracy_by_domain": {
     "alfred": 0.0,
     "blocksworld-4ops": 0.2,
     "depots": 0.2,
-    "ferry": 0.4,
-    "floor-tile": 0.2,
+    "ferry": 0.5,
+    "floor-tile": 0.0,
     "gold-miner-typed": 0.2,
-    "grid": 0.6,
-    "grid-visit-all": 0.7,
-    "gripper-strips": 0.0,
-    "logistics-strips": 0.0,
-    "rover": 0.1,
-    "satellite": 0.4,
+    "grid": 0.5,
+    "grid-visit-all": 0.5,
+    "gripper-strips": 0.2,
+    "logistics-strips": 0.1,
+    "rover": 0.2,
+    "satellite": 0.2,
     "swap": 0.2
   },
   "total_calls": 1820,
-  "total_tokens": 2984646,
+  "total_tokens": 2984689,
   "mean_calls": 14.0,
-  "mean_tokens": 22958.815384615384,
+  "mean_tokens": 22959.146153846155,
   "providers": {
     "CoreWeave": 130
   }

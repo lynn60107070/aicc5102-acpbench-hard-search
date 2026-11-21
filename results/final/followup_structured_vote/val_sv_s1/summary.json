@@ -11,7 +11,7 @@
     "max_calls": 14,
     "max_tokens": null,
     "name": "val_sv_s1",
-    "workers": 8,
+    "workers": 12,
     "params": {}
   },
   "n": 40,
@@ -21,23 +21,23 @@
     0.5518209471713308
   ],
   "errors": {
-    "not_closer": 10,
-    "inapplicable": 14
+    "not_closer": 11,
+    "inapplicable": 13
   },
   "accuracy_by_domain": {
     "blocksworld-4ops": 0.4,
     "ferry": 0.4,
-    "floor-tile": 0.4,
+    "floor-tile": 0.2,
     "grid": 0.2,
-    "grid-visit-all": 0.8,
-    "gripper-strips": 0.6,
-    "logistics-strips": 0.2,
+    "grid-visit-all": 0.6,
+    "gripper-strips": 0.8,
+    "logistics-strips": 0.4,
     "rover": 0.2
   },
   "total_calls": 560,
-  "total_tokens": 1047146,
+  "total_tokens": 1050452,
   "mean_calls": 14.0,
-  "mean_tokens": 26178.65,
+  "mean_tokens": 26261.3,
   "providers": {
     "CoreWeave": 40
   }

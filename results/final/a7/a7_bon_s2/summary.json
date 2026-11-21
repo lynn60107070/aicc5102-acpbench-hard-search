@@ -13,7 +13,7 @@
     "max_calls": null,
     "max_tokens": 14000,
     "name": "a7_bon_s2",
-    "workers": 1,
+    "workers": 12,
     "params": {
       "n": 8
     }
@@ -25,18 +25,18 @@
     0.286052183217231
   ],
   "errors": {
-    "not_closer": 32,
-    "inapplicable": 70
+    "inapplicable": 71,
+    "not_closer": 31
   },
   "accuracy_by_domain": {
     "alfred": 0.0,
-    "blocksworld-4ops": 0.0,
+    "blocksworld-4ops": 0.2,
     "depots": 0.2,
-    "ferry": 0.3,
-    "floor-tile": 0.3,
-    "gold-miner-typed": 0.2,
-    "grid": 0.6,
-    "grid-visit-all": 0.5,
+    "ferry": 0.4,
+    "floor-tile": 0.0,
+    "gold-miner-typed": 0.1,
+    "grid": 0.5,
+    "grid-visit-all": 0.7,
     "gripper-strips": 0.0,
     "logistics-strips": 0.0,
     "rover": 0.1,
@@ -44,9 +44,9 @@
     "swap": 0.3
   },
   "total_calls": 1004,
-  "total_tokens": 1605252,
+  "total_tokens": 1605289,
   "mean_calls": 7.723076923076923,
-  "mean_tokens": 12348.092307692308,
+  "mean_tokens": 12348.376923076923,
   "providers": {
     "CoreWeave": 130
   }

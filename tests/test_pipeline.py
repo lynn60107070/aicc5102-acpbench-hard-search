@@ -87,6 +87,25 @@ class TestLLM(unittest.TestCase):
             self.assertEqual(again.budget.calls, 3)  # but is still charged to the budget
             client._db.close()
 
+    def test_seeds_do_not_share_samples(self):
+        """Runs with seeds 1, 2, 3 must never send the same server seed for sampled calls."""
+        msgs = [{"role": "user", "content": "x"}]
+        sent = {}
+        for run_seed in (1, 2, 3):
+            client = FakeClient(lambda p: str(p["seed"]), cache_path=None)
+            client.seed = run_seed
+            llm = client.session()
+            sent[run_seed] = {llm.chat(msgs, temperature=0.7) for _ in range(14)}
+            self.assertEqual(len(sent[run_seed]), 14)
+        self.assertFalse(sent[1] & sent[2] or sent[1] & sent[3] or sent[2] & sent[3])
+
+    def test_greedy_seeds_unchanged(self):
+        """Greedy calls keep seed + occurrence, so cached greedy runs replay unchanged."""
+        client = FakeClient(lambda p: str(p["seed"]), cache_path=None)
+        client.seed = 5
+        llm = client.session()
+        msgs = [{"role": "user", "content": "x"}]
+        self.assertEqual([llm.chat(msgs) for _ in range(3)], ["5", "6", "7"])
 
     def test_cache_is_thread_safe(self):
         from concurrent.futures import ThreadPoolExecutor

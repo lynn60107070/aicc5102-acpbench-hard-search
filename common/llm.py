@@ -28,6 +28,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # Outside OneDrive on purpose: a syncing SQLite file gets locked.
 DEFAULT_CACHE = Path.home() / ".cache" / "aicc5102_acp" / "llm_cache.sqlite"
 LM_EVAL_SEED = 1234  # the seed lm-eval sends; keeps direct generation identical to the harness
+SEED_STRIDE = 1000  # server-seed step between repeated sampled requests (see Session.chat)
 
 
 def load_dotenv(path: Path = REPO_ROOT / ".env") -> None:
@@ -154,8 +155,12 @@ class Session:
         request_id = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
         occurrence = self._seen.get(request_id, 0)
         self._seen[request_id] = occurrence + 1
-        # Sampled repeats of the same request need different server seeds to differ.
-        payload["seed"] = self.client.seed + occurrence
+        # Sampled repeats of the same request need different server seeds to differ. Sampled calls
+        # step by SEED_STRIDE so runs with different seeds never share a server seed (with a step of
+        # 1, seed 1's samples 2..N were seed 2's samples 1..N-1). Greedy calls keep the old step of 1,
+        # so their cache keys, and every greedy run in results/final/, are unchanged.
+        stride = SEED_STRIDE if temperature > 0 else 1
+        payload["seed"] = self.client.seed + stride * occurrence
         result = self.client.complete(payload, occurrence)
         self.budget.charge(result["prompt_tokens"], result["completion_tokens"], tag)
         self.log.append({"tag": tag, "temperature": temperature, "messages": messages, **result})

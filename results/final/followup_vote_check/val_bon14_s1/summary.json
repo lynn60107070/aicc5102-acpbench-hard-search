@@ -13,35 +13,35 @@
     "max_calls": 14,
     "max_tokens": null,
     "name": "val_bon14_s1",
-    "workers": 8,
+    "workers": 12,
     "params": {
       "n": 14
     }
   },
   "n": 40,
-  "accuracy": 0.225,
+  "accuracy": 0.3,
   "ci95": [
-    0.09558989606680629,
-    0.3544101039331937
+    0.1579845078873435,
+    0.44201549211265645
   ],
   "errors": {
-    "inapplicable": 19,
+    "inapplicable": 16,
     "not_closer": 12
   },
   "accuracy_by_domain": {
-    "blocksworld-4ops": 0.0,
+    "blocksworld-4ops": 0.2,
     "ferry": 0.2,
     "floor-tile": 0.2,
     "grid": 0.4,
     "grid-visit-all": 0.6,
-    "gripper-strips": 0.4,
-    "logistics-strips": 0.0,
+    "gripper-strips": 0.6,
+    "logistics-strips": 0.2,
     "rover": 0.0
   },
   "total_calls": 560,
-  "total_tokens": 821596,
+  "total_tokens": 821571,
   "mean_calls": 14.0,
-  "mean_tokens": 20539.9,
+  "mean_tokens": 20539.275,
   "providers": {
     "CoreWeave": 40
   }

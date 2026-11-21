@@ -35,6 +35,13 @@ def accuracy(rows):
     return sum(bool(row["correct"]) for row in rows) / len(rows)
 
 
+def binomial_interval_95(paper_accuracy, n=130):
+    """Return the 95% normal-approximation interval around a reported accuracy."""
+    standard_error = (paper_accuracy * (1 - paper_accuracy) / n) ** 0.5
+    return (paper_accuracy - 1.96 * standard_error,
+            paper_accuracy + 1.96 * standard_error)
+
+
 def within_95_binomial_interval(paper_accuracy, reproduced_accuracy, n=130):
     """Check whether reproduced accuracy is inside the paper's 95% binomial interval."""
     standard_error = (paper_accuracy * (1 - paper_accuracy) / n) ** 0.5
@@ -333,7 +340,8 @@ def write_latex_tables(summaries, aggregated, output_dir):
     domain_lines = [
         r"\begin{table}[ht]",
         r"\centering",
-        r"\caption{Accuracy by domain, averaged across seeds.}",
+        r"\caption{Search accuracy by domain on the 130 test questions (10 per domain), mean across seeds 1--3.}",
+        r"\label{tab:domains}",
         r"\begin{tabular}{lrr}",
         r"\toprule",
         r"Domain & 8B accuracy & 70B accuracy \\",
@@ -482,7 +490,7 @@ def write_main_results_table(run_rows, output_dir):
         r"\begin{table}[ht]",
         r"\centering",
         r"\small",
-        r"\caption{Direct, structured, best-of-N, and search results. Controls were run for 8B only. Multi-seed methods report mean accuracy and sample standard deviation. McNemar exact p-values compare each run with the direct baseline. Calls and tokens are per question. The 14k-token-cap rows share a cap of 14,000 tokens per question.}",
+        r"\caption{Direct, structured, best-of-N, and search results. Controls were run for 8B only. Multi-seed methods report mean accuracy and sample standard deviation. Exact McNemar $p$-values compare each seed (1, 2, 3) with direct generation and are uncorrected. Calls and tokens are per question. The 14k-token-cap rows share a cap of 14,000 tokens per question.}",
         r"\label{tab:main-results}",
         r"\begin{tabular}{llrrrr}",
         r"\toprule",
@@ -514,7 +522,7 @@ def write_main_results_table(run_rows, output_dir):
 
         lines.append(
             f"{model.upper()} & {method} & {accuracy(rows):.3f} "
-            f"& {calls:.1f} & {tokens:.0f} & {p_text} " + r"\\"
+            f"& {calls:.1f} & {tokens:,.0f} & {p_text} " + r"\\"
         )
 
     def append_multiple(model, method, runs, direct_rows=None):
@@ -544,7 +552,7 @@ def write_main_results_table(run_rows, output_dir):
             f"{model.upper()} & {method} & {mean_accuracy:.3f} "
             f"$\\pm$ {std_accuracy:.3f} "
             f"& {statistics.mean(call_totals):.1f} "
-            f"& {statistics.mean(token_totals):.0f} "
+            f"& {statistics.mean(token_totals):,.0f} "
             f"& {p_text} " + r"\\"
         )
 
@@ -633,22 +641,22 @@ def write_reproduction_table(run_rows, output_dir):
     reference_runs = [
         ("Llama 3.1 8B", "Next Action",
          "repro_llama31_8b_direct_bf16_coreweave", 0.250),
+        ("Llama 3.1 70B", "Next Action",
+         "repro_llama31_70b_direct_bedrock", 0.420),
         ("Llama 3.1 8B", "Progression",
          "repro_prog_llama31_8b", 0.400),
         ("Llama 3.1 70B", "Progression",
          "repro_prog_llama31_70b", 0.650),
-        ("Llama 3.1 70B", "Next Action",
-         "repro_llama31_70b_direct_bedrock", 0.420),
     ]
 
     lines = [
         r"\begin{table}[ht]",
         r"\centering",
-        r"\caption{Paper reference accuracies and reproduced results on ACPBench-Hard.}",
+        r"\caption{Paper reference accuracies and reproduced results on ACPBench-Hard, with the 95\% binomial interval around each reported value ($n=130$).}",
         r"\label{tab:reproduction}",
         r"\begin{tabular}{llrrl}",
         r"\toprule",
-        r"Model & Task & Paper accuracy & Reproduced accuracy & Within 95\% interval \\",
+        r"Model & Task & Paper accuracy & Reproduced accuracy & 95\% interval \\",
         r"\midrule",
     ]
 
@@ -667,8 +675,9 @@ def write_reproduction_table(run_rows, output_dir):
             else "--"
         )
 
+        lower, upper = binomial_interval_95(paper_accuracy)
         within_interval = (
-            r"\checkmark"
+            f"[{lower:.3f}, {upper:.3f}]" + r"\,\checkmark"
             if reproduced_value is not None
             and within_95_binomial_interval(paper_accuracy, reproduced_value)
             else "--"
@@ -694,7 +703,7 @@ def write_ablation_table(ablations, output_dir):
     lines = [
         r"\begin{table}[ht]",
         r"\centering",
-        r"\caption{Search ablations on Llama 3.1 8B. Accuracy is mean $\pm$ standard deviation across seeds; calls are mean calls per question.}",
+        r"\caption{Search ablations on Llama 3.1 8B. Accuracy is mean $\pm$ standard deviation across seeds; calls are mean calls per question. Rows with identical accuracy reuse the same cached proposals and select the same answers (Section~\ref{sec:method}).}",
         r"\label{tab:ablations}",
         r"\begin{tabular}{lrr}",
         r"\toprule",
@@ -867,6 +876,10 @@ def main():
     report["ablations"] = ablations
     paper_tables_dir = Path("paper/tables")
     write_latex_tables(summaries, aggregated, output_dir)
+    (paper_tables_dir / "domain_table.tex").write_text(
+        (output_dir / "domain_table.tex").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
     write_ablation_table(ablations, paper_tables_dir)
     write_main_results_table(run_rows, paper_tables_dir)
     write_reproduction_table(run_rows, paper_tables_dir)

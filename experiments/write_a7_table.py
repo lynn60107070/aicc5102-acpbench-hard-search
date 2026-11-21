@@ -2,7 +2,7 @@ import json
 import statistics
 from pathlib import Path
 
-root = Path("results/runs")
+root = Path("results/final/a7")  # the saved runs; results/runs/ is not in the repo
 
 groups = {
     "Search": [f"a7_search_s{i}" for i in (1, 2, 3)],

@@ -6,21 +6,13 @@
 
 \paragraph{Answer to the research question.}
 LLM-guided search over LLM-predicted states does not improve Next Action accuracy over direct
-generation under a matched call budget: it is lower for Llama~3.1~8B in all three seeds
-($0.159 \pm 0.012$ vs.\ $0.223$) and indistinguishable for 70B ($0.362 \pm 0.015$ vs.\ $0.377$), while
-using 11--13 times as many calls as direct generation (and, for 8B, about 8 times as many tokens).
-Neither control differs significantly from direct generation either (structured prompting $0.262$,
-best-of-$N$ $0.236 \pm 0.012$), but how the extra calls are spent matters: with the same budget of
-14 calls, independent samples with a majority vote beat search in all three seeds, by 9 to 11
-questions (McNemar $p = 0.05$--$0.16$), and they still do when both share the same token cap.
+generation under a matched call budget, while using 11--13 times as many calls. How the calls are
+spent matters: with the same 14 calls, best-of-$N$ is higher than search in every seed (significantly in one), and also under a shared token cap.
 
-\paragraph{Generation is not the bottleneck; evaluation is.}
+\paragraph{Evaluation, more than generation, is the bottleneck.}
 The search does find correct actions: one is among the root candidates in 31\% of the questions for
-8B and 59\% for 70B, the latter well above the 70B direct accuracy. Selection loses most of this
-potential, because the model's scores hardly distinguish correct from wrong candidates (AUC $0.58$
-for 8B and $0.53$ for 70B). Scale therefore helps generation but not self-evaluation: moving from 8B
-to 70B nearly doubles the rate of correct candidates, while the evaluator moves no closer to useful.
-The 8B ablations (Appendix~\ref{app:ablations}) confirm this. Trusting the proposer's own order,
+8B and 59\% for 70B, against final accuracies of 0.16 and 0.36. Selection loses much of this potential, because the model's scores hardly distinguish correct from wrong candidates (AUC $0.58$
+for 8B and $0.53$ for 70B). Scale therefore helps generation much more than self-evaluation: moving from 8B to 70B nearly doubles the rate of correct candidates, while the AUC stays near chance. The 8B ablations (Appendix~\ref{app:ablations}) point the same way, although no single contrast is significant. Trusting the proposer's own order,
 with no evaluator at all, gives $0.190$, above the frozen evaluator ($0.159$) and the steps
 ($0.136$) and vote ($0.108$) variants, while random scores give $0.133$. Proposing more candidates
 hurts ($k{=}5$: $0.115$), because the evaluator then has more ways to choose wrongly, and removing
@@ -28,19 +20,9 @@ state prediction leaves accuracy unchanged at under a third of the calls. Depth 
 under the frozen budget the second expansion cannot change the answer (Section~\ref{sec:method}),
 and doubling the budget to let other candidates' subtrees compete does not help ($0.154$). Nor are
 the zero-shot prompts the cause: giving the proposer direct generation's two in-context examples
-leaves search accuracy unchanged ($0.154 \pm 0.015$).
-
-\paragraph{How the evaluators fail.}
-On the validation split, three failure modes stood out. The 0--10 scores of the 8B model collapse
-onto a few values (most often 2), so they rarely separate siblings. The comparative vote of the 8B
-model is strongly position-biased: it chose the first option in only 3 of 39 votes, although the
-proposer lists its best candidate first, which drove its accuracy to $0.05$; the 70B model showed no
-such bias. Finally, asking the predictor to flag inapplicable actions is precise but rarely used by
-8B, while 70B flags more of them but also rejects applicable ones.
+leaves search accuracy unchanged ($0.154 \pm 0.015$). Appendix~\ref{app:ablations} describes how the evaluators fail on the validation split.
 
 \paragraph{Implications.}
-Without a verifier, search can only be as good as the model's judgment of its own candidates, and
-for open-ended planning this judgment is the weak link. The large gap between the candidates found
+Without a verifier, search can only be as good as the model's judgment of its own candidates, and for open-ended planning this judgment is the weak link, as found for self-critique of plans~\citep{valmeekam2023selfcritique,stechly2024selfverification}. The large gap between the candidates found
 and the answers chosen suggests that the same search could pay off with a reliable external
-evaluator, such as a learned verifier or a cheap symbolic check, which is where approaches like
-Thought of Search~\citep{katz2024tos} and LLM+P~\citep{liu2023llmp} place the burden.
+evaluator, such as a learned verifier or a cheap symbolic check, as in LLM-Modulo frameworks~\citep{kambhampati2024llmmodulo}, Thought of Search~\citep{katz2024tos} and LLM+P~\citep{liu2023llmp}.

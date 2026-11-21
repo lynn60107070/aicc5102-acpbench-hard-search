@@ -19,7 +19,7 @@ action path that leads to it from the root, the state given in the question. Exp
 the LLM in three roles (Algorithm~\ref{alg:search}). The \emph{proposer} lists $k$ candidate actions,
 most promising first, sampled at temperature $0.7$ and parsed with the benchmark's own action
 grammar. For each candidate, the \emph{predictor} either describes the complete resulting state or
-answers \texttt{NOT APPLICABLE}; such candidates are pruned and never scored. The \emph{evaluator}
+answers \texttt{NOT APPLICABLE}; such candidates are pruned: never scored or expanded, and returned only if every candidate is pruned. The \emph{evaluator}
 then reasons in at most three sentences about how close the predicted state is to the goal and ends
 with a line \texttt{Score: $N$} on a 0--10 scale; prediction and evaluation are greedy. The search
 always expands the highest-scored unexpanded node with depth below $d$, and stops when no such node
@@ -52,8 +52,7 @@ candidates compete (we test this in the ablations).
 
 \paragraph{What the search may not use.}
 Every state and every judgment in the search comes from the LLM: there is no planner, simulator,
-applicability checker, PDDL description, or oracle, and the official validator is used only to score
-final answers (Section~\ref{sec:related}).
+applicability checker, PDDL description, or oracle, and the official validator is used only to score final answers (Section~\ref{sec:reproduction}).
 
 \paragraph{Evaluator variants.}
 To test which component matters, we compare the frozen evaluator with alternatives that keep the
@@ -66,7 +65,6 @@ state prediction, letting the LLM score actions directly from the parent state, 
 pruning.
 
 \paragraph{Design selection.}
-All design choices were made on the validation split (40 questions, disjoint from the 130 test
-questions) and frozen before any test run. The 0--10 evaluator was the best-performing search
+Apart from a 10-question smoke run of an early prototype, all design choices were made on the validation split (40 questions, disjoint from the 130 test questions) and frozen before the test runs. The 0--10 evaluator was, by one or two questions, the best-performing search
 variant for Llama~3.1~8B on validation, so it is the method we report; the other evaluators appear
 as ablations.

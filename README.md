@@ -189,7 +189,7 @@ python -m unittest
 The last two commands need no API key: they rebuild every table in the paper from `results/final/`.
 `experiments.sweep` skips runs that already have a `summary.json` under `results/final/`, so to
 re-run them from scratch, rename `results/final/` first. Full re-runs cost API credit (the whole
-project, including development runs and the follow-ups, used about $21 of OpenRouter credit).
+project, including development runs and the follow-ups, used about $27 of OpenRouter credit, including the $5.50 seeding-fix re-run).
 
 ---
 
@@ -236,11 +236,11 @@ Quick reference. The paper's tables come from `experiments/analyze.py`.
 |---|---|---|
 | Direct generation | 0.223 | 0.377 |
 | Structured prompting (1 call, greedy) | 0.262 | — |
-| Best-of-N, N = 14 (same calls as search) | 0.236 ± 0.012 | — |
+| Best-of-N, N = 14 (same calls as search) | 0.231 ± 0.015 | — |
 | **Search** (`scoring=llm k=3 d=2 prune`, 14 calls) | **0.159 ± 0.012** | **0.362 ± 0.015** |
 | McNemar p vs direct, per seed | 0.17 / 0.27 / 0.09 | 0.57 / 0.85 / 1.00 |
 | Correct action among root candidates (analysis only) | 0.313 | 0.590 |
-| First proposal alone (analysis only) | 0.179 | 0.280 |
+| First proposal alone (first action of the first proposal, mean over seeds; analysis only) | 0.179 | 0.277 |
 | Score separation AUC, root candidates (0.5 = chance) | 0.578 | 0.527 |
 | Calls per question | 13.4 | 11.4 |
 
@@ -248,9 +248,10 @@ Runs: `results/final/main_search_{8b,70b}_s{1,2,3}/`. Finding: search never beat
 proposes a correct action but its own scores barely tell it apart from wrong ones, even at 70B.
 
 Post-hoc follow-up (paper Appendix D, after the progress check): structured prompting with a majority
-vote over 14 samples reaches **0.331 ± 0.013** on the 8B test set (paper's direct result: 0.25), at the same
-14 calls. It is significant against direct (p ≤ 0.05 in every seed) but not against greedy structured
-prompting, and uses 26% more tokens than best-of-N. Runs: `results/final/followup_structured_vote/`.
+vote over 14 samples reaches **0.331 ± 0.027** on the 8B test set (paper's direct result: 0.25), at the same
+14 calls. It is higher than direct in every seed (p = 0.043, 0.005, 0.058), higher than greedy structured prompting (significantly in seed 2 only), and uses 27% more tokens than best-of-N. Under the 14k-token cap it reaches 0.321 ± 0.012 against best-of-N's 0.210 ± 0.016 (p = 0.004, 0.043, 0.029).
+
+**Seeding fix (21 Nov 2026).** Repeated sampled requests used server seed `run seed + sample index`, so seeds 1–3 of best-of-N and the follow-ups shared most of their samples. `common/llm.py` now steps sampled requests by 1000 (`SEED_STRIDE`), a test checks that seeds 1–3 never share a server seed, and every affected run was re-run (best-of-N, the token-capped best-of-N, structured+vote and the follow-up validation runs, about $5.50 of credit). Greedy calls are unchanged, so search, direct and structured replay identically from the cache. The superseded runs are kept in `results/superseded_overlapping_seeds/`. No conclusion changed. Runs: `results/final/followup_structured_vote/`.
 
 ## 6. Deadlines (Section 1)
 

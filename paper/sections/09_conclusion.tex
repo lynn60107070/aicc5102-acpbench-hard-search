@@ -2,11 +2,8 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-We reproduced the direct-generation baseline of ACPBench-Hard's Next Action task, matching four
-reported results within their 95\% intervals and confirming them with an independent re-run, and
+We reproduced the direct-generation baseline of ACPBench-Hard's Next Action task, matching four reported results within their 95\% intervals, with the 8B result confirmed by an independent re-run, and
 asked whether LLM-guided search over LLM-predicted states improves on it. Under a matched call
-budget it does not: search is lower than direct generation for Llama~3.1~8B and on par for 70B. The
-search often proposes a correct action, especially at 70B, but the model cannot reliably recognise
-it, and a larger model does not judge its own candidates better. For open-ended planning without a
-verifier, the evaluation of candidates, not their generation, is the bottleneck. Pairing the same
+budget it does not: search is lower than direct generation for Llama~3.1~8B and on par for 70B. The search often proposes a correct action, but the model cannot reliably recognise it, and 70B judges its candidates only slightly better than 8B. For open-ended planning without a
+verifier, the evaluation of candidates, more than their generation, is the bottleneck. Pairing the same
 search with a reliable external evaluator, learned or symbolic, is the natural next step.

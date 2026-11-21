@@ -12,8 +12,7 @@
 \label{sec:related}
 
 \paragraph{Planning benchmarks for LLMs.}
-PlanBench~\citep{valmeekam2023planbench} evaluates LLMs on planning and reasoning-about-change
-tasks, such as plan generation and plan verification, in domains such as Blocksworld and Logistics.
+PlanBench~\citep{valmeekam2023planbench} evaluates LLMs on plan generation and verification in domains such as Blocksworld.
 ACPBench~\citep{kokel2025acpbench} instead breaks planning into small reasoning tasks posed as
 yes/no or multiple-choice questions. ACPBench-Hard~\citep{kokel2025acpbenchhard} turns these into
 open-ended questions over 13 PDDL domains, adds the Next Action task and scores answers with
@@ -42,7 +41,7 @@ so it depends on the model's own judgment of its candidates (Section~\ref{sec:di
 
 \paragraph{Fair evaluation under cost.}
 \citet{kapoor2024agents} argue that agent evaluations must be cost-controlled, because repeated
-calls with a majority vote already raise accuracy and simple baselines can match complex agents at
+calls with a majority vote, i.e.\ self-consistency~\citep{wang2023selfconsistency}, already raise accuracy and simple baselines can match complex agents at
 much lower cost. Our search uses up to 14 calls per question, so we report calls and tokens for
 every method and compare it with best-of-$N$ at the same call budget, which controls for gains
 from extra samples alone.

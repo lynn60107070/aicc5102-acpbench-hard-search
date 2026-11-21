@@ -3,3 +3,17 @@
 \label{app:ablations}
 
 \input{tables/ablations}
+
+The vote row uses $d{=}1$; depth does not change the answer under the frozen budget (Section~\ref{sec:method}).
+
+\paragraph{How the evaluators fail.}
+On the validation split, three failure modes stood out. The 0--10 scores of the 8B model collapse
+onto a few values (most often 2), so they rarely separate siblings. The comparative vote of the 8B
+model is strongly position-biased: it chose the first option in only 3 of 39 votes, although the
+proposer lists its best candidate first, which drove its accuracy to $0.05$; the 70B model showed no
+such bias. Finally, asking the predictor to flag inapplicable actions is precise but rarely used by
+8B, while 70B flags more of them but also rejects applicable ones.
+
+Table~\ref{tab:domains} breaks the frozen search's accuracy down by domain. 8B solves no Alfred or Gripper question, and the largest gains from scale are on Swap, Satellite and Depots.
+
+\input{tables/domain_table}

@@ -1,15 +1,15 @@
 \begin{table}[ht]
 \centering
-\caption{Paper reference accuracies and reproduced results on ACPBench-Hard.}
+\caption{Paper reference accuracies and reproduced results on ACPBench-Hard, with the 95\% binomial interval around each reported value ($n=130$).}
 \label{tab:reproduction}
 \begin{tabular}{llrrl}
 \toprule
-Model & Task & Paper accuracy & Reproduced accuracy & Within 95\% interval \\
+Model & Task & Paper accuracy & Reproduced accuracy & 95\% interval \\
 \midrule
-Llama 3.1 8B & Next Action & 0.250 & 0.223 & \checkmark \\
-Llama 3.1 8B & Progression & 0.400 & 0.400 & \checkmark \\
-Llama 3.1 70B & Progression & 0.650 & 0.608 & \checkmark \\
-Llama 3.1 70B & Next Action & 0.420 & 0.377 & \checkmark \\
+Llama 3.1 8B & Next Action & 0.250 & 0.223 & [0.176, 0.324]\,\checkmark \\
+Llama 3.1 70B & Next Action & 0.420 & 0.377 & [0.335, 0.505]\,\checkmark \\
+Llama 3.1 8B & Progression & 0.400 & 0.400 & [0.316, 0.484]\,\checkmark \\
+Llama 3.1 70B & Progression & 0.650 & 0.608 & [0.568, 0.732]\,\checkmark \\
 \bottomrule
 \end{tabular}
 \end{table}

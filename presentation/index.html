@@ -890,7 +890,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
             <div class="hbar" style="grid-template-columns:290px 1fr 100px"><span class="name">Paper (direct)</span><div class="track"><div class="bar-fill f-g2" style="width:75.5%"></div></div><span class="v">0.25</span></div>
             <div class="hbar" style="grid-template-columns:290px 1fr 100px"><span class="name">Search (ours)</span><div class="track"><div class="bar-fill f-g3" style="width:48%"></div></div><span class="v">0.159</span></div>
         </div>
-        <p class="note" style="margin-top:auto">0.331 ± 0.027 · above direct in every seed (p = 0.043, 0.005, 0.058) · above structured alone, significantly in 1 of 3 seeds · 27% more tokens than best-of-N.</p>
+        <p class="note" style="margin-top:auto">0.331 ± 0.027 · above direct in every seed (p = 0.043, 0.005, 0.058) · above structured alone, significantly in 1 of 3 seeds · 27% more tokens than best-of-N.<br><b>Same 14k-token cap: 0.321 vs. best-of-N 0.210, significant in every seed.</b></p>
     </div>
     <div class="foot" style="right:auto"><span class="who"></span></div>
     <aside class="notes">Both follow-ups came after the main results, suggested as a bonus at the progress check. Each was tried on the 40 validation questions with a pass bar fixed in its code before running. Under the same 14,000-token cap, structured plus vote still leads, 0.321 vs 0.210, significantly in every seed (p = 0.004, 0.043, 0.029). The gain comes from a method that never asks the model to judge its own candidates, which supports the main finding.</aside>

@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM Search on ACPBench-Hard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ===========================================
+   THEME TOKENS
+   Light-only system: white and ice-blue slides, near-black type and accent cards,
+   steel blue for our method, cool greys for baselines. Big rounded panels and pills.
+   =========================================== */
+:root {
+    --black: #131313;
+    --ice: #E3F1FA;
+    --ice-2: #CFE5F4;
+    --blue: #A9C6DD;
+    --steel: #6F97BA;
+    --ours: #3E6A8F;
+    --white: #FFFFFF;
+    --ink: #131313;
+    --ink-2: #5F6670;
+    --line: rgba(19,19,19,.10);
+    --g1: #4B5563;
+    --g2: #9CA3AF;
+    --g3: #D1D5DB;
+
+    --font: 'Inter Tight', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+
+    --pad-x: 112px;
+    --pad-top: 96px;
+    --r-lg: 44px;
+    --r-md: 32px;
+    --shadow: 0 1px 2px rgba(16,24,40,.04), 0 24px 48px -18px rgba(16,24,40,.14);
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+    --stage-bg: #D9DEE3;
+    --slide-bg: #FFFFFF;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ===========================================
+   FIXED 16:9 STAGE (viewport-base.css, included in full)
+   =========================================== */
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: var(--stage-bg, #000); }
+.deck-viewport { position: fixed; inset: 0; overflow: hidden; background: var(--stage-bg, #000); }
+.deck-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; transform-origin: 0 0; background: var(--slide-bg, #fff); }
+.slide { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; display: block; visibility: hidden; opacity: 0; pointer-events: none; background: var(--slide-bg, #fff); }
+.slide.active, .slide.visible { visibility: visible; opacity: 1; pointer-events: auto; z-index: 1; }
+img, video, canvas, svg { max-width: 100%; max-height: 100%; }
+.deck-controls { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 1000; }
+@media print {
+    html, body { width: 1920px; height: auto; overflow: visible; background: #fff; }
+    .deck-viewport { position: static; overflow: visible; background: #fff; }
+    .deck-stage { position: static; width: auto; height: auto; transform: none !important; background: none; }
+    .slide { position: relative; display: block !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important; width: 1920px; height: 1080px; break-after: page; page-break-after: always; }
+    .slide:last-child { break-after: auto; page-break-after: auto; }
+    .deck-controls { display: none !important; }
+    .reveal { opacity: 1 !important; transform: none !important; }
+    .bar-fill, .stack { transform: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+}
+
+/* ===========================================
+   SLIDE SURFACES: soft white (default) and ice
+   =========================================== */
+body { font-family: var(--font); color: var(--ink); -webkit-font-smoothing: antialiased; }
+.slide { transition: opacity .5s var(--ease);
+    background: radial-gradient(ellipse at 0% 0%, #FFFFFF 0%, rgba(255,255,255,0) 55%), linear-gradient(160deg, #FFFFFF 0%, #F7F9FB 60%, #EFF4F8 100%); }
+.slide.s-ice { background: radial-gradient(ellipse at 100% 0%, #F1F8FD 0%, rgba(241,248,253,0) 55%), linear-gradient(160deg, #E8F3FB 0%, #DCEEF8 100%); }
+
+/* ===========================================
+   TYPOGRAPHY: big, light, tightly tracked headings
+   =========================================== */
+.pad { position: absolute; inset: 0; padding: var(--pad-top) var(--pad-x) 140px; display: flex; flex-direction: column; gap: 44px; }
+.pad > .head { margin-bottom: auto; }
+.pad:has(> .head)::after { content: ""; margin-top: auto; }
+h1 { font-size: 168px; font-weight: 400; line-height: .95; letter-spacing: -0.045em; }
+h2 { font-size: 100px; font-weight: 400; line-height: .98; letter-spacing: -0.04em; }
+h2.md { font-size: 82px; }
+h3 { font-size: 34px; font-weight: 500; line-height: 1.15; letter-spacing: -0.015em; }
+p, li { font-size: 29px; line-height: 1.4; }
+.muted { color: var(--ink-2); }
+b, strong { font-weight: 600; }
+code, .mono { font-family: var(--mono); font-size: .86em; }
+.head { display: flex; align-items: flex-start; justify-content: space-between; gap: 40px; }
+.head-l { display: flex; align-items: center; gap: 36px; flex-wrap: wrap; }
+
+/* ===========================================
+   SHAPES: pills, circle arrow, rounded cards
+   =========================================== */
+.pill { display: inline-flex; align-items: center; gap: 10px; font-size: 30px; font-weight: 400; padding: 8px 28px; border-radius: 999px; border: 1.5px solid currentColor; width: fit-content; white-space: nowrap; }
+.pill.sm { font-size: 19px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; padding: 7px 18px; border-width: 0; background: var(--ice); color: var(--ink); }
+.pill.sm.dark { background: var(--black); color: var(--white); }
+.pill.fill { border: none; background: var(--black); color: var(--white); }
+.pill.fill.ice { background: var(--ice); color: var(--ink); }
+.pill.soft { border-color: var(--line); }
+.hl-pill { display: inline-block; padding: 0 .28em .04em; border-radius: 999px; background: var(--black); color: var(--white); line-height: 1.1; }
+.hl-pill.white { background: var(--white); color: var(--ink); }
+.circ { flex: 0 0 auto; width: 84px; height: 84px; border-radius: 50%; border: 1.5px solid currentColor; display: grid; place-items: center; }
+.circ svg { width: 30px; height: 30px; }
+
+.row { display: flex; gap: 32px; }
+.col { display: flex; flex-direction: column; gap: 26px; }
+.grow { flex: 1; }
+.card { border-radius: var(--r-md); padding: 44px; display: flex; flex-direction: column; gap: 16px; background: var(--white); color: var(--ink); box-shadow: var(--shadow); }
+.card.ice { background: var(--ice); box-shadow: none; }
+.card.blue { background: var(--blue); box-shadow: none; }
+.card.black { background: var(--black); color: var(--white); }
+.card.black p, .card.black li { color: rgba(255,255,255,.86); }
+.card.black .muted { color: rgba(255,255,255,.6); }
+.card p { font-size: 27px; }
+.panel { border-radius: var(--r-lg); padding: 56px; }
+.stat { font-size: 128px; font-weight: 400; letter-spacing: -0.05em; line-height: .95; }
+.stat.md { font-size: 96px; }
+.stat.sm { font-size: 72px; }
+.note { font-size: 23px; line-height: 1.45; color: var(--ink-2); }
+.icon-sq { width: 72px; height: 72px; border-radius: 18px; display: grid; place-items: center; background: var(--black); color: var(--white); }
+.icon-sq svg { width: 34px; height: 34px; }
+.icon-sq.ice { background: var(--ice); color: var(--ink); }
+
+/* ===========================================
+   FOOTER (filled by JS) + backup tag
+   =========================================== */
+.foot { position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: 48px; display: flex; justify-content: space-between; font-size: 20px; color: var(--ink-2); }
+.foot .who b { color: var(--ink); font-weight: 600; }
+.backup-tag { position: absolute; top: 56px; right: var(--pad-x); }
+
+/* ===========================================
+   PILL TABLES: every cell is its own rounded pill
+   =========================================== */
+table.pt { border-collapse: separate; border-spacing: 12px 12px; width: 100%; font-size: 26px; margin: -12px; }
+table.pt th { font-size: 17px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 14px 24px; border-radius: 999px; background: var(--black); color: var(--white); text-align: center; }
+table.pt td { padding: 14px 24px; border-radius: 999px; background: var(--white); color: var(--ink); text-align: center; }
+table.pt td:first-child { background: var(--ice-2); font-weight: 600; text-align: left; }
+table.pt tr.hl td { background: var(--ice-2); font-weight: 600; }
+table.pt tr.hl td:first-child { background: var(--ours); color: var(--white); }
+table.pt.on-white td { background: #F1F5F8; }
+table.pt.on-white td:first-child { background: var(--ice); }
+table.pt.on-white tr.hl td { background: var(--ice-2); }
+table.pt.on-white tr.hl td:first-child { background: var(--ours); color: var(--white); }
+table.pt.dense { font-size: 20px; border-spacing: 8px 8px; margin: -8px; }
+table.pt.dense td, table.pt.dense th { padding: 9px 18px; }
+table.pt.dense th { font-size: 14px; }
+table.pt .l { text-align: left; }
+
+/* ===========================================
+   CHARTS (same forms as the first version, recoloured)
+   Vertical bars on a baseline with a dashed reference line; horizontal bars with
+   name | track | value; a stacked bar for error types.
+   =========================================== */
+.vbars { display: flex; align-items: flex-end; gap: 52px; height: 540px; border-bottom: 2px solid var(--ink); position: relative; padding: 0 24px; }
+.vbar { width: 168px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; position: relative; }
+.vbar .val { font-size: 34px; font-weight: 500; margin-bottom: 14px; position: relative; z-index: 1; text-shadow: 0 0 8px #fff, 0 0 14px #fff, 0 0 20px #fff; }
+.vbar .bar-fill { width: 100%; border-radius: 12px 12px 0 0; transform-origin: bottom; transform: scaleY(0); transition: transform 1.1s var(--ease); }
+.vbar .lab { position: absolute; bottom: -60px; font-size: 23px; color: var(--ink-2); white-space: nowrap; }
+.slide.visible .vbar .bar-fill { transform: scaleY(1); }
+.refline { position: absolute; left: 0; right: 0; border-top: 2px dashed var(--steel); }
+.refline span { position: absolute; right: 0; top: -40px; font-size: 21px; font-weight: 600; color: var(--ours); padding: 0 8px; text-shadow: 0 0 8px #fff, 0 0 14px #fff; }
+
+.hbars { display: flex; flex-direction: column; gap: 24px; }
+.hbar { display: grid; grid-template-columns: 380px 1fr 110px; align-items: center; gap: 28px; }
+.hbar .name { font-size: 27px; }
+.hbar .track { height: 46px; position: relative; }
+.hbar .bar-fill { height: 100%; border-radius: 0 10px 10px 0; transform-origin: left; transform: scaleX(0); transition: transform 1.1s var(--ease); }
+.slide.visible .hbar .bar-fill { transform: scaleX(1); }
+.hbar .v { font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.f-ours { background: linear-gradient(90deg, var(--ours), var(--steel)); }
+.vbar .f-ours { background: linear-gradient(0deg, var(--ours), var(--steel)); }
+.f-g1 { background: var(--g1); } .f-g2 { background: var(--g2); } .f-g3 { background: var(--g3); }
+.ours-t { color: var(--ours); }
+
+.stack { display: flex; height: 76px; border-radius: 14px; overflow: hidden; transform-origin: left; transform: scaleX(0); transition: transform 1.1s var(--ease); }
+.slide.visible .stack { transform: scaleX(1); }
+.stack div { display: flex; align-items: center; justify-content: center; color: #fff; font-size: 24px; font-weight: 600; }
+.legend { display: flex; gap: 40px; font-size: 24px; color: var(--ink-2); }
+.legend i { display: inline-block; width: 22px; height: 22px; border-radius: 6px; margin-right: 12px; vertical-align: -3px; }
+
+/* Process diagram */
+.steps { display: flex; align-items: flex-start; justify-content: space-between; }
+.step { width: 300px; display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; }
+.step .disc { width: 180px; height: 180px; border-radius: 50%; background: var(--ice); display: grid; place-items: center; }
+.step .disc svg { width: 64px; height: 64px; }
+.step h3 { font-size: 38px; font-weight: 400; }
+.step p { font-size: 24px; color: var(--ink-2); line-height: 1.3; }
+.arrow { margin-top: 70px; font-size: 38px; color: var(--steel); }
+
+/* Divider slide: big number in a white panel */
+.div-num { font-size: 26px; color: var(--ink-2); display: flex; align-items: center; gap: 24px; }
+.div-num::after { content: ""; width: 380px; height: 1px; background: var(--line); }
+.big-num { position: absolute; right: 64px; top: 64px; bottom: 64px; width: 760px; border-radius: 56px; background: var(--white); box-shadow: var(--shadow); display: grid; place-items: center; font-size: 460px; font-weight: 300; letter-spacing: -0.06em; color: var(--blue); }
+
+/* Flowchart */
+:root { --lynn: #131313; --faheema: #6F97BA; --aisha: #A9C6DD; }
+.flow-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; }
+.node { position: relative; margin: 0 20px; padding: 24px 26px 22px; border-radius: 28px; background: var(--white); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 8px; }
+.node .when { display: flex; align-items: center; font-size: 17px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.node .sec { margin-left: auto; font-size: 15px; color: var(--white); background: var(--black); padding: 3px 12px; border-radius: 999px; }
+.node h3 { font-size: 30px; font-weight: 500; }
+.node p { font-size: 21px; line-height: 1.3; color: var(--ink-2); }
+.node .owners { display: flex; gap: 8px; margin-top: auto; padding-top: 8px; }
+.node.key { background: var(--black); color: var(--white); }
+.node.key p, .node.key .when { color: rgba(255,255,255,.7); }
+.node.key .sec { background: var(--ice); color: var(--ink); }
+.node:not(:last-child)::after { content: "→"; position: absolute; right: -34px; top: 50%; transform: translateY(-50%); font-size: 28px; color: var(--ours); }
+.dot { font-size: 15px; font-weight: 700; padding: 4px 12px; border-radius: 999px; }
+.dot.l { background: var(--lynn); color: #fff; } .dot.f { background: var(--faheema); color: #fff; } .dot.a { background: var(--aisha); color: var(--ink); }
+.node.key .dot.l { background: var(--white); color: var(--ink); }
+.freeze { display: flex; align-items: center; gap: 22px; margin: 26px 20px; font-size: 21px; font-weight: 600; }
+.freeze::before, .freeze::after { content: ""; flex: 1; border-top: 2px dashed var(--black); opacity: .4; }
+.flow-legend { display: flex; gap: 34px; font-size: 22px; color: var(--ink-2); margin: 0 20px; align-items: center; }
+.flow-legend .dot { margin-right: 10px; }
+
+/* Example box */
+.answer { font-family: var(--mono); font-size: 34px; padding: 10px 28px; border-radius: 999px; background: var(--black); color: var(--white); width: fit-content; }
+
+/* Code architecture */
+.dir { font-family: var(--mono); font-size: 28px; font-weight: 500; }
+ul.clean { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+ul.clean li { font-size: 23px; line-height: 1.35; padding-left: 24px; position: relative; }
+ul.clean li::before { content: ""; position: absolute; left: 0; top: 14px; width: 9px; height: 9px; border-radius: 50%; background: var(--steel); }
+
+/* Prompt boxes (backup) */
+.prompt { font-family: var(--mono); font-size: 19px; line-height: 1.5; background: var(--ice); border-radius: 24px; padding: 22px 28px; }
+
+/* ===========================================
+   ENTRY ANIMATIONS (unchanged): staggered fade-up on the active slide
+   =========================================== */
+.reveal { opacity: 0; transform: translateY(26px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+.slide.visible .reveal { opacity: 1; transform: none; }
+.slide.visible .d1 { transition-delay: .08s; } .slide.visible .d2 { transition-delay: .18s; }
+.slide.visible .d3 { transition-delay: .28s; } .slide.visible .d4 { transition-delay: .38s; }
+.slide.visible .d5 { transition-delay: .48s; } .slide.visible .d6 { transition-delay: .58s; }
+
+/* ===========================================
+   ANIMATED DIAGRAMS
+   Timeline engine: any element with data-at="seconds" gets .on that many seconds
+   after its slide opens (JS below). Press R to replay the current slide.
+   SVG edges use pathLength="1", so they draw from dashoffset 1 to 0.
+   =========================================== */
+@keyframes popIn  { from { opacity: 0; transform: scale(.55); } to { opacity: 1; transform: none; } }
+@keyframes riseIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+@keyframes drawIn { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes growX  { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes ring   { 0% { transform: scale(1); opacity: .6; } 100% { transform: scale(2.1); opacity: 0; } }
+@keyframes sail   { 0%, 14% { transform: translateX(0); } 46%, 64% { transform: translateX(-220px); } 96%, 100% { transform: translateX(0); } }
+@keyframes bob    { 0%, 100% { translate: 0 0; } 50% { translate: 0 -5px; } }
+
+[data-at] { opacity: 0; transition: opacity .55s var(--ease), transform .7s var(--ease), stroke-dashoffset 1s var(--ease), fill .5s, stroke .5s; }
+[data-at].on { opacity: 1; }
+svg [data-at] { transform-box: fill-box; transform-origin: center; }
+svg .pop[data-at] { transform: scale(.55); }
+svg .pop[data-at].on { transform: none; }
+svg .edge[data-at] { opacity: 1; stroke-dasharray: 1; stroke-dashoffset: 1; }
+svg .edge[data-at].on { stroke-dashoffset: 0; }
+
+/* Search-tree diagram (slide "Inside one search") */
+.tree text { font-family: var(--font); }
+.tree .nd rect { fill: var(--white); stroke: rgba(19,19,19,.16); stroke-width: 1.5; filter: drop-shadow(0 10px 18px rgba(16,24,40,.10)); }
+.tree .nd .t1 { font-size: 30px; font-weight: 600; fill: var(--ink); }
+.tree .nd .t2 { font-size: 19px; fill: var(--ink-2); }
+.tree .nd.pruned rect { fill: #F3F5F7; stroke-dasharray: 8 7; filter: none; }
+.tree .nd.pruned .t1 { fill: var(--g2); }
+.tree .edge { fill: none; stroke: var(--g2); stroke-width: 3; }
+.tree .edge.best { stroke: var(--ours); stroke-width: 7; stroke-linecap: round; }
+.tree .edge.dead { stroke: var(--g3); }
+.tree .badge circle { fill: var(--black); }
+.tree .badge text { font-size: 22px; font-weight: 700; fill: #fff; text-anchor: middle; dominant-baseline: central; }
+.tree .badge.hi circle { fill: var(--ours); }
+.tree .sel rect { fill: var(--black); stroke: none; }
+.tree .sel text { fill: #fff; }
+.tree .x { stroke: var(--g2); stroke-width: 4; stroke-linecap: round; }
+.tree .pulse { fill: none; stroke: var(--ours); stroke-width: 4; }
+.slide.visible .tree .pulse.on { animation: ring 1.8s ease-out infinite; }
+.tree .lbl { font-size: 18px; font-weight: 700; letter-spacing: .08em; fill: var(--ink-2); text-transform: uppercase; }
+
+.phases { display: flex; flex-direction: column; gap: 14px; }
+.phase { display: grid; grid-template-columns: 54px 1fr auto; align-items: center; gap: 20px; padding: 13px 24px; border-radius: 24px; background: var(--white); box-shadow: var(--shadow); transform: translateX(14px); }
+.phase[data-at] { opacity: .35; }
+.phase.on { opacity: 1; transform: none; }
+.phase .n { width: 54px; height: 54px; border-radius: 50%; background: var(--ice); display: grid; place-items: center; font-size: 26px; font-weight: 600; }
+.phase.on .n { background: var(--black); color: #fff; }
+.phase h3 { font-size: 30px; }
+.phase p { font-size: 21px; color: var(--ink-2); line-height: 1.3; }
+.phase .c { font-family: var(--mono); font-size: 22px; color: var(--ours); font-weight: 500; }
+.meter { border-radius: 28px; background: var(--black); color: #fff; padding: 26px 32px; display: flex; flex-direction: column; gap: 14px; }
+.meter .top { display: flex; align-items: baseline; justify-content: space-between; }
+.meter .num { font-size: 84px; font-weight: 400; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+.meter .of { font-size: 24px; color: rgba(255,255,255,.6); }
+.meter .track { height: 14px; border-radius: 999px; background: rgba(255,255,255,.14); overflow: hidden; }
+.meter .fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--steel), var(--blue)); transition: width .7s var(--ease); }
+
+/* Title + divider decorative trees: draw in, then a dot travels the best path */
+.deco-tree { position: absolute; pointer-events: none; font-size: 0; line-height: 0; }
+.deco-tree svg { display: block; }
+.deco-tree .e { fill: none; stroke: var(--blue); stroke-width: 2.5; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.deco-tree .e.b { stroke: var(--ours); stroke-width: 4; }
+.deco-tree circle.v { fill: var(--white); stroke: var(--steel); stroke-width: 2.5; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.deco-tree circle.v.b { fill: var(--ours); stroke: var(--ours); }
+.deco-tree .dotr { fill: var(--ours); opacity: 0; filter: drop-shadow(0 0 6px rgba(62,106,143,.6)); }
+.slide.visible .deco-tree .e { animation: drawIn 1s var(--ease) forwards; }
+.slide.visible .deco-tree circle.v { animation: popIn .6s var(--ease) forwards; }
+.big-num .deco-tree { left: 50%; bottom: 60px; transform: translateX(-50%); }
+
+/* Flowchart: nodes arrive one by one, the freeze line draws from the centre */
+.slide.visible .flow-row .node { animation: riseIn .7s var(--ease) both; }
+.slide.visible .flow-row .node:nth-child(1) { animation-delay: .25s; } .slide.visible .flow-row .node:nth-child(2) { animation-delay: .45s; }
+.slide.visible .flow-row .node:nth-child(3) { animation-delay: .65s; } .slide.visible .flow-row .node:nth-child(4) { animation-delay: .85s; }
+.slide.visible .flow-row .node:nth-child(5) { animation-delay: 1.05s; }
+.slide.visible .freeze + .flow-row .node:nth-child(1) { animation-delay: 1.75s; } .slide.visible .freeze + .flow-row .node:nth-child(2) { animation-delay: 1.95s; }
+.slide.visible .freeze + .flow-row .node:nth-child(3) { animation-delay: 2.15s; } .slide.visible .freeze + .flow-row .node:nth-child(4) { animation-delay: 2.35s; }
+.slide.visible .freeze + .flow-row .node:nth-child(5) { animation-delay: 2.55s; }
+.slide.visible .freeze::before { transform-origin: right; animation: growX .8s var(--ease) 1.3s both; }
+.slide.visible .freeze::after { transform-origin: left; animation: growX .8s var(--ease) 1.3s both; }
+.node.key { position: relative; }
+.slide.visible .node.key::before { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: 0 0 0 3px var(--steel); animation: ring 2.2s ease-out 1.4s infinite; pointer-events: none; }
+
+/* Approach: steps light up left to right, arrows nudge */
+.slide.visible .steps .step { animation: riseIn .7s var(--ease) both; }
+.slide.visible .steps .step:nth-child(1) { animation-delay: .3s; } .slide.visible .steps .step:nth-child(3) { animation-delay: .7s; }
+.slide.visible .steps .step:nth-child(5) { animation-delay: 1.1s; } .slide.visible .steps .step:nth-child(7) { animation-delay: 1.5s; }
+@keyframes nudge { 0%, 100% { transform: none; opacity: .5; } 50% { transform: translateX(10px); opacity: 1; } }
+.slide.visible .steps .arrow { animation: nudge 1.6s ease-in-out infinite; }
+.slide.visible .steps .arrow:nth-child(4) { animation-delay: .3s; } .slide.visible .steps .arrow:nth-child(6) { animation-delay: .6s; }
+.step .disc { position: relative; }
+.slide.visible .step:nth-child(7) .disc::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 3px solid var(--steel); animation: ring 2s ease-out 2s infinite; }
+
+/* Reproduction: ticks pop in row by row */
+.slide.visible table.pt .tick { display: inline-block; animation: popIn .5s var(--ease) both; }
+.slide.visible table.pt tr:nth-child(2) .tick { animation-delay: .9s; } .slide.visible table.pt tr:nth-child(3) .tick { animation-delay: 1.15s; }
+.slide.visible table.pt tr:nth-child(4) .tick { animation-delay: 1.4s; } .slide.visible table.pt tr:nth-child(5) .tick { animation-delay: 1.65s; }
+
+/* Charts: bars grow one after another, reference line draws last */
+.slide.visible .vbar:nth-of-type(2) .bar-fill { transition-delay: .2s; } .slide.visible .vbar:nth-of-type(3) .bar-fill { transition-delay: .35s; }
+.slide.visible .vbar:nth-of-type(4) .bar-fill { transition-delay: .5s; } .slide.visible .vbar:nth-of-type(5) .bar-fill { transition-delay: .8s; }
+.refline { transform-origin: left; transform: scaleX(0); transition: transform 1s var(--ease) 1.4s; }
+.slide.visible .refline { transform: scaleX(1); }
+.slide.visible .hbar:nth-child(3) .bar-fill { transition-delay: .12s; } .slide.visible .hbar:nth-child(4) .bar-fill { transition-delay: .24s; }
+.slide.visible .hbar:nth-child(5) .bar-fill { transition-delay: .36s; } .slide.visible .hbar:nth-child(6) .bar-fill { transition-delay: .48s; }
+.slide.visible .hbar:nth-child(7) .bar-fill { transition-delay: .6s; }
+
+/* Token gauge (Equal tokens) */
+.gauge { display: grid; grid-template-columns: 300px 1fr 150px; align-items: center; gap: 28px; }
+.gauge .name { font-size: 25px; }
+.gauge .track { height: 40px; border-radius: 999px; background: #EEF2F6; position: relative; overflow: visible; }
+.gauge .bar-fill { height: 100%; border-radius: 999px; transform-origin: left; transform: scaleX(0); transition: transform 1.3s var(--ease); }
+.slide.visible .gauge .bar-fill { transform: scaleX(1); }
+.slide.visible .gauge + .gauge .bar-fill { transition-delay: .25s; }
+.gauge .v { font-size: 25px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.cap { position: absolute; right: 0; top: -14px; bottom: -14px; border-right: 3px dashed var(--black); }
+.cap span { position: absolute; right: -6px; top: -36px; font-size: 18px; font-weight: 700; letter-spacing: .06em; white-space: nowrap; transform: translateX(50%); }
+
+/* Ferry mini-diagram (The task) */
+.ferry .boat { animation: none; }
+.slide.visible .ferry .boat { animation: sail 6s ease-in-out 1.2s infinite; }
+.slide.visible .ferry .wave { animation: bob 2.4s ease-in-out infinite; }
+
+/* ===========================================
+   NOTES DRAWER (N) + PROGRESS BAR + EDIT MODE (E)
+   =========================================== */
+.notes { display: none; }
+#notesDrawer { position: fixed; left: 0; right: 0; bottom: 0; max-height: 38vh; overflow: auto; background: rgba(19,19,19,.95); color: #f3f3f3; font: 17px/1.55 var(--font); padding: 22px 32px 28px; z-index: 2000; transform: translateY(100%); transition: transform .35s var(--ease); }
+#notesDrawer.open { transform: none; }
+#notesDrawer h4 { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--blue); margin-bottom: 10px; }
+#progress { position: fixed; left: 0; top: 0; height: 3px; background: var(--steel); z-index: 1500; transition: width .4s var(--ease); }
+.edit-hotzone { position: fixed; top: 0; left: 0; width: 80px; height: 80px; z-index: 10000; }
+.edit-toggle { position: fixed; top: 18px; left: 18px; z-index: 10001; border: none; background: #fff; border-radius: 50%; width: 44px; height: 44px; box-shadow: 0 2px 10px rgba(0,0,0,.15); cursor: pointer; font-size: 20px; opacity: 0; pointer-events: none; transition: opacity .3s; }
+.edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+.edit-toggle.active { background: var(--black); color: #fff; }
+body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6); outline-offset: 4px; }
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="deck-viewport">
+<main class="deck-stage" id="deckStage">
+
+<!-- Reusable arrow icon (↙) used in the circle buttons -->
+<svg width="0" height="0" style="position:absolute"><defs><symbol id="arr" viewBox="0 0 24 24"><path d="M18 6L6 18M6 8v10h10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol></defs></svg>
+
+<!-- =========================================================
+     LYNN · OPENING
+     ========================================================= -->
+
+<!-- 1 · Title: white rounded panel on ice -->
+<section class="slide s-ice" data-presenter="Lynn Younes" data-section="Opening">
+    <div class="reveal d1" style="position:absolute;inset:64px;border-radius:56px;background:var(--white);box-shadow:var(--shadow);padding:72px 88px;display:flex;flex-direction:column">
+        <div class="row" style="justify-content:space-between;align-items:center">
+            <span class="pill sm">AICC5102 · Principles of AI</span>
+            <div class="row" style="gap:16px;align-items:center"><span class="pill sm dark">Master's · Fall 2026</span><span class="circ" style="width:64px;height:64px"><svg><use href="#arr"/></svg></span></div>
+        </div>
+        <div class="deco-tree" data-deco="title" style="right:96px;top:128px;width:560px;height:244px"></div>
+        <h1 class="reveal d2" style="margin-top:auto;font-size:180px">Can an LLM plan<br>better by <span class="hl-pill">searching?</span></h1>
+        <p class="reveal d3 muted" style="font-size:34px;margin-top:40px">Reproducing ACPBench-Hard and testing LLM-guided search on its Next Action task</p>
+        <div class="row reveal d4" style="margin-top:56px;gap:20px;align-items:center">
+            <span class="pill fill ice" style="font-size:22px">Presented by</span>
+            <span class="pill soft" style="font-size:22px">Lynn Younes · Faheema Hassan Kudukky · Aisha Suleiman Shaik</span>
+            <span class="pill fill" style="font-size:22px;margin-left:auto">Date</span>
+            <span class="pill soft" style="font-size:22px">24 November 2026</span>
+        </div>
+    </div>
+    <aside class="notes">Introduce the team and the question in one line: we reproduced a planning benchmark for language models, then tested whether letting the model search through its options helps it plan.</aside>
+</section>
+
+<!-- 2 · Research question -->
+<section class="slide" data-presenter="Lynn Younes" data-section="Research question">
+    <div class="pad">
+        <div class="head reveal d1"><div class="head-l"><h2 class="md" style="max-width:1460px">Does best-first search over LLM-predicted states beat <span class="hl-pill">answering once?</span></h2></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+        <div class="row" style="gap:28px">
+            <div class="card ice grow reveal d2" style="min-height:330px"><div class="icon-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5" stroke-linecap="round"/></svg></div><p style="font-size:40px;margin-top:auto">01.</p><p>The paper scored <b>one answer</b> per question. It never tested more compute at answer time.</p></div>
+            <div class="card black grow reveal d3" style="min-height:330px"><div class="icon-sq ice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5" stroke-linecap="round"/></svg></div><p style="font-size:40px;margin-top:auto;color:#fff">02.</p><p>Search helped LLMs on puzzles and maths (Tree of Thoughts, RAP). Planning is the <b>obvious next test</b>.</p></div>
+            <div class="card ice grow reveal d4" style="min-height:330px"><div class="icon-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12.5l4.5 4.5L19 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><p style="font-size:40px;margin-top:auto">03.</p><p>We tested it fairly: same questions, <b>matched budget</b>, 3 seeds, fixed in our proposal.</p></div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">The brief asks for one experiment the paper did not do but should have. The paper only measures single-shot answers; inference-time search is the natural question it leaves open. The research question was fixed in the proposal on 29 September.</aside>
+</section>
+
+<!-- 3 · Roadmap and roles -->
+<section class="slide s-ice" data-presenter="Lynn Younes" data-section="Roadmap">
+    <div class="pad">
+        <div class="head reveal d1"><div class="head-l"><h2>Roadmap</h2><span class="pill">who did what</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+        <div class="row" style="gap:24px">
+            <div class="card grow reveal d2" style="min-height:360px"><span class="pill sm">01 · Faheema</span><h3 style="margin-top:auto">Benchmark and reproduction</h3><p class="muted" style="font-size:23px">Official-harness reproduction; structured and best-of-N baselines; related work</p></div>
+            <div class="card black grow reveal d3" style="min-height:360px"><span class="pill sm">02 · Lynn, lead</span><h3 style="margin-top:auto">Our extension and the code</h3><p class="muted" style="font-size:23px">Search method, shared pipeline and runner; paper assembly</p></div>
+            <div class="card grow reveal d4" style="min-height:360px"><span class="pill sm">03 · Aisha</span><h3 style="margin-top:auto">Evaluation and results</h3><p class="muted" style="font-size:23px">McNemar tool, tables and figures, coverage and AUC, budget and token matching</p></div>
+            <div class="card grow reveal d5" style="min-height:360px"><span class="pill sm dark">04 · Lynn</span><h3 style="margin-top:auto">Ablations, bonus and takeaways</h3><p class="muted" style="font-size:23px">13 settings × 3 seeds; two post-hoc follow-ups</p></div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Every change went through a reviewed pull request, so each of us can explain every part. Contributions and AI use are documented in Appendices E and F.</aside>
+</section>
+
+<!-- 3b · Project flowchart (prototype: keep or drop after team feedback) -->
+<section class="slide" data-presenter="Lynn Younes" data-section="How the project ran">
+    <div class="pad" style="gap:30px">
+        <div class="head reveal d1"><div class="head-l"><h2 class="md">How the project ran</h2><span class="pill" style="font-size:26px">by phase</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+        <div>
+            <div class="flow-row reveal d2">
+                <div class="node"><span class="when">29 Sep<span class="sec">Proposal</span></span><h3>Proposal</h3><p>Question, match rule and plan fixed</p><div class="owners"><span class="dot l">L</span><span class="dot f">F</span><span class="dot a">A</span></div></div>
+                <div class="node"><span class="when">21–22 Oct<span class="sec">01</span></span><h3>Reproduction</h3><p>4 results match; independent official-harness check</p><div class="owners"><span class="dot l">L</span><span class="dot f">F</span></div></div>
+                <div class="node"><span class="when">by 24 Oct<span class="sec">01</span></span><h3>Baselines</h3><p>Structured prompting and best-of-N built</p><div class="owners"><span class="dot f">F</span></div></div>
+                <div class="node"><span class="when">21–23 Oct<span class="sec">02</span></span><h3>Extension design</h3><p>Search tuned on 40 validation questions</p><div class="owners"><span class="dot l">L</span></div></div>
+                <div class="node key"><span class="when">23 Oct<span class="sec">02</span></span><h3>Freeze</h3><p>0–10 score, k 3, d 2, 14 calls</p><div class="owners"><span class="dot l">L</span></div></div>
+            </div>
+            <div class="freeze reveal d3">Search design frozen before any test run · everything below ran on the 130 test questions</div>
+            <div class="flow-row reveal d4">
+                <div class="node"><span class="when">24–29 Oct<span class="sec">03</span></span><h3>Test runs</h3><p>130 questions × 3 seeds, 8B + 70B; token-matched check</p><div class="owners"><span class="dot l">L</span><span class="dot f">F</span><span class="dot a">A</span></div></div>
+                <div class="node key"><span class="when">25–30 Oct<span class="sec">03</span></span><h3>Analysis</h3><p>McNemar, budget matching, coverage + AUC</p><div class="owners"><span class="dot a">A</span></div></div>
+                <div class="node"><span class="when">25 Oct<span class="sec">04</span></span><h3>Ablations</h3><p>13 settings × 3 seeds</p><div class="owners"><span class="dot l">L</span></div></div>
+                <div class="node"><span class="when">3–9 Nov<span class="sec">04</span></span><h3>Follow-ups</h3><p>Validation first; bonus 0.331</p><div class="owners"><span class="dot l">L</span></div></div>
+                <div class="node"><span class="when">to 18 Nov<span class="sec">All</span></span><h3>Paper + code</h3><p>6 pages, 40 tests, fresh-clone check</p><div class="owners"><span class="dot l">L</span><span class="dot f">F</span><span class="dot a">A</span></div></div>
+            </div>
+        </div>
+        <div class="flow-legend reveal d5"><span><span class="dot l">L</span>Lynn (lead)</span><span><span class="dot f">F</span>Faheema</span><span><span class="dot a">A</span>Aisha</span><span><span class="dot l" style="margin-right:10px">01</span>section of this talk</span></div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Prototype slide: the whole project as one flow, coloured by owner. The dashed line is the most important part: the search design was settled on validation data only, and everything below the line ran on the test questions with that frozen design. Test runs: Lynn ran search, Faheema the baselines, Aisha the token-matched check.</aside>
+</section>
+
+<!-- =========================================================
+     FAHEEMA · BENCHMARK AND REPRODUCTION
+     ========================================================= -->
+
+<!-- 4 · Divider 01 -->
+<section class="slide s-ice" data-presenter="Faheema Hassan Kudukky" data-section="01 · Benchmark and reproduction">
+    <div class="big-num reveal d2">01</div>
+    <div class="pad" style="justify-content:center;gap:40px">
+        <p class="div-num reveal d1">Section 01</p>
+        <h1 class="reveal d2" style="font-size:150px">Benchmark and<br>reproduction</h1>
+        <div class="row reveal d3" style="align-items:center;gap:24px"><span class="pill">Faheema Hassan Kudukky</span><span class="circ"><svg><use href="#arr"/></svg></span></div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Hand-over from Lynn to Faheema.</aside>
+</section>
+
+<!-- 5 · The task -->
+<section class="slide" data-presenter="Faheema Hassan Kudukky" data-section="01 · Benchmark and reproduction">
+    <div class="pad">
+        <div class="head reveal d1"><div class="head-l"><h2>The task</h2><span class="pill">choose the next move</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+        <div class="row" style="gap:56px;align-items:stretch">
+            <div class="col grow" style="gap:30px;justify-content:center">
+                <p class="reveal d2"><b>ACPBench-Hard</b> (Kokel et al., ICLR 2026) tests planning skills one at a time, open-ended: the model must <b>write</b> its answer.</p>
+                <p class="reveal d3"><b>Next Action:</b> given a state and a goal, name one action that brings us one step closer on an optimal plan.</p>
+                <p class="reveal d4">130 test questions from 13 domains. A <b>validator with a planner</b> checks every answer.</p>
+            </div>
+            <div class="card ice reveal d4" style="width:720px;padding:52px;gap:22px;border-radius:var(--r-lg)">
+                <span class="pill sm dark">Example · ferry domain</span>
+                <p style="font-size:29px">The ferry is at l1 and empty. Cars c0 and c1 are at l0. Goal: c0 at l1.</p>
+                <svg class="ferry" viewBox="0 0 616 130" style="width:616px;height:130px">
+                    <path class="wave" d="M0 104 q 20 -8 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0" fill="none" stroke="var(--steel)" stroke-width="2.5" opacity=".55"/>
+                    <rect x="8" y="78" width="150" height="16" rx="8" fill="var(--g1)"/><text x="83" y="124" text-anchor="middle" style="font:600 19px var(--mono);fill:var(--ink-2)">l0</text>
+                    <rect x="22" y="48" width="56" height="28" rx="9" fill="var(--ours)"/><text x="50" y="68" text-anchor="middle" style="font:600 15px var(--mono);fill:#fff">c0</text>
+                    <rect x="88" y="48" width="56" height="28" rx="9" fill="var(--steel)"/><text x="116" y="68" text-anchor="middle" style="font:600 15px var(--mono);fill:#fff">c1</text>
+                    <rect x="458" y="78" width="150" height="16" rx="8" fill="var(--g1)"/><text x="533" y="124" text-anchor="middle" style="font:600 19px var(--mono);fill:var(--ink-2)">l1</text>
+                    <rect x="520" y="48" width="56" height="28" rx="9" fill="none" stroke="var(--ours)" stroke-width="2" stroke-dasharray="5 4"/><text x="548" y="40" text-anchor="middle" style="font:700 13px var(--font);letter-spacing:.08em;fill:var(--ours)">GOAL</text>
+                    <g class="boat"><path d="M372 82 h80 l-12 20 h-56 z" fill="var(--black)"/><rect x="392" y="66" width="34" height="16" rx="4" fill="var(--black)"/><text x="412" y="56" text-anchor="middle" style="font:600 14px var(--mono);fill:var(--ink)">ferry</text></g>
+                </svg>
+                <p style="font-size:29px">What is the next action that takes us towards the goal?</p>
+                <span class="answer">(sail l1 l0)</span>
+                <p class="note">Correct if it can be applied now <b>and</b> the shortest remaining plan gets one step shorter.</p>
+            </div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Llama 3.1 8B gets only 25 percent on Next Action in the paper. Unlike PlanBench, which grades whole plans pass or fail, ACPBench-Hard asks about one moment, so it shows which skill breaks. The example is simplified from a real ferry question.</aside>
+</section>
+
+<!-- 6 · Related work -->
+<section class="slide s-ice" data-presenter="Faheema Hassan Kudukky" data-section="01 · Benchmark and reproduction">
+    <div class="pad">
+        <div class="head reveal d1"><div class="head-l"><h2>Related work</h2><span class="pill">where we sit</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+        <div>
+            <div class="reveal d2" style="position:relative;height:2px;background:rgba(19,19,19,.25);margin:0 160px"><span style="position:absolute;left:0;top:-7px;width:16px;height:16px;border-radius:50%;background:var(--black)"></span><span style="position:absolute;left:33%;top:-7px;width:16px;height:16px;border-radius:50%;background:var(--black)"></span><span style="position:absolute;left:66%;top:-7px;width:16px;height:16px;border-radius:50%;background:var(--black)"></span><span style="position:absolute;right:0;top:-7px;width:16px;height:16px;border-radius:50%;background:var(--black)"></span></div>
+            <div class="row" style="gap:24px;margin-top:40px">
+                <div class="col grow reveal d2" style="gap:16px"><span class="pill fill" style="font-size:22px;width:100%;justify-content:center">Planning benchmarks</span><div class="card" style="min-height:250px"><h3>PlanBench, ACPBench</h3><p class="muted" style="font-size:24px">Whole plans vs. one skill at a time.</p></div></div>
+                <div class="col grow reveal d3" style="gap:16px"><span class="pill fill" style="font-size:22px;width:100%;justify-content:center">Search over LLM states</span><div class="card" style="min-height:250px"><h3>Tree of Thoughts, RAP</h3><p class="muted" style="font-size:24px">Helped on puzzles and maths; untested on planning.</p></div></div>
+                <div class="col grow reveal d4" style="gap:16px"><span class="pill fill" style="font-size:22px;width:100%;justify-content:center">LLMs + symbolic tools</span><div class="card" style="min-height:250px"><h3>LLM+P, Thought of Search</h3><p class="muted" style="font-size:24px">A planner or code does the checking.</p></div></div>
+                <div class="col grow reveal d5" style="gap:16px"><span class="pill fill" style="font-size:22px;width:100%;justify-content:center">Fair evaluation</span><div class="card" style="min-height:250px"><h3>AI Agents That Matter</h3><p class="muted" style="font-size:24px">Compare methods at equal cost.</p></div></div>
+            </div>
+        </div>
+        <p class="reveal d6" style="font-size:32px">Our gap: search with <span class="hl-pill">no symbolic help</span>, on open-ended planning, at a matched budget.</p>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Related work also includes LLM-generated heuristics for classical planning. Every reference was checked against its published version (bibliography PR #27).</aside>
+</section>
+
+<!-- 7 · Reproduction: title on white, pill table on an ice panel -->
+<section class="slide" data-presenter="Faheema Hassan Kudukky" data-section="01 · Benchmark and reproduction">
+    <div style="position:absolute;left:var(--pad-x);right:var(--pad-x);top:var(--pad-top)" class="head reveal d1"><div class="head-l"><h2>Reproduction</h2><span class="pill">all four match</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+    <div class="reveal d2" style="position:absolute;left:64px;right:64px;bottom:120px;height:560px;background:var(--ice);border-radius:56px;padding:56px 64px;display:flex;gap:56px">
+        <div style="width:1000px">
+            <table class="pt">
+                <tr><th class="l">Llama 3.1 · task</th><th>Paper</th><th>Ours</th><th>Match</th></tr>
+                <tr class="hl"><td>8B · Next Action</td><td>0.25</td><td>0.223</td><td><span class="tick">✓</span></td></tr>
+                <tr><td>8B · Progression</td><td>0.40</td><td>0.400</td><td><span class="tick">✓</span></td></tr>
+                <tr><td>70B · Next Action</td><td>0.42</td><td>0.377</td><td><span class="tick">✓</span></td></tr>
+                <tr><td>70B · Progression</td><td>0.65</td><td>0.608</td><td><span class="tick">✓</span></td></tr>
+            </table>
+        </div>
+        <div class="col grow reveal d3" style="gap:22px;justify-content:center">
+            <p style="font-size:25px"><span class="pill sm dark">Match rule</span><br>Inside the 95% interval around the paper's value, fixed in the proposal.</p>
+            <p style="font-size:25px"><span class="pill sm dark">Independent check</span><br>The official lm-eval harness on a second machine gave identical answers on all 130.</p>
+            <p style="font-size:25px"><span class="pill sm dark">Pinned provider</span><br>Mixed fp8/bf16 serving scored 0.192, so every run uses one bf16 provider.</p>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">With 130 questions, one flipped answer moves the score by 0.008, so the interval matters. Models via OpenRouter: 8B pinned to CoreWeave at bf16, 70B to Amazon Bedrock. Every deviation is in the fidelity log, Appendix A (backup slide).</aside>
+</section>
+
+<!-- 8 · Baselines -->
+<section class="slide s-ice" data-presenter="Faheema Hassan Kudukky" data-section="01 · Benchmark and reproduction">
+    <div class="pad">
+        <div class="head reveal d1"><div class="head-l"><h2>Baselines</h2><span class="pill">what search must beat</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+        <div class="row" style="gap:28px">
+            <div class="card grow reveal d2" style="padding:52px;border-radius:var(--r-lg)">
+                <span class="pill sm">Structured prompting · 1 call</span>
+                <h3 style="margin-top:10px">State → goal → candidate → progress → final action</h3>
+                <p class="muted">One greedy answer, reasoning in fixed steps.</p>
+                <div class="stat" style="margin-top:20px">0.262</div>
+            </div>
+            <div class="card black grow reveal d3" style="padding:52px;border-radius:var(--r-lg)">
+                <span class="pill sm">Best-of-N · 14 calls</span>
+                <h3 style="margin-top:10px">14 samples at temperature 0.7, majority vote</h3>
+                <p>Vote on the parsed action. Never uses the validator.</p>
+                <div class="stat" style="margin-top:20px">0.236 <span style="font-size:44px;color:rgba(255,255,255,.6)">± 0.012</span></div>
+            </div>
+        </div>
+        <p class="note reveal d4" style="color:var(--ink)">Best-of-N gets exactly the 14 calls search gets, so any difference comes from the method, not the budget.</p>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Both controls were run on the same 130 test questions as search. Best-of-N uses three seeds; structured is greedy so one run.</aside>
+</section>
+
+<!-- =========================================================
+     LYNN · OUR EXTENSION AND THE CODE
+     ========================================================= -->
+
+<!-- 9 · Divider 02 -->
+<section class="slide s-ice" data-presenter="Lynn Younes" data-section="02 · Our extension">
+    <div class="big-num reveal d2">02</div>
+    <div class="pad" style="justify-content:center;gap:40px">
+        <p class="div-num reveal d1">Section 02</p>
+        <h1 class="reveal d2" style="font-size:150px">Our extension<br>and the code</h1>
+        <div class="row reveal d3" style="align-items:center;gap:24px"><span class="pill">Lynn Younes</span><span class="circ"><svg><use href="#arr"/></svg></span></div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Hand-over from Faheema to Lynn.</aside>
+</section>
+
+<!-- 10 · Approach -->
+<section class="slide" data-presenter="Lynn Younes" data-section="02 · Our extension">
+    <div class="pad">
+        <div class="head reveal d1"><div class="head-l"><h2>Our approach</h2><span class="pill">let the model search</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+        <div class="steps reveal d2">
+            <div class="step"><div class="disc"><svg viewBox="0 0 24 24" fill="none" stroke="#131313" stroke-width="1.5" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg></div><span class="pill sm dark">1 call</span><h3>Propose</h3><p>List 3 candidate actions</p></div>
+            <span class="arrow">→</span>
+            <div class="step"><div class="disc"><svg viewBox="0 0 24 24" fill="none" stroke="#131313" stroke-width="1.5" stroke-linecap="round"><path d="M4 18h16"/><path d="M7 15V10M12 15V6M17 15v-3"/></svg></div><span class="pill sm dark">3 calls</span><h3>Predict</h3><p>Write the state after each, or NOT APPLICABLE</p></div>
+            <span class="arrow">→</span>
+            <div class="step"><div class="disc"><svg viewBox="0 0 24 24" fill="#131313"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-2.9-5.4 2.9 1.1-6L3.2 9.4l6.1-.8z"/></svg></div><span class="pill sm dark">3 calls</span><h3>Score</h3><p>Rate each state 0–10 for progress</p></div>
+            <span class="arrow">→</span>
+            <div class="step"><div class="disc" style="background:var(--black)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><span class="pill sm dark">7 calls</span><h3>Expand</h3><p>Repeat from the best state, depth 2</p></div>
+        </div>
+        <div class="card ice reveal d3" style="flex-direction:row;align-items:center;gap:36px;padding:30px 44px;border-radius:999px">
+            <span class="pill sm dark">The rule</span>
+            <p style="font-size:27px">The LLM does everything: <b>no planner, simulator or validator</b> during search. Budget: <b>14 calls</b> per question.</p>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">One expansion costs 1 + 2k = 7 calls with k = 3, so 14 calls allow the root plus one child. The validator only grades the final answer. The proposer samples at temperature 0.7; predictor and evaluator are greedy. Search worked for Tree of Thoughts and RAP, so it was a reasonable bet for planning.</aside>
+</section>
+
+<!-- 10b · Inside one search: animated tree, phases and call meter run on a timeline (R replays) -->
+<section class="slide s-ice" data-presenter="Lynn Younes" data-section="02 · Our extension">
+    <div class="pad" style="gap:30px">
+        <div class="head reveal d1"><div class="head-l"><h2 class="md">Inside one search</h2><span class="pill" style="font-size:26px">k = 3 · d = 2 · 14 calls</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+        <div class="row" style="gap:40px;align-items:center">
+            <svg class="tree" viewBox="0 0 1080 640" style="width:1100px;height:652px;flex:0 0 auto">
+                <!-- edges: root to depth 1 -->
+                <path class="edge" data-at="0.9" pathLength="1" d="M195 320 C295 320 295 130 395 130"/>
+                <path class="edge" data-at="1.0" pathLength="1" d="M195 320 C295 320 295 320 395 320"/>
+                <path class="edge dead" data-at="1.1" pathLength="1" d="M195 320 C295 320 295 510 395 510"/>
+                <!-- edges: best depth-1 state to depth 2 -->
+                <path class="edge" data-at="5.0" pathLength="1" d="M565 130 C680 130 680 80 795 80"/>
+                <path class="edge" data-at="5.1" pathLength="1" d="M565 130 C680 130 680 230 795 230"/>
+                <path class="edge" data-at="5.2" pathLength="1" d="M565 130 C680 130 680 380 795 380"/>
+                <!-- best path, drawn last -->
+                <path class="edge best" data-at="7.7" pathLength="1" d="M195 320 C295 320 295 130 395 130"/>
+                <path class="edge best" data-at="8.1" pathLength="1" d="M565 130 C680 130 680 80 795 80"/>
+
+                <!-- root -->
+                <g class="nd pop" data-at="0.2"><rect x="25" y="277" width="170" height="86" rx="24"/><text class="t1" x="110" y="315" text-anchor="middle">S₀</text><text class="t2" x="110" y="343" text-anchor="middle">current state</text></g>
+                <!-- depth 1 -->
+                <g class="nd pop" data-at="2.0"><rect x="395" y="87" width="170" height="86" rx="24"/><text class="t1" x="480" y="125" text-anchor="middle">S₁</text><text class="t2" x="480" y="153" text-anchor="middle">after a₁</text></g>
+                <g class="sel" data-at="4.7"><rect x="395" y="87" width="170" height="86" rx="24"/><text class="t1" x="480" y="125" text-anchor="middle" style="font-size:30px;font-weight:600">S₁</text><text x="480" y="153" text-anchor="middle" style="font-size:19px;fill:rgba(255,255,255,.7)">best · expand</text></g>
+                <g class="nd pop" data-at="2.2"><rect x="395" y="277" width="170" height="86" rx="24"/><text class="t1" x="480" y="315" text-anchor="middle">S₂</text><text class="t2" x="480" y="343" text-anchor="middle">after a₂</text></g>
+                <g class="nd pruned pop" data-at="2.4"><rect x="395" y="467" width="170" height="86" rx="24"/><text class="t1" x="480" y="505" text-anchor="middle">S₃</text><text class="t2" x="480" y="533" text-anchor="middle">NOT APPLICABLE</text></g>
+                <g data-at="3.0"><path class="x" d="M284 404 l22 22 M306 404 l-22 22"/><text class="lbl" x="480" y="590" text-anchor="middle">pruned · not scored</text></g>
+                <!-- depth 2 -->
+                <g class="nd pop" data-at="5.6"><rect x="795" y="37" width="170" height="86" rx="24"/><text class="t1" x="880" y="75" text-anchor="middle">S₄</text><text class="t2" x="880" y="103" text-anchor="middle">after a₁, b₁</text></g>
+                <g class="nd pop" data-at="5.75"><rect x="795" y="187" width="170" height="86" rx="24"/><text class="t1" x="880" y="225" text-anchor="middle">S₅</text><text class="t2" x="880" y="253" text-anchor="middle">after a₁, b₂</text></g>
+                <g class="nd pop" data-at="5.9"><rect x="795" y="337" width="170" height="86" rx="24"/><text class="t1" x="880" y="375" text-anchor="middle">S₆</text><text class="t2" x="880" y="403" text-anchor="middle">after a₁, b₃</text></g>
+                <!-- score badges (illustrative values) -->
+                <g class="badge pop" data-at="3.4"><circle cx="560" cy="92" r="25"/><text x="560" y="92">6</text></g>
+                <g class="badge pop" data-at="3.6"><circle cx="560" cy="282" r="25"/><text x="560" y="282">3</text></g>
+                <g class="badge hi pop" data-at="6.5"><circle cx="960" cy="42" r="25"/><text x="960" y="42">7</text></g>
+                <g class="badge pop" data-at="6.65"><circle cx="960" cy="192" r="25"/><text x="960" y="192">4</text></g>
+                <g class="badge pop" data-at="6.8"><circle cx="960" cy="342" r="25"/><text x="960" y="342">2</text></g>
+                <!-- best state pulse + answer -->
+                <rect class="pulse" data-at="8.3" x="795" y="37" width="170" height="86" rx="24"/>
+                <g data-at="8.6" class="pop"><rect x="640" y="478" width="420" height="92" rx="46" style="fill:var(--black)"/><text x="850" y="514" text-anchor="middle" style="font-size:18px;font-weight:700;letter-spacing:.08em;fill:rgba(255,255,255,.65)">ANSWER</text><text x="850" y="548" text-anchor="middle" style="font-size:26px;fill:#fff;font-family:var(--mono)">a₁ · first move to S₄</text></g>
+            </svg>
+            <div class="col grow" style="gap:14px">
+                <div class="phases">
+                    <div class="phase" data-at="0.8"><span class="n">1</span><div><h3>Propose</h3><p>3 candidate actions</p></div><span class="c">+1</span></div>
+                    <div class="phase" data-at="1.9"><span class="n">2</span><div><h3>Predict</h3><p>next state, or NOT APPLICABLE</p></div><span class="c">+3</span></div>
+                    <div class="phase" data-at="3.3"><span class="n">3</span><div><h3>Score</h3><p>0–10 progress, pruned skipped</p></div><span class="c">+2</span></div>
+                    <div class="phase" data-at="4.6"><span class="n">4</span><div><h3>Expand best</h3><p>repeat 1–3 from S₁</p></div><span class="c">+7</span></div>
+                    <div class="phase" data-at="7.6"><span class="n">5</span><div><h3>Answer</h3><p>first move on the best path</p></div><span class="c">+0</span></div>
+                </div>
+                <div class="meter" data-calls="0.8:1,2.0:4,3.6:6,5.0:7,5.7:10,6.7:13"><div class="top"><span class="num">0</span><span class="of">calls used · budget 14</span></div><div class="track"><div class="fill"></div></div></div>
+            </div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">This animates one search on one question; the scores shown are illustrative. Propose: one call lists three actions. Predict: three calls write the state after each; one says NOT APPLICABLE and is pruned, so it is never scored. Score: the evaluator rates each surviving state 0 to 10. Expand: we repeat from the best state, which costs up to seven more calls. Answer: we return the first move on the path to the highest-scored state. Pruning is why search averages 13.4 calls rather than 14. The validator never sees any of this; it only grades the final answer. Press R to replay.</aside>
+</section>
+
+<!-- 11 · Design selection: white left, ice rounded panel right with tiles -->
+<section class="slide" data-presenter="Lynn Younes" data-section="02 · Our extension">
+    <div style="position:absolute;left:var(--pad-x);top:var(--pad-top);width:760px;display:flex;flex-direction:column;gap:36px;bottom:140px">
+        <h2 class="reveal d1">Tuned on<br>validation,<br>then frozen</h2>
+        <span class="pill reveal d2">23 October</span>
+        <p class="reveal d3" style="margin-top:auto"><b>40 validation questions</b>, disjoint from the 130 test questions. We compared five evaluators: 0–10 score, steps-to-goal, vote, the proposer's own order, random. The 0–10 score won on validation; the rest became ablations.</p>
+    </div>
+    <div class="reveal d2" style="position:absolute;right:64px;top:64px;bottom:64px;width:880px;background:var(--ice);border-radius:56px;padding:80px;display:grid;grid-template-columns:1fr 1fr;gap:24px;align-content:center">
+        <div class="card black"><span class="stat sm">0–10</span><p>score as evaluator</p></div>
+        <div class="card"><span class="stat sm">k = 3</span><p class="muted">candidates per node</p></div>
+        <div class="card"><span class="stat sm">d = 2</span><p class="muted">depth, with pruning</p></div>
+        <div class="card blue"><span class="stat sm">14</span><p>calls per question</p></div>
+        <p style="grid-column:1/3;font-size:23px;color:var(--ink-2)">Frozen before any test run. Only bug fixes after this.</p>
+    </div>
+    <div class="foot" style="right:auto"><span class="who"></span></div>
+    <aside class="notes">Freezing before the test runs is what lets us say the test numbers are not tuned. Failure analysis on validation led to the scoring and pruning changes and to the evaluator variants.</aside>
+</section>
+
+<!-- 12 · How the code is built -->
+<section class="slide s-ice" data-presenter="Lynn Younes" data-section="02 · Our extension">
+    <div class="pad" style="gap:36px">
+        <div class="head reveal d1"><div class="head-l"><h2>The code</h2><span class="pill">how it's built</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+        <div class="row" style="gap:22px">
+            <div class="card grow reveal d2" style="padding:34px"><span class="dir">common/</span><ul class="clean"><li>Data with the official prompt</li><li>LLM client: cache + call budget</li><li>Validator, fixed for Windows</li><li>One method contract</li></ul></div>
+            <div class="card grow reveal d3" style="padding:34px"><span class="dir">methods/</span><ul class="clean"><li>direct · structured</li><li>best_of_n · search</li><li>structured_vote · vote_check</li></ul></div>
+            <div class="card grow reveal d4" style="padding:34px"><span class="dir">experiments/</span><ul class="clean"><li>run: parallel workers</li><li>sweep: config × seeds</li><li>compare: exact McNemar</li><li>analyze: tables + figures</li></ul></div>
+            <div class="card grow reveal d5" style="padding:34px"><span class="dir">tests/</span><ul class="clean"><li>40 unit tests</li><li>pipeline, search, baselines, compare, analyze</li></ul></div>
+        </div>
+        <div class="row reveal d6" style="gap:22px">
+            <div class="card black grow" style="flex-direction:row;align-items:center;gap:28px;padding:28px 40px"><span class="stat sm">40</span><p>tests pass</p></div>
+            <div class="card grow" style="flex-direction:row;align-items:center;gap:28px;padding:28px 40px"><span class="stat sm">1:1</span><p>fresh clone rebuilds every paper table</p></div>
+            <div class="card blue grow" style="flex-direction:row;align-items:center;gap:28px;padding:28px 40px"><span class="stat sm">35</span><p>reviewed pull requests</p></div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">The validator crashed on Windows because of temporary-file handling; the fix keeps the same scoring code and was checked against the answer key. Parallel runs give identical results to sequential ones. Aisha wrote compare and analyze; Faheema wrote structured and best_of_n and the official-harness scripts.</aside>
+</section>
+
+<!-- =========================================================
+     AISHA · EVALUATION AND RESULTS
+     ========================================================= -->
+
+<!-- 13 · Divider 03 -->
+<section class="slide s-ice" data-presenter="Aisha Suleiman Shaik" data-section="03 · Evaluation and results">
+    <div class="big-num reveal d2">03</div>
+    <div class="pad" style="justify-content:center;gap:40px">
+        <p class="div-num reveal d1">Section 03</p>
+        <h1 class="reveal d2" style="font-size:150px">Evaluation<br>and results</h1>
+        <div class="row reveal d3" style="align-items:center;gap:24px"><span class="pill">Aisha Suleiman Shaik</span><span class="circ"><svg><use href="#arr"/></svg></span></div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Hand-over from Lynn to Aisha.</aside>
+</section>
+
+<!-- 14 · Setup and fairness -->
+<section class="slide" data-presenter="Aisha Suleiman Shaik" data-section="03 · Evaluation and results">
+    <div class="pad">
+        <div class="head reveal d1"><div class="head-l"><h2>A fair comparison</h2></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+        <div class="col" style="gap:24px">
+            <div class="row" style="gap:24px">
+                <div class="card ice grow reveal d2"><span class="stat md">130</span><p>same test questions for every method</p></div>
+                <div class="card black grow reveal d3"><span class="stat md">14</span><p>calls for search and best-of-N</p></div>
+                <div class="card ice grow reveal d4"><span class="stat md">3</span><p>seeds, mean ± std</p></div>
+            </div>
+            <div class="row" style="gap:24px">
+                <div class="card blue grow reveal d5" style="flex-direction:row;align-items:center;gap:28px"><span class="pill sm dark">Statistics</span><p>Exact <b>McNemar test</b> per seed against direct, on the same questions.</p></div>
+                <div class="card grow reveal d6" style="flex-direction:row;align-items:center;gap:28px"><span class="pill sm">Robustness</span><p><b>Token-matched check:</b> equal tokens instead of equal calls, 14k cap.</p></div>
+            </div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">McNemar compares paired answers: it only uses the questions where the two methods disagree. Budget matching sets best-of-N's N to search's call budget; tokens are reported too.</aside>
+</section>
+
+<!-- 15 · Main results: same chart as the first version -->
+<section class="slide" data-presenter="Aisha Suleiman Shaik" data-section="03 · Evaluation and results">
+    <div class="pad" style="gap:36px">
+        <div class="head reveal d1"><div class="head-l"><h2 class="md">Results</h2><span class="pill">search never beats answering once</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+        <div class="row" style="gap:80px;align-items:flex-end">
+            <div class="reveal d2" style="width:1040px">
+                <p class="note" style="margin-bottom:52px">Llama 3.1 8B · Next Action accuracy</p>
+                <div class="vbars">
+                    <div class="refline" style="bottom:83.3%"><span>Paper, direct 0.25</span></div>
+                    <div class="vbar"><span class="val">0.223</span><div class="bar-fill f-g1" style="height:74.3%"></div><span class="lab">Direct</span></div>
+                    <div class="vbar"><span class="val">0.262</span><div class="bar-fill f-g2" style="height:87.3%"></div><span class="lab">Structured</span></div>
+                    <div class="vbar"><span class="val">0.236</span><div class="bar-fill f-g3" style="height:78.7%"></div><span class="lab">Best-of-N</span></div>
+                    <div class="vbar"><span class="val ours-t">0.159</span><div class="bar-fill f-ours" style="height:53%"></div><span class="lab ours-t" style="font-weight:600">Search (ours)</span></div>
+                </div>
+            </div>
+            <div class="col grow reveal d3" style="gap:24px;margin-bottom:-40px">
+                <div class="card ice"><span class="pill sm dark">Llama 3.1 70B</span>
+                    <div class="row" style="gap:36px;align-items:baseline"><div><div class="stat sm">0.377</div><p class="muted" style="font-size:22px">Direct</p></div><div><div class="stat sm ours-t">0.362</div><p class="muted" style="font-size:22px">Search</p></div></div>
+                </div>
+                <p class="note">McNemar vs. direct, 8B: p = 0.17 / 0.27 / 0.09. No seed is significant at either size, and none favours search.</p>
+            </div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Search 8B is 0.159 ± 0.012 over three seeds at 13.4 calls per question; 70B search is 0.362 ± 0.015 at 11.4 calls. Structured prompting is the best control at 0.262 for one call. The y-axis runs from 0 to 0.30.</aside>
+</section>
+
+<!-- 16 · Token-matched -->
+<section class="slide s-ice" data-presenter="Aisha Suleiman Shaik" data-section="03 · Evaluation and results">
+    <div class="pad">
+        <div class="head reveal d1"><div class="head-l"><h2>Equal tokens</h2><span class="pill">same answer</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+        <div class="panel reveal d2" style="background:var(--white);box-shadow:var(--shadow);padding:44px 52px">
+            <table class="pt on-white">
+                <tr><th class="l">14k-token cap · 8B · 3 seeds</th><th>Accuracy</th><th>Calls / question</th><th>Tokens / question</th></tr>
+                <tr><td>Best-of-N (N = 8)</td><td><b>0.228 ± 0.022</b></td><td>7.7</td><td>12,348</td></tr>
+                <tr class="hl"><td>Search (ours)</td><td>0.151 ± 0.018</td><td>12.2</td><td>11,230</td></tr>
+            </table>
+            <div class="col" style="gap:22px;margin-top:58px">
+                <div class="gauge"><span class="name">Best-of-N tokens</span><div class="track"><div class="bar-fill f-g1" style="width:88.2%"></div><div class="cap"><span>14k cap</span></div></div><span class="v">12,348</span></div>
+                <div class="gauge"><span class="name ours-t"><b>Search tokens</b></span><div class="track"><div class="bar-fill f-ours" style="width:80.2%"></div><div class="cap"></div></div><span class="v ours-t">11,230</span></div>
+            </div>
+        </div>
+        <p class="reveal d3">Matching tokens instead of calls does not change the conclusion: <span class="hl-pill">best-of-N beats search</span> in all three seeds (p = 0.04, 0.28, 0.05).</p>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Search is token-heavy per call because predicted states are long, so a call-matched comparison could be unfair to either side. The cap removes that doubt. Actual token use differs a little because a cap stops at the call that crosses it.</aside>
+</section>
+
+<!-- 17 · Key finding: big statement with highlight pills -->
+<section class="slide" data-presenter="Aisha Suleiman Shaik" data-section="03 · Key finding">
+    <div class="reveal d1" style="position:absolute;left:64px;right:64px;top:64px;height:560px;border-radius:56px;background:var(--ice);display:flex;flex-direction:column;justify-content:center;padding:0 110px">
+        <span class="pill sm dark" style="margin-bottom:34px">Key finding</span>
+        <h1 style="font-size:104px;line-height:1.05;letter-spacing:-0.04em">The model can propose the <span class="hl-pill white">right move,</span><br>but cannot <span class="hl-pill">recognise it.</span></h1>
+    </div>
+    <div class="row reveal d3" style="position:absolute;left:64px;right:64px;top:656px;gap:24px">
+        <div class="card grow" style="height:270px"><span class="stat sm">31%</span><p style="font-size:24px;color:var(--ink-2)">a correct action is among the 3 proposed (8B; 59% for 70B)</p></div>
+        <div class="card black grow" style="height:270px"><span class="stat sm">0.58</span><p style="font-size:24px">AUC of its own scores, correct vs. wrong (0.5 = chance; 70B: 0.53)</p></div>
+        <div class="card blue grow" style="height:270px"><span class="stat sm">16%</span><p style="font-size:24px">final accuracy: most found answers are lost at selection</p></div>
+    </div>
+    <aside class="notes">This is the main finding. Coverage is an analysis metric only, computed after the run with the validator, never seen by the search. A bigger model proposes better candidates but judges them no better. Judging a move needs the same planning skill the model lacks: evaluation, not generation, is the bottleneck.</aside>
+</section>
+
+<!-- 18 · Error types: stacked bars as in the first version -->
+<section class="slide" data-presenter="Aisha Suleiman Shaik" data-section="03 · Evaluation and results">
+    <div class="pad">
+        <div class="head reveal d1"><div class="head-l"><h2 class="md">Most errors: moves that can't be made</h2></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+        <div class="col reveal d2" style="gap:44px">
+            <div><p style="font-size:28px;margin-bottom:16px"><b>8B</b> <span class="muted">· errors per run (of 130)</span></p>
+                <div class="stack" style="width:1500px"><div style="flex:75.7;background:var(--ours)">75.7</div><div style="flex:29.7;background:var(--g1)">29.7</div><div style="flex:4;background:var(--g2)"></div></div></div>
+            <div><p style="font-size:28px;margin-bottom:16px"><b>70B</b></p>
+                <div class="stack" style="width:1138px"><div style="flex:45;background:var(--ours)">45.0</div><div style="flex:37.7;background:var(--g1)">37.7</div><div style="flex:.3;background:var(--g2)"></div></div></div>
+            <div class="legend"><span><i style="background:var(--ours)"></i>Inapplicable action</span><span><i style="background:var(--g1)"></i>Applicable, but not closer</span><span><i style="background:var(--g2)"></i>Format error (8B 4.0, 70B 0.3)</span></div>
+        </div>
+        <p class="reveal d3" style="font-size:28px">The model often picks actions whose preconditions fail: exactly the check it was asked to do in the predict step.</p>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Averages per search run. 70B makes fewer inapplicable errors but more "not closer" errors, so scale fixes some applicability mistakes but not judging progress.</aside>
+</section>
+
+<!-- 19 · Limitations: numbered cards -->
+<section class="slide s-ice" data-presenter="Aisha Suleiman Shaik" data-section="03 · Evaluation and results">
+    <div class="pad">
+        <div class="head reveal d1"><div class="head-l"><h2>Limitations</h2></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+        <div class="row" style="gap:20px">
+            <div class="card grow reveal d2" style="min-height:380px;padding:36px"><div class="icon-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5" stroke-linecap="round"/></svg></div><p style="font-size:38px;margin-top:auto">01.</p><p style="font-size:23px">One task, two model sizes, 130 questions: wide intervals.</p></div>
+            <div class="card black grow reveal d3" style="min-height:380px;padding:36px"><div class="icon-sq ice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5" stroke-linecap="round"/></svg></div><p style="font-size:38px;margin-top:auto;color:#fff">02.</p><p style="font-size:23px">Closed-model rows cannot be rerun: retired APIs.</p></div>
+            <div class="card grow reveal d4" style="min-height:380px;padding:36px"><div class="icon-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5" stroke-linecap="round"/></svg></div><p style="font-size:38px;margin-top:auto">03.</p><p style="font-size:23px">Numbers vary with serving precision, so we pinned one provider.</p></div>
+            <div class="card grow reveal d5" style="min-height:380px;padding:36px"><div class="icon-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5" stroke-linecap="round"/></svg></div><p style="font-size:38px;margin-top:auto">04.</p><p style="font-size:23px">Small budget: 14 calls per question; about $21 in total.</p></div>
+            <div class="card grow reveal d6" style="min-height:380px;padding:36px"><div class="icon-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5" stroke-linecap="round"/></svg></div><p style="font-size:38px;margin-top:auto">05.</p><p style="font-size:23px">The follow-up came after the main results: post-hoc.</p></div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">One answer moves accuracy by 0.008. Saying the limitations before being asked is part of reporting honestly. Very large models (405B) and reasoning models were beyond the budget.</aside>
+</section>
+
+<!-- =========================================================
+     LYNN · ABLATIONS, BONUS AND TAKEAWAYS
+     ========================================================= -->
+
+<!-- 20 · Divider 04 -->
+<section class="slide s-ice" data-presenter="Lynn Younes" data-section="04 · Ablations and bonus">
+    <div class="big-num reveal d2">04</div>
+    <div class="pad" style="justify-content:center;gap:40px">
+        <p class="div-num reveal d1">Section 04</p>
+        <h1 class="reveal d2" style="font-size:150px">Ablations,<br>bonus and<br>takeaways</h1>
+        <div class="row reveal d3" style="align-items:center;gap:24px"><span class="pill">Lynn Younes</span><span class="circ"><svg><use href="#arr"/></svg></span></div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Hand-over from Aisha back to Lynn.</aside>
+</section>
+
+<!-- 21 · Ablations: horizontal bars as in the first version -->
+<section class="slide" data-presenter="Lynn Younes" data-section="04 · Ablations and bonus">
+    <div class="pad" style="gap:36px">
+        <div class="head reveal d1"><div class="head-l"><h2>Ablations</h2><span class="pill">no evaluator helps</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+        <div class="row" style="gap:64px">
+            <div class="hbars reveal d2" style="width:1060px">
+                <p class="note">8B search, one setting changed at a time, 3 seeds</p>
+                <div class="hbar"><span class="name"><b>None: proposer's order</b></span><div class="track"><div class="bar-fill f-g1" style="width:95%"></div></div><span class="v">0.190</span></div>
+                <div class="hbar"><span class="name ours-t"><b>0–10 score (frozen)</b></span><div class="track"><div class="bar-fill f-ours" style="width:79.5%"></div></div><span class="v ours-t">0.159</span></div>
+                <div class="hbar"><span class="name">Steps left</span><div class="track"><div class="bar-fill f-g2" style="width:68%"></div></div><span class="v">0.136</span></div>
+                <div class="hbar"><span class="name">Random scores</span><div class="track"><div class="bar-fill f-g2" style="width:66.5%"></div></div><span class="v">0.133</span></div>
+                <div class="hbar"><span class="name">5 candidates (k = 5)</span><div class="track"><div class="bar-fill f-g3" style="width:57.5%"></div></div><span class="v">0.115</span></div>
+                <div class="hbar"><span class="name">Vote between options</span><div class="track"><div class="bar-fill f-g3" style="width:54%"></div></div><span class="v">0.108</span></div>
+            </div>
+            <div class="col grow reveal d3" style="gap:20px">
+                <div class="card black" style="padding:36px;border-radius:var(--r-lg)"><span class="pill sm">Why they fail</span><p style="font-size:25px">0–10 scores collapse onto a few values, most often 2.</p><p style="font-size:25px">The vote picked the first option in only <b>3 of 39</b> votes: position bias.</p></div>
+                <div class="card ice" style="padding:30px 36px"><p style="font-size:23px">Double budget 0.154 · few-shot 0.154 · no state prediction 0.159 at 3.9 calls instead of 13.4.</p></div>
+            </div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">13 settings × 3 seeds on the test split, one setting changed at a time. Every evaluator is at best no better than trusting the model's first suggestion. Depth adds nothing under the frozen budget. Full table on a backup slide.</aside>
+</section>
+
+<!-- 22 · Bonus follow-ups -->
+<section class="slide" data-presenter="Lynn Younes" data-section="04 · Ablations and bonus">
+    <div style="position:absolute;left:var(--pad-x);top:var(--pad-top);width:600px;bottom:140px;display:flex;flex-direction:column;gap:30px">
+        <h2 class="reveal d1">Bonus</h2>
+        <span class="pill reveal d2">skip the judging</span>
+        <div class="card black reveal d3" style="margin-top:auto;padding:36px">
+            <span class="pill sm">Follow-up 1 · did not pass</span>
+            <h3>Vote, then let the LLM check if the move is possible</h3>
+            <p style="font-size:24px">Caught 69% of impossible moves, but rejected 42% of possible ones. Stopped on validation (7–8 of 40 vs. 9).</p>
+        </div>
+    </div>
+    <div class="reveal d2" style="position:absolute;right:64px;top:64px;bottom:64px;width:1100px;background:var(--ice);border-radius:56px;padding:64px 72px;display:flex;flex-direction:column;gap:32px">
+        <span class="pill sm dark">Follow-up 2 · passed</span>
+        <h3 style="font-size:54px;font-weight:400;letter-spacing:-0.03em;line-height:1.1">Structured prompt × 14, then vote: <span class="hl-pill">beats the paper.</span></h3>
+        <div class="hbars" style="gap:20px">
+            <div class="hbar" style="grid-template-columns:290px 1fr 100px"><span class="name"><b>Structured + vote</b></span><div class="track"><div class="bar-fill f-ours" style="width:100%"></div></div><span class="v ours-t">0.331</span></div>
+            <div class="hbar" style="grid-template-columns:290px 1fr 100px"><span class="name">Structured</span><div class="track"><div class="bar-fill f-g1" style="width:79.2%"></div></div><span class="v">0.262</span></div>
+            <div class="hbar" style="grid-template-columns:290px 1fr 100px"><span class="name">Paper (direct)</span><div class="track"><div class="bar-fill f-g2" style="width:75.5%"></div></div><span class="v">0.25</span></div>
+            <div class="hbar" style="grid-template-columns:290px 1fr 100px"><span class="name">Search (ours)</span><div class="track"><div class="bar-fill f-g3" style="width:48%"></div></div><span class="v">0.159</span></div>
+        </div>
+        <p class="note" style="margin-top:auto">0.331 ± 0.013 · significant vs. direct in every seed (p ≤ 0.05), not vs. structured alone · 26% more tokens than best-of-N.</p>
+    </div>
+    <div class="foot" style="right:auto"><span class="who"></span></div>
+    <aside class="notes">Both follow-ups came after the main results, suggested as a bonus at the progress check. Each was tried on the 40 validation questions with a pass bar fixed in its code before running. Under the same 14,000-token cap, structured plus vote still leads, 0.297 vs 0.228, but not significantly. The gain comes from a method that never asks the model to judge its own candidates, which supports the main finding.</aside>
+</section>
+
+<!-- 23 · Takeaways -->
+<section class="slide s-ice" data-presenter="Lynn Younes" data-section="04 · Takeaways">
+    <div class="pad">
+        <div class="head reveal d1"><div class="head-l"><h2>Takeaways</h2><span class="pill">by facts</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+        <div class="row" style="gap:22px">
+            <div class="card grow reveal d2" style="min-height:330px"><span class="circ" style="width:64px;height:64px">→</span><h3 style="margin-top:auto">The paper reproduces</h3><p class="muted" style="font-size:23px">8B and 70B, both tasks, inside the interval.</p></div>
+            <div class="card black grow reveal d3" style="min-height:330px"><span class="circ" style="width:64px;height:64px">→</span><h3 style="margin-top:auto">Search without a verifier does not help</h3><p class="muted" style="font-size:23px">The model cannot judge its own candidates.</p></div>
+            <div class="card grow reveal d4" style="min-height:330px"><span class="circ" style="width:64px;height:64px">→</span><h3 style="margin-top:auto">Scale improves generation, not judging</h3><p class="muted" style="font-size:23px">70B proposes better, scores no better.</p></div>
+            <div class="card grow reveal d5" style="min-height:330px"><span class="circ" style="width:64px;height:64px">→</span><h3 style="margin-top:auto">Next step: a reliable evaluator</h3><p class="muted" style="font-size:23px">Learned or symbolic, like LLM+P.</p></div>
+        </div>
+        <p class="reveal d6" style="font-size:36px">Answer to the research question: <span class="hl-pill">no.</span> Evaluation, not generation, is the bottleneck.</p>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">All code, runs and the commands to reproduce every table are in the code package.</aside>
+</section>
+
+<!-- 24 · Thank you: white panel on ice, like the title -->
+<section class="slide s-ice" data-presenter="All" data-section="Questions">
+    <div class="reveal d1" style="position:absolute;inset:64px;border-radius:56px;background:var(--white);box-shadow:var(--shadow);padding:72px 88px;display:flex;flex-direction:column;justify-content:flex-end;gap:48px">
+        <div class="deco-tree" data-deco="end" style="right:110px;top:110px;width:720px;height:314px"></div>
+        <div class="row" style="justify-content:space-between;align-items:flex-end"><h1 class="reveal d2" style="font-size:220px">Thank you.</h1><span class="circ" style="width:110px;height:110px;margin-bottom:30px"><svg style="width:40px;height:40px"><use href="#arr"/></svg></span></div>
+        <div class="row reveal d3" style="gap:18px">
+            <div class="row" style="gap:0"><span class="pill fill" style="font-size:22px;border-radius:999px 0 0 999px">Questions?</span><span class="pill soft" style="font-size:22px;border-radius:0 999px 999px 0">ask any of us</span></div>
+            <div class="row" style="gap:0"><span class="pill fill ice" style="font-size:22px;border-radius:999px 0 0 999px">Team</span><span class="pill soft" style="font-size:22px;border-radius:0 999px 999px 0">Lynn Younes · Faheema Hassan Kudukky · Aisha Suleiman Shaik</span></div>
+        </div>
+    </div>
+    <aside class="notes">Each of us answers questions on our own part. Backup slides follow.</aside>
+</section>
+
+<!-- =========================================================
+     BACKUP SLIDES
+     ========================================================= -->
+
+<!-- B1 · Fidelity log -->
+<section class="slide" data-presenter="Backup" data-section="Fidelity log">
+    <span class="pill sm dark backup-tag">Backup</span>
+    <div class="pad" style="gap:30px">
+        <h2 class="md">Every deviation from the paper</h2>
+        <table class="pt dense on-white">
+            <tr><th>#</th><th class="l">Paper</th><th class="l">Ours</th><th class="l">Effect</th></tr>
+            <tr><td>D1</td><td class="l">Model access not specified</td><td class="l">8B via OpenRouter, pinned to CoreWeave (bf16)</td><td class="l">Mixed fp8/bf16 run 0.192 vs. bf16 0.223; not significant (p = 0.45)</td></tr>
+            <tr><td>D1b</td><td class="l">(same)</td><td class="l">70B via OpenRouter, pinned to Amazon Bedrock</td><td class="l">0.377 vs. 0.42 and 0.608 vs. 0.65, both inside the interval</td></tr>
+            <tr><td>D2</td><td class="l">5 stop sequences</td><td class="l">First 4 (API limit)</td><td class="l">Probably negligible</td></tr>
+            <tr><td>D3</td><td class="l">Chat template not stated</td><td class="l"><code>--apply_chat_template</code></td><td class="l">All four results inside the interval</td></tr>
+            <tr><td>D4</td><td class="l">Paper's own task YAML</td><td class="l">lm-eval's built-in acpbench config</td><td class="l">Likely identical (same authors)</td></tr>
+            <tr><td>D5</td><td class="l">Linux</td><td class="l">Windows, temporary-file fix to the validator</td><td class="l">None: same scoring code, checked against the answer key</td></tr>
+            <tr><td>D6</td><td class="l">Dataset as of the paper</td><td class="l">HF revision 05e5883, 4 Oct 2026</td><td class="l">Same 130 questions; independent macOS run identical</td></tr>
+        </table>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Appendix A of the paper.</aside>
+</section>
+
+<!-- B2 · Prompts -->
+<section class="slide" data-presenter="Backup" data-section="Prompts">
+    <span class="pill sm dark backup-tag">Backup</span>
+    <div class="pad" style="gap:24px">
+        <h2 class="md">Search prompts</h2>
+        <div class="row" style="gap:24px">
+            <div class="col grow" style="gap:12px"><span class="pill sm dark">Proposer · temp 0.7 · ≤ 200 tokens</span><div class="prompt">List &lt;k&gt; different actions that can be applied in the current state and that could move us towards the goal, most promising first. Write each action on its own line, in parentheses … Write only the actions.</div></div>
+            <div class="col grow" style="gap:12px"><span class="pill sm dark">Predictor · greedy · ≤ 600 tokens</span><div class="prompt">Consider applying the action &lt;action&gt;. First check whether it can be applied in the current state. If it cannot, reply only: NOT APPLICABLE. Otherwise describe the complete resulting state …</div></div>
+        </div>
+        <div class="row" style="gap:24px">
+            <div class="col grow" style="gap:12px"><span class="pill sm dark">Evaluator, frozen · greedy · ≤ 400 tokens</span><div class="prompt">How close is this state to the goal, on a scale from 0 (no progress) to 10 (goal reached)? Reason briefly in at most three sentences, then end with a final line of the form: Score: N</div></div>
+            <div class="col grow" style="gap:12px"><span class="pill sm">Direct · official prompt, 2 examples</span><div class="prompt">**Question**: &lt;problem&gt; What is the next action that takes us towards the goal? … Provide only the action. **Final Answer**:</div></div>
+        </div>
+        <p class="note">Non-root nodes add: "Ignore the current state given in the description above. After applying &lt;path&gt;, the current state is: &lt;predicted state&gt;". Full text in Appendix B.</p>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Appendix B of the paper.</aside>
+</section>
+
+<!-- B3 · Full ablation table -->
+<section class="slide" data-presenter="Backup" data-section="Ablations">
+    <span class="pill sm dark backup-tag">Backup</span>
+    <div class="pad" style="gap:24px">
+        <h2 class="md">All ablations (8B, test, 3 seeds)</h2>
+        <div class="row" style="gap:40px">
+            <table class="pt dense on-white grow">
+                <tr><th class="l">Setting</th><th>Accuracy</th><th>Calls</th></tr>
+                <tr class="hl"><td>Frozen search (reference)</td><td>0.159 ± 0.012</td><td>13.4</td></tr>
+                <tr><td>scoring = fixed</td><td>0.190 ± 0.012</td><td>12.8</td></tr>
+                <tr><td>scoring = random</td><td>0.133 ± 0.031</td><td>12.8</td></tr>
+                <tr><td>scoring = steps</td><td>0.136 ± 0.016</td><td>13.4</td></tr>
+                <tr><td>scoring = vote</td><td>0.108 ± 0.008</td><td>4.8</td></tr>
+                <tr><td>k = 2</td><td>0.162 ± 0.015</td><td>12.2</td></tr>
+                <tr><td>k = 5</td><td>0.115 ± 0.020</td><td>13.2</td></tr>
+            </table>
+            <table class="pt dense on-white grow">
+                <tr><th class="l">Setting</th><th>Accuracy</th><th>Calls</th></tr>
+                <tr><td>d = 1</td><td>0.159 ± 0.012</td><td>6.5</td></tr>
+                <tr><td>d = 3</td><td>0.159 ± 0.012</td><td>13.6</td></tr>
+                <tr><td>budget = 7</td><td>0.159 ± 0.012</td><td>6.8</td></tr>
+                <tr><td>budget = 28</td><td>0.154 ± 0.020</td><td>23.9</td></tr>
+                <tr><td>few-shot proposer</td><td>0.154 ± 0.015</td><td>13.5</td></tr>
+                <tr><td>no state prediction</td><td>0.159 ± 0.029</td><td>3.9</td></tr>
+                <tr><td>no pruning</td><td>0.159 ± 0.012</td><td>13.6</td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Appendix C. Depth and budget don't change accuracy because under the frozen budget the second expansion cannot change the answer.</aside>
+</section>
+
+<!-- B4 · Full results table -->
+<section class="slide" data-presenter="Backup" data-section="Results">
+    <span class="pill sm dark backup-tag">Backup</span>
+    <div class="pad" style="gap:24px">
+        <h2 class="md">Full results table</h2>
+        <table class="pt dense on-white">
+            <tr><th class="l">Model · method</th><th>Accuracy</th><th>Calls</th><th>Tokens</th><th>McNemar p vs. direct</th></tr>
+            <tr><td>8B · Direct</td><td>0.223</td><td>1.0</td><td>1,640</td><td>–</td></tr>
+            <tr class="hl"><td>8B · Search</td><td>0.159 ± 0.012</td><td>13.4</td><td>13,722</td><td>0.169, 0.265, 0.087</td></tr>
+            <tr><td>8B · Structured</td><td>0.262</td><td>1.0</td><td>2,076</td><td>0.442</td></tr>
+            <tr><td>8B · Best-of-N (N = 14)</td><td>0.236 ± 0.012</td><td>14.0</td><td>22,959</td><td>0.453, 0.754, 1.000</td></tr>
+            <tr><td>8B · Search, 14k cap</td><td>0.151 ± 0.018</td><td>12.2</td><td>11,230</td><td>0.185, 0.200, 0.036</td></tr>
+            <tr><td>8B · Best-of-N (N = 8), 14k cap</td><td>0.228 ± 0.022</td><td>7.7</td><td>12,348</td><td>0.388, 1.000, 1.000</td></tr>
+            <tr><td>8B · Structured + vote (post-hoc)</td><td>0.331 ± 0.013</td><td>14.0</td><td>29,009</td><td>≤ 0.05 each seed</td></tr>
+            <tr><td>70B · Direct</td><td>0.377</td><td>1.0</td><td>1,645</td><td>–</td></tr>
+            <tr class="hl"><td>70B · Search</td><td>0.362 ± 0.015</td><td>11.4</td><td>10,292</td><td>0.572, 0.851, 1.000</td></tr>
+        </table>
+        <p class="note">Search, 14k cap, seed 3: p = 0.036, significantly <b>worse</b> than direct.</p>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Table 2 of the paper plus the follow-up row from Appendix D.</aside>
+</section>
+
+<!-- B5 · Contributions and AI use -->
+<section class="slide s-ice" data-presenter="Backup" data-section="Contributions and AI use">
+    <span class="pill sm dark backup-tag">Backup</span>
+    <div class="pad" style="gap:28px">
+        <h2 class="md">Contributions and AI use</h2>
+        <div class="row" style="gap:22px">
+            <div class="card black grow" style="padding:34px"><span class="pill sm">Lynn · lead</span><p style="font-size:23px">Pipeline, validator fix, reproduction setup; search method; parallel runner; ablations and main runs; follow-ups; paper assembly, intro, method, discussion.</p></div>
+            <div class="card grow" style="padding:34px"><span class="pill sm">Faheema</span><p style="font-size:23px">Independent official-harness reproduction (Windows + macOS scripts); structured and best-of-N baselines and runs; related work, reproduction section, bibliography.</p></div>
+            <div class="card grow" style="padding:34px"><span class="pill sm">Aisha</span><p style="font-size:23px">McNemar tool; analysis code (tables, figures, coverage, AUC); budget matching; token-matched check; setup, results and limitations sections.</p></div>
+        </div>
+        <div class="card" style="padding:30px 40px;border-radius:999px;flex-direction:row;align-items:center;gap:28px"><span class="pill sm dark">AI use · Appendix F</span><p style="font-size:23px">Each member lists the tool, what they asked, what it gave back and what they changed. Every number checked against <code>results/final/</code>.</p></div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Appendices E and F.</aside>
+</section>
+
+<!-- B6 · Cost and models -->
+<section class="slide" data-presenter="Backup" data-section="Cost and models">
+    <span class="pill sm dark backup-tag">Backup</span>
+    <div class="pad" style="gap:30px">
+        <h2 class="md">Models, serving and cost</h2>
+        <div class="row" style="gap:22px">
+            <div class="card ice grow"><span class="pill sm dark">Llama 3.1 8B</span><p>OpenRouter, pinned to <b>CoreWeave, bf16</b>. Groq retired the model on 16 Aug 2026; no local GPU.</p></div>
+            <div class="card grow"><span class="pill sm">Llama 3.1 70B</span><p>OpenRouter, pinned to <b>Amazon Bedrock</b>. The only other provider serves fp8.</p></div>
+            <div class="card black grow"><span class="stat sm">≈ $21</span><p>of API credit in total, all runs and tests</p></div>
+        </div>
+        <p class="note">LLM responses are cached per request and seed, so re-running any table from the code package costs nothing.</p>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Data: ibm-research/acp_bench, revision 05e5883.</aside>
+</section>
+
+</main>
+</div>
+
+<div id="notesDrawer"><h4>Speaker notes</h4><div id="notesBody"></div></div>
+<div class="edit-hotzone"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)">✎</button>
+
+<script>
+/* ===========================================
+   SLIDE PRESENTATION CONTROLLER
+   Stage scaling, keyboard/touch/wheel navigation, footers, notes drawer.
+   =========================================== */
+class SlidePresentation {
+    constructor() {
+        this.slides = [...document.querySelectorAll('.slide')];
+        this.stage = document.getElementById('deckStage');
+        this.current = 0;
+        this.fillFooters();
+        this.setupStageScale();
+        this.setupKeyboardNav();
+        this.setupTouchNav();
+        this.setupWheelNav();
+        const fromHash = parseInt((location.hash.match(/#\/(\d+)/) || [])[1], 10);
+        this.show(Number.isFinite(fromHash) ? fromHash - 1 : 0);
+    }
+
+    /* Presenter name + section on the left, "n / N" on the right */
+    fillFooters() {
+        const main = this.slides.filter(s => s.dataset.presenter !== 'Backup').length;
+        this.slides.forEach((s, i) => {
+            s.querySelectorAll('.pg').forEach(pg => {
+                pg.textContent = s.dataset.presenter === 'Backup' ? `B${i - main + 1}` : `${i + 1} / ${main}`;
+            });
+            s.querySelectorAll('.who').forEach(who => {
+                if (who.textContent.trim()) return;
+                who.innerHTML = s.dataset.presenter === 'Backup'
+                    ? `Backup · ${s.dataset.section}`
+                    : `<b>${s.dataset.presenter}</b> &nbsp;·&nbsp; ${s.dataset.section}`;
+            });
+        });
+    }
+
+    setupStageScale() {
+        const scale = () => {
+            const f = Math.min(innerWidth / 1920, innerHeight / 1080);
+            this.stage.style.transform = `translate(${(innerWidth - 1920 * f) / 2}px, ${(innerHeight - 1080 * f) / 2}px) scale(${f})`;
+        };
+        scale();
+        addEventListener('resize', scale);
+    }
+
+    setupKeyboardNav() {
+        addEventListener('keydown', e => {
+            if (document.body.classList.contains('editing') && e.target.isContentEditable) return;
+            if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); this.show(this.current + 1); }
+            else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); this.show(this.current - 1); }
+            else if (e.key === 'Home') this.show(0);
+            else if (e.key === 'End') this.show(this.slides.length - 1);
+            else if (e.key === 'r' || e.key === 'R') this.replay();
+            else if (e.key === 'n' || e.key === 'N') document.getElementById('notesDrawer').classList.toggle('open');
+            else if (e.key === 'f' || e.key === 'F') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+        });
+    }
+
+    setupTouchNav() {
+        let x0 = null;
+        addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+        addEventListener('touchend', e => {
+            if (x0 === null) return;
+            const dx = e.changedTouches[0].clientX - x0;
+            if (Math.abs(dx) > 50) this.show(this.current + (dx < 0 ? 1 : -1));
+            x0 = null;
+        });
+    }
+
+    setupWheelNav() {
+        let lock = false;
+        addEventListener('wheel', e => {
+            if (lock || Math.abs(e.deltaY) < 30) return;
+            lock = true;
+            this.show(this.current + (e.deltaY > 0 ? 1 : -1));
+            setTimeout(() => { lock = false; }, 700);
+        }, { passive: true });
+    }
+
+    show(i) {
+        this.current = Math.max(0, Math.min(i, this.slides.length - 1));
+        this.slides.forEach((s, k) => {
+            s.classList.toggle('active', k === this.current);
+            s.classList.toggle('visible', k === this.current);
+        });
+        history.replaceState(null, '', `#/${this.current + 1}`);
+        document.getElementById('progress').style.width = `${(this.current + 1) / this.slides.length * 100}%`;
+        const notes = this.slides[this.current].querySelector('.notes');
+        document.getElementById('notesBody').textContent = notes ? notes.textContent.trim() : '';
+        motion.run(this.slides[this.current]);
+    }
+
+    /* R: replay the current slide's entry animations and timeline */
+    replay() {
+        const s = this.slides[this.current];
+        s.classList.remove('visible');
+        void s.offsetWidth;
+        s.classList.add('visible');
+        motion.run(s);
+    }
+}
+
+/* ===========================================
+   DECORATIVE SEARCH TREES (title + section dividers)
+   Root → 3 states → best expands → best expands; then a dot runs the best path.
+   =========================================== */
+function decoTreeSVG() {
+    const c = (x1, y1, x2, y2) => `M${x1} ${y1} C${(x1 + x2) / 2} ${y1} ${(x1 + x2) / 2} ${y2} ${x2} ${y2}`;
+    const R = [40, 140], L1 = [[230, 55], [230, 140], [230, 225]], L2 = [[420, 30], [420, 95], [420, 160]], L3 = [[580, 60], [580, 125]];
+    let e = '', v = '', t = 0.25;
+    const edge = (a, b, d, best) => `<path class="e${best ? ' b' : ''}" pathLength="1" style="animation-delay:${d}s" d="${c(a[0], a[1], b[0], b[1])}"/>`;
+    const node = (p, d, best, r = 11) => `<circle class="v${best ? ' b' : ''}" cx="${p[0]}" cy="${p[1]}" r="${r}" style="animation-delay:${d}s"/>`;
+    L1.forEach((p, i) => { e += edge(R, p, t + i * .08); v += node(p, t + .45 + i * .08); });
+    L2.forEach((p, i) => { e += edge(L1[0], p, 1.0 + i * .08); v += node(p, 1.4 + i * .08); });
+    L3.forEach((p, i) => { e += edge(L2[1], p, 1.7 + i * .08); v += node(p, 2.05 + i * .08); });
+    e += edge(R, L1[0], 2.3, 1) + edge(L1[0], L2[1], 2.5, 1) + edge(L2[1], L3[0], 2.7, 1);
+    v = node(R, .1, 1, 14) + v + node(L3[0], 2.9, 1, 13);
+    const path = `${c(R[0], R[1], L1[0][0], L1[0][1])} ${c(L1[0][0], L1[0][1], L2[1][0], L2[1][1]).replace(/^M[^C]+/, '')} ${c(L2[1][0], L2[1][1], L3[0][0], L3[0][1]).replace(/^M[^C]+/, '')}`;
+    return `<svg viewBox="0 0 620 270" style="width:100%;height:100%;max-width:none;max-height:none;overflow:visible">${e}${v}
+        <circle class="dotr" r="9"><animateMotion begin="indefinite" dur="3.4s" repeatCount="indefinite" path="${path}"/>
+        <animate attributeName="opacity" begin="indefinite" dur="3.4s" repeatCount="indefinite" values="0;1;1;0" keyTimes="0;.12;.88;1"/></circle></svg>`;
+}
+document.querySelectorAll('[data-deco]').forEach(el => { el.innerHTML = decoTreeSVG(); });
+document.querySelectorAll('.big-num').forEach(el => {
+    const d = document.createElement('div');
+    d.className = 'deco-tree';
+    d.style.cssText = 'width:440px;height:192px';
+    d.innerHTML = decoTreeSVG();
+    el.appendChild(d);
+});
+
+/* ===========================================
+   MOTION: data-at timelines, call meters, number count-ups, SMIL dots
+   =========================================== */
+const motion = {
+    timers: [],
+    counting: new Map(),
+    reduce: matchMedia('(prefers-reduced-motion: reduce)').matches,
+    reset(root) {
+        root.querySelectorAll('[data-at]').forEach(el => el.classList.remove('on'));
+        root.querySelectorAll('.meter').forEach(m => this.setMeter(m, 0));
+    },
+    setMeter(m, n) {
+        m.querySelector('.num').textContent = n;
+        m.querySelector('.fill').style.width = `${n / 14 * 100}%`;
+    },
+    at(t, fn) { if (this.reduce) fn(); else this.timers.push(setTimeout(fn, t * 1000)); },
+    run(slide) {
+        this.timers.forEach(clearTimeout);
+        this.timers = [];
+        this.counting.forEach((orig, el) => { el.innerHTML = orig; });
+        this.counting.clear();
+        document.querySelectorAll('.slide').forEach(s => this.reset(s));
+        slide.querySelectorAll('[data-at]').forEach(el => this.at(+el.dataset.at, () => el.classList.add('on')));
+        slide.querySelectorAll('.meter[data-calls]').forEach(m => {
+            m.dataset.calls.split(',').forEach(pair => { const [t, n] = pair.split(':'); this.at(+t, () => this.setMeter(m, +n)); });
+        });
+        slide.querySelectorAll('animateMotion, animate').forEach(a => { try { a.beginElementAt(2.9); } catch (e) {} });
+        if (!this.reduce && !document.body.classList.contains('editing')) this.countUp(slide);
+    },
+    /* Numbers count up from 0 to their written value, then the original text is restored exactly */
+    countUp(slide) {
+        slide.querySelectorAll('.stat, .vbar .val, .hbar .v, .gauge .v').forEach(el => {
+            const txt = el.textContent.trim();
+            const m = txt.match(/^(\d[\d,]*(?:\.\d+)?)(%?)$/);
+            if (!m) return;
+            const target = parseFloat(m[1].replace(/,/g, '')), dec = (m[1].split('.')[1] || '').length, comma = m[1].includes(',');
+            const orig = el.innerHTML;
+            this.counting.set(el, orig);
+            const t0 = performance.now(), dur = 1100;
+            const fmt = v => { let s = v.toFixed(dec); if (comma) s = Number(s).toLocaleString('en-US'); return s + m[2]; };
+            const tick = now => {
+                if (!this.counting.has(el)) return;
+                const p = Math.min((now - t0) / dur, 1), eased = 1 - Math.pow(1 - p, 3);
+                if (p < 1) { el.textContent = fmt(target * eased); requestAnimationFrame(tick); }
+                else { el.innerHTML = orig; this.counting.delete(el); }
+            };
+            el.textContent = fmt(0);
+            requestAnimationFrame(tick);
+        });
+    },
+    showAll() {
+        this.timers.forEach(clearTimeout);
+        this.counting.forEach((orig, el) => { el.innerHTML = orig; });
+        this.counting.clear();
+        document.querySelectorAll('[data-at]').forEach(el => el.classList.add('on'));
+        document.querySelectorAll('.meter[data-calls]').forEach(m => this.setMeter(m, +m.dataset.calls.split(',').pop().split(':')[1]));
+    }
+};
+addEventListener('beforeprint', () => motion.showAll());
+
+/* ===========================================
+   INLINE EDITING (E or top-left corner); saves to localStorage
+   =========================================== */
+const editor = {
+    isActive: false,
+    key: 'acpbench-deck-edits-v3',
+    targets() { return document.querySelectorAll('.slide h1, .slide h2, .slide h3, .slide p, .slide li, .slide td, .slide th, .slide .stat'); },
+    toggleEditMode() {
+        this.isActive = !this.isActive;
+        document.body.classList.toggle('editing', this.isActive);
+        document.getElementById('editToggle').classList.toggle('active', this.isActive);
+        this.targets().forEach(el => el.contentEditable = this.isActive);
+        if (!this.isActive) this.save();
+    },
+    save() {
+        try { localStorage.setItem(this.key, JSON.stringify([...this.targets()].map(el => el.innerHTML))); } catch (e) {}
+    },
+    load() {
+        try {
+            const saved = JSON.parse(localStorage.getItem(this.key) || 'null');
+            const els = [...this.targets()];
+            if (saved && saved.length === els.length) els.forEach((el, i) => { el.innerHTML = saved[i]; });
+        } catch (e) {}
+    }
+};
+editor.load();
+const hotzone = document.querySelector('.edit-hotzone');
+const editToggle = document.getElementById('editToggle');
+let hideTimeout = null;
+editToggle.addEventListener('click', () => editor.toggleEditMode());
+hotzone.addEventListener('click', () => editor.toggleEditMode());
+hotzone.addEventListener('mouseenter', () => { clearTimeout(hideTimeout); editToggle.classList.add('show'); });
+hotzone.addEventListener('mouseleave', () => { hideTimeout = setTimeout(() => { if (!editor.isActive) editToggle.classList.remove('show'); }, 400); });
+editToggle.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+editToggle.addEventListener('mouseleave', () => { hideTimeout = setTimeout(() => { if (!editor.isActive) editToggle.classList.remove('show'); }, 400); });
+addEventListener('keydown', e => {
+    if ((e.key === 'e' || e.key === 'E') && !e.target.isContentEditable) editor.toggleEditMode();
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); editor.save(); }
+});
+
+new SlidePresentation();
+</script>
+</body>
+</html>

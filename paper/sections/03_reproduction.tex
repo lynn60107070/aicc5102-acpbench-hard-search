@@ -32,14 +32,12 @@ questions, ten from each of 13 domains.
 We follow the task configuration of the LM Evaluation Harness (version 0.4.13): the official
 2-shot prompt, greedy decoding and at most 1000 generated tokens. Because the models are served
 through a chat API, we use the chat template. Llama~3.1~8B Instruct~\citep{dubey2024llama3} is
-served through OpenRouter, pinned to a provider that runs it in bf16 (CoreWeave), and Llama~3.1~70B
-Instruct through Amazon Bedrock. As a sanity check we also reproduce the Progression task.
+served through OpenRouter, pinned to a provider that runs it in bf16 (CoreWeave), and Llama~3.1~70B Instruct through OpenRouter, pinned to Amazon Bedrock. As a sanity check we also reproduce the Progression task.
 
 \paragraph{Match criterion and results.}
 We count a result as reproduced if it lies inside the 95\% binomial confidence interval around the
 value reported in the paper, computed for our $n=130$ questions. All four results fall inside
-their intervals (Table~\ref{tab:reproduction}). An independent run of the official harness on a
-second machine (macOS) gave identical answers on all 130 questions; a checking script
+their intervals (Table~\ref{tab:reproduction}). For 8B Next Action, an independent run of the official harness on a second machine (macOS) gave identical answers on all 130 questions; a checking script
 (\texttt{scripts/check\_official\_run.py}) confirmed that it used the paper's settings.
 
 \input{tables/reproduction}

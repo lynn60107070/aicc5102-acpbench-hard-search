@@ -117,7 +117,9 @@ def main(argv=None):
                 "params": params, "seed": args.seed, "model": client.model,
                 "response": response, "action": verdict.action,
                 "correct": verdict.correct, "error": "crash" if crash else verdict.error,
-                "budget_exhausted": exhausted,
+                # Methods catch BudgetExceeded and vote over what they have, so read the budget's
+                # own flag too (before 22 Nov only an uncaught exception set this field).
+                "budget_exhausted": exhausted or llm.budget.exhausted,
                 "calls": llm.budget.calls, "prompt_tokens": llm.budget.prompt_tokens,
                 "completion_tokens": llm.budget.completion_tokens,
                 "calls_by_tag": llm.budget.calls_by_tag, "tokens_by_tag": llm.budget.tokens_by_tag,

@@ -43,6 +43,7 @@ class Budget:
     completion_tokens: int = 0
     calls_by_tag: dict[str, int] = field(default_factory=dict)
     tokens_by_tag: dict[str, int] = field(default_factory=dict)
+    exhausted: bool = False  # set when a call was refused, even if the method caught the exception
 
     @property
     def tokens(self) -> int:
@@ -53,8 +54,10 @@ class Budget:
 
     def check(self) -> None:
         if self.max_calls is not None and self.calls >= self.max_calls:
+            self.exhausted = True
             raise BudgetExceeded(f"call budget {self.max_calls} used up")
         if self.max_tokens is not None and self.tokens >= self.max_tokens:
+            self.exhausted = True
             raise BudgetExceeded(f"token budget {self.max_tokens} used up")
 
     def charge(self, prompt_tokens: int, completion_tokens: int, tag: str) -> None:

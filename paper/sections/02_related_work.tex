@@ -12,20 +12,16 @@
 \label{sec:related}
 
 \paragraph{Planning benchmarks for LLMs.}
-PlanBench~\citep{valmeekam2023planbench} evaluates LLMs on planning and reasoning-about-change
-tasks, such as plan generation and plan verification, in domains such as Blocksworld and Logistics.
+PlanBench~\citep{valmeekam2023planbench} evaluates LLMs on plan generation and verification in domains such as Blocksworld.
 ACPBench~\citep{kokel2025acpbench} instead breaks planning into small reasoning tasks posed as
 yes/no or multiple-choice questions. ACPBench-Hard~\citep{kokel2025acpbenchhard} turns these into
 open-ended questions over 13 PDDL domains, adds the Next Action task and scores answers with
-symbolic validators; it evaluates direct generation only. We reproduce its Next Action baseline and
-ask whether LLM-guided search over LLM-predicted states improves on it.
+symbolic validators; it evaluates direct generation only.
 
 \paragraph{Search over LLM-generated states.}
 Tree of Thoughts~\citep{yao2023tot} lets the LLM propose intermediate thoughts and evaluate them,
-by scoring each one or by voting among several, on Game of~24, Creative Writing and Mini
-Crosswords. Reasoning via Planning (RAP)~\citep{hao2023rap} uses the LLM as a world model that
-predicts the state after each action, and chooses between paths with Monte Carlo Tree Search
-guided by rewards and task-specific heuristics. Our search is closest to RAP, but it is a
+by scoring each one or by voting among several. Reasoning via Planning (RAP)~\citep{hao2023rap} uses the LLM as a world model that
+predicts the state after each action, and searches with Monte Carlo Tree Search guided by task-specific rewards. Our search is closest to RAP, but it is a
 best-first search over scored candidates under a call budget, applied to open-ended Next Action
 across 13 domains, where every state and every judgment, including which actions are inapplicable,
 comes from the LLM. \citet{katz2024tos} find that such LLM-driven searches are neither sound nor
@@ -42,7 +38,7 @@ so it depends on the model's own judgment of its candidates (Section~\ref{sec:di
 
 \paragraph{Fair evaluation under cost.}
 \citet{kapoor2024agents} argue that agent evaluations must be cost-controlled, because repeated
-calls with a majority vote already raise accuracy and simple baselines can match complex agents at
+calls with a majority vote, i.e.\ self-consistency~\citep{wang2023selfconsistency}, already raise accuracy and simple baselines can match complex agents at
 much lower cost. Our search uses up to 14 calls per question, so we report calls and tokens for
 every method and compare it with best-of-$N$ at the same call budget, which controls for gains
 from extra samples alone.

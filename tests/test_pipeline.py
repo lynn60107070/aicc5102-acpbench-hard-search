@@ -47,6 +47,31 @@ class TestPrompt(unittest.TestCase):
 
 
 class TestValidator(unittest.TestCase):
+    def test_maybe_retry_and_memo(self):
+        """A wrong "maybe" answer is re-checked (a planner timeout can only make it wrong), and
+        each (question, action) is scored once."""
+        doc = next(d for d in DOCS if d["answer"]["maybe"])
+        action = doc["answer"]["maybe"][0]
+        results = iter([False, True])  # first check times out, the retry succeeds
+        calls = []
+
+        class FakeEvaluator:
+            def get_score(self, answers, d):
+                calls.append(answers)
+                return next(results)
+
+        validator._scores.pop((str(doc["id"]), validator.parse_action(action)), None)
+        with mock.patch.object(validator.acp, "NextActionEvaluator", FakeEvaluator):
+            first = validator.score(doc, action)
+            second = validator.score(doc, action)
+        validator._scores.pop((str(doc["id"]), validator.parse_action(action)), None)
+        self.assertTrue(first.correct and second.correct)
+        self.assertEqual(len(calls), 2)  # one check, one retry, then the memo
+
+    def test_planner_runs_in_private_dir(self):
+        self.assertTrue(Path(validator._PLANNER_DIR).is_dir())
+        self.assertNotEqual(Path(validator._PLANNER_DIR).resolve(), Path.cwd().resolve())
+
     def test_known_answers(self):
         docs = [d for d in DOCS if d["answer"]["maybe"] and d["answer"]["no"]][:3]
         for doc in docs:
@@ -73,6 +98,18 @@ class TestLLM(unittest.TestCase):
         with self.assertRaises(BudgetExceeded):
             llm.chat([{"role": "user", "content": "x"}])
         self.assertEqual((llm.budget.calls, llm.budget.tokens), (2, 220))
+        self.assertTrue(llm.budget.exhausted)
+
+    def test_budget_exhausted_recorded_when_caught(self):
+        budget = Budget(max_calls=1)
+        llm = FakeClient(lambda p: "(a)", cache_path=None).session(budget)
+        self.assertFalse(budget.exhausted)
+        llm.chat([{"role": "user", "content": "x"}])
+        try:  # what best-of-N and structured+vote do: catch it and vote over what they have
+            llm.chat([{"role": "user", "content": "x"}])
+        except BudgetExceeded:
+            pass
+        self.assertTrue(budget.exhausted)
 
     def test_cache_repeats_and_distinct_samples(self):
         with tempfile.TemporaryDirectory() as td:
@@ -87,6 +124,25 @@ class TestLLM(unittest.TestCase):
             self.assertEqual(again.budget.calls, 3)  # but is still charged to the budget
             client._db.close()
 
+    def test_seeds_do_not_share_samples(self):
+        """Runs with seeds 1, 2, 3 must never send the same server seed for sampled calls."""
+        msgs = [{"role": "user", "content": "x"}]
+        sent = {}
+        for run_seed in (1, 2, 3):
+            client = FakeClient(lambda p: str(p["seed"]), cache_path=None)
+            client.seed = run_seed
+            llm = client.session()
+            sent[run_seed] = {llm.chat(msgs, temperature=0.7) for _ in range(14)}
+            self.assertEqual(len(sent[run_seed]), 14)
+        self.assertFalse(sent[1] & sent[2] or sent[1] & sent[3] or sent[2] & sent[3])
+
+    def test_greedy_seeds_unchanged(self):
+        """Greedy calls keep seed + occurrence, so cached greedy runs replay unchanged."""
+        client = FakeClient(lambda p: str(p["seed"]), cache_path=None)
+        client.seed = 5
+        llm = client.session()
+        msgs = [{"role": "user", "content": "x"}]
+        self.assertEqual([llm.chat(msgs) for _ in range(3)], ["5", "6", "7"])
 
     def test_cache_is_thread_safe(self):
         from concurrent.futures import ThreadPoolExecutor

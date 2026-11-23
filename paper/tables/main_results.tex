@@ -1,21 +1,21 @@
 \begin{table}[ht]
 \centering
 \small
-\caption{Direct, structured, best-of-N, and search results. Controls were run for 8B only. Multi-seed methods report mean accuracy and sample standard deviation. McNemar exact p-values compare each run with the direct baseline. Calls and tokens are per question. The 14k-token-cap rows share a cap of 14,000 tokens per question.}
+\caption{Direct, structured, best-of-N, and search results. 70B controls are in Table~\ref{tab:followups}. Multi-seed methods report mean accuracy and sample standard deviation. Exact McNemar $p$-values compare each seed (1, 2, 3) with direct generation and are uncorrected. Calls and tokens are per question. In the 14k-token-cap rows, no call starts once a question has used 14,000 tokens.}
 \label{tab:main-results}
 \begin{tabular}{llrrrr}
 \toprule
 Model & Method & Accuracy ($\pm$ std.) & Calls & Tokens & McNemar $p$ \\
 \midrule
-8B & Direct & 0.223 & 1.0 & 1640 & -- \\
-8B & Search & 0.159 $\pm$ 0.012 & 13.4 & 13722 & 0.169, 0.265, 0.087 \\
-8B & Structured & 0.262 & 1.0 & 2076 & 0.442 \\
-8B & Best-of-N ($N{=}14$) & 0.236 $\pm$ 0.012 & 14.0 & 22959 & 0.453, 0.754, 1.000 \\
-8B & Search, 14k-token cap & 0.151 $\pm$ 0.018 & 12.2 & 11230 & 0.185, 0.200, 0.036 \\
-8B & Best-of-N ($N{=}8$), 14k-token cap & 0.228 $\pm$ 0.022 & 7.7 & 12348 & 0.388, 1.000, 1.000 \\
+8B & Direct & 0.223 & 1.0 & 1,640 & -- \\
+8B & Search & 0.159 $\pm$ 0.012 & 13.4 & 13,722 & 0.169, 0.265, 0.087 \\
+8B & Structured & 0.262 & 1.0 & 2,076 & 0.442 \\
+8B & Best-of-N ($N{=}14$) & 0.231 $\pm$ 0.015 & 14.0 & 22,960 & 1.000, 1.000, 0.607 \\
+8B & Search, 14k-token cap & 0.151 $\pm$ 0.018 & 12.2 & 11,230 & 0.185, 0.200, 0.036 \\
+8B & Best-of-N ($N{=}8$), 14k-token cap & 0.210 $\pm$ 0.016 & 7.7 & 12,348 & 0.503, 1.000, 1.000 \\
 \midrule
-70B & Direct & 0.377 & 1.0 & 1645 & -- \\
-70B & Search & 0.362 $\pm$ 0.015 & 11.4 & 10292 & 0.572, 0.851, 1.000 \\
+70B & Direct & 0.377 & 1.0 & 1,645 & -- \\
+70B & Search & 0.362 $\pm$ 0.015 & 11.4 & 10,292 & 0.572, 0.851, 1.000 \\
 \bottomrule
 \end{tabular}
 \end{table}

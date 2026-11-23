@@ -18,7 +18,8 @@ One search per instance:
 Only LLM-predicted states are used: no planner, simulator or applicability checker.
 Each expansion costs 1 + 2k calls. Without a budget, k=3, d=2 expands the root and all 3 children
 (28 calls); the call budget (--max-calls) is what makes best-first order matter: with 14 calls it
-expands the root and only the most promising child.
+expands the root and the most promising child, and calls saved by pruning (no score call for a
+NOT APPLICABLE child) can start a third expansion, of the next root child.
 
 Ablation switches (Aisha's sweeps call these by name, so keep them stable):
     k, d

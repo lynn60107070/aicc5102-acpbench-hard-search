@@ -8,6 +8,7 @@ import argparse
 import glob
 import json
 import re
+import random
 import statistics
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -35,6 +36,13 @@ def accuracy(rows):
     return sum(bool(row["correct"]) for row in rows) / len(rows)
 
 
+def binomial_interval_95(paper_accuracy, n=130):
+    """Return the 95% normal-approximation interval around a reported accuracy."""
+    standard_error = (paper_accuracy * (1 - paper_accuracy) / n) ** 0.5
+    return (paper_accuracy - 1.96 * standard_error,
+            paper_accuracy + 1.96 * standard_error)
+
+
 def within_95_binomial_interval(paper_accuracy, reproduced_accuracy, n=130):
     """Check whether reproduced accuracy is inside the paper's 95% binomial interval."""
     standard_error = (paper_accuracy * (1 - paper_accuracy) / n) ** 0.5
@@ -59,7 +67,7 @@ def candidate_coverage(rows, documents):
         if first_proposal is None:
             continue
 
-        candidates = validator.parse_actions(first_proposal)
+        candidates = validator.parse_actions(first_proposal)[: row.get("params", {}).get("k", 3)]
 
         if any(validator.score(doc, action).correct for action in candidates):
             proposed_correct += 1
@@ -99,8 +107,18 @@ def score_separation(rows, documents):
 
     Each proposal round is aligned with its following predictions.
     Only predictions with a matching numeric score are included.
+
+    Two AUCs are reported. "auc" pools all scored root candidates of all questions, so it also
+    compares candidates of different questions. "within_question" counts only pairs of a correct
+    and a wrong candidate of the same question, which is what selection depends on. The pruning
+    counts say how often the predictor's NOT APPLICABLE removed truly inapplicable root
+    candidates, and how often it removed applicable ones.
     """
     scores = []
+    within_wins = 0.0
+    within_pairs = 0
+    within_by_question = {}
+    pruning = Counter()
 
     for row in rows:
         doc = documents[str(row["id"])]
@@ -118,6 +136,7 @@ def score_separation(rows, documents):
             replies[first_proposal_index]["text"]
         )
         candidate_index = 0
+        row_scores = []
         i = first_proposal_index + 1
 
         while i < len(replies) and replies[i]["tag"] != "propose":
@@ -125,7 +144,15 @@ def score_separation(rows, documents):
 
             if reply["tag"] == "predict":
                 prediction = reply["text"]
-                if "NOT APPLICABLE" in prediction.upper():
+                pruned = "NOT APPLICABLE" in prediction.upper()
+                if candidate_index < len(candidates):
+                    verdict = validator.score(doc, candidates[candidate_index])
+                    kind = "inapplicable" if verdict.error == "inapplicable" else "applicable"
+                    pruning[kind] += 1
+                    pruning[kind + "_pruned"] += pruned
+                    pruning["correct"] += verdict.correct
+                    pruning["correct_pruned"] += pruned and verdict.correct
+                if pruned:
                     candidate_index += 1
                     i += 1
                     continue
@@ -141,10 +168,22 @@ def score_separation(rows, documents):
                             doc, candidates[candidate_index]
                         )
                         scores.append((numeric_score, verdict.correct))
+                        row_scores.append((numeric_score, verdict.correct))
 
                 candidate_index += 1
 
             i += 1
+
+        row_wins, row_pairs = 0.0, 0
+        for good, is_good in row_scores:
+            for bad, is_bad_correct in row_scores:
+                if is_good and not is_bad_correct:
+                    row_pairs += 1
+                    row_wins += 1.0 if good > bad else 0.5 if good == bad else 0.0
+        if row_pairs:
+            within_by_question[str(row["id"])] = [row_wins, row_pairs]
+            within_wins += row_wins
+            within_pairs += row_pairs
 
     correct_scores = [score for score, correct in scores if correct]
     wrong_scores = [score for score, correct in scores if not correct]
@@ -161,6 +200,57 @@ def score_separation(rows, documents):
         ),
         "n_correct_candidates": len(correct_scores),
         "n_wrong_candidates": len(wrong_scores),
+        "within_question_wins": within_wins,
+        "within_question_pairs": within_pairs,
+        "within_question_by_id": within_by_question,
+        "pruning": dict(pruning),
+    }
+
+
+def selection_summary(rows, documents):
+    """How the search turns its root candidates into an answer (analysis only, uses the key).
+
+    first_proposal_accuracy: accuracy if the first root candidate were returned as is.
+    covered: questions with a correct root candidate; chosen_when_covered: final answer correct
+    among those; random_pick_when_covered: expected accuracy of a uniformly random pick among
+    the root candidates of those questions. The *_unpruned values do the same after removing the
+    candidates the predictor called NOT APPLICABLE (all are kept if it pruned every one), which
+    separates what pruning does from what the progress scores do.
+    """
+    first = covered = chosen = 0
+    random_pick = random_unpruned = first_unpruned = 0.0
+    for row in rows:
+        doc = documents[str(row["id"])]
+        replies = row.get("replies", [])
+        start = next((i for i, r in enumerate(replies) if r["tag"] == "propose"), None)
+        candidates = (validator.parse_actions(replies[start]["text"])[: row.get("params", {}).get("k", 3)]
+                      if start is not None else [])
+        if not candidates:
+            continue
+        correct = [validator.score(doc, action).correct for action in candidates]
+        first += correct[0]
+        if any(correct):
+            covered += 1
+            chosen += bool(row["correct"])
+            random_pick += sum(correct) / len(correct)
+            pruned = []
+            for reply in replies[start + 1:]:
+                if reply["tag"] == "propose":
+                    break
+                if reply["tag"] == "predict":
+                    pruned.append("NOT APPLICABLE" in reply["text"].upper())
+            pruned += [False] * len(correct)
+            kept = [c for c, p in zip(correct, pruned) if not p] or correct
+            random_unpruned += sum(kept) / len(kept)
+            first_unpruned += kept[0]
+    n = len(rows)
+    return {
+        "first_proposal_accuracy": first / n if n else 0.0,
+        "covered": covered,
+        "chosen_when_covered": chosen / covered if covered else None,
+        "random_pick_when_covered": random_pick / covered if covered else None,
+        "random_unpruned_when_covered": random_unpruned / covered if covered else None,
+        "first_unpruned_when_covered": first_unpruned / covered if covered else None,
     }
 
 def summarize_run(rows, documents):
@@ -199,6 +289,7 @@ def summarize_run(rows, documents):
         ),
         "candidate_coverage": candidate_coverage(rows, documents),
         "score_separation": score_separation(rows, documents),
+        "selection": selection_summary(rows, documents),
     }
 
 
@@ -229,6 +320,45 @@ def aggregate_seed_metrics(summaries):
         metrics["auc"] = {
             "mean": statistics.mean(aucs) if aucs else None,
             "std": statistics.stdev(aucs) if len(aucs) > 1 else 0.0,
+        }
+        # Pooled over seeds: within-question AUC and predictor pruning rates.
+        separations = [run["score_separation"] for run in runs]
+        pairs = sum(sep["within_question_pairs"] for sep in separations)
+        metrics["within_question_auc"] = (
+            sum(sep["within_question_wins"] for sep in separations) / pairs if pairs else None
+        )
+        metrics["within_question_pairs"] = pairs
+        # 95% interval by resampling questions (pairs from all seeds of a question move together).
+        by_question = defaultdict(lambda: [0.0, 0])
+        for sep in separations:
+            for qid, (wins, n_pairs) in sep["within_question_by_id"].items():
+                by_question[qid][0] += wins
+                by_question[qid][1] += n_pairs
+        groups = list(by_question.values())
+        rng = random.Random(0)
+        boots = []
+        for _ in range(2000):
+            sample = [rng.choice(groups) for _ in groups]
+            boots.append(sum(w for w, _ in sample) / sum(n for _, n in sample))
+        boots.sort()
+        metrics["within_question_auc_ci95"] = [boots[49], boots[1949]] if groups else None
+        metrics["within_question_questions"] = len(groups)
+        selections = [run["selection"] for run in runs]
+        covered = sum(sel["covered"] for sel in selections)
+        metrics["selection"] = {
+            "first_proposal_accuracy": statistics.mean(sel["first_proposal_accuracy"] for sel in selections),
+            "chosen_when_covered": sum(sel["chosen_when_covered"] * sel["covered"] for sel in selections) / covered,
+            **{key: sum(sel[key] * sel["covered"] for sel in selections) / covered
+               for key in ("random_pick_when_covered", "random_unpruned_when_covered",
+                           "first_unpruned_when_covered")},
+        }
+        pruning = Counter()
+        for sep in separations:
+            pruning.update(sep["pruning"])
+        metrics["pruning"] = {
+            "inapplicable_pruned": f'{pruning["inapplicable_pruned"]}/{pruning["inapplicable"]}',
+            "applicable_pruned": f'{pruning["applicable_pruned"]}/{pruning["applicable"]}',
+            "correct_pruned": f'{pruning["correct_pruned"]}/{pruning["correct"]}',
         }
         metrics["total_calls_mean"] = statistics.mean(
             run["total_calls"] for run in runs
@@ -333,7 +463,8 @@ def write_latex_tables(summaries, aggregated, output_dir):
     domain_lines = [
         r"\begin{table}[ht]",
         r"\centering",
-        r"\caption{Accuracy by domain, averaged across seeds.}",
+        r"\caption{Search accuracy by domain on the 130 test questions (10 per domain), mean across seeds 1--3.}",
+        r"\label{tab:domains}",
         r"\begin{tabular}{lrr}",
         r"\toprule",
         r"Domain & 8B accuracy & 70B accuracy \\",
@@ -482,7 +613,7 @@ def write_main_results_table(run_rows, output_dir):
         r"\begin{table}[ht]",
         r"\centering",
         r"\small",
-        r"\caption{Direct, structured, best-of-N, and search results. Controls were run for 8B only. Multi-seed methods report mean accuracy and sample standard deviation. McNemar exact p-values compare each run with the direct baseline. Calls and tokens are per question. The 14k-token-cap rows share a cap of 14,000 tokens per question.}",
+        r"\caption{Direct, structured, best-of-N, and search results. 70B controls are in Table~\ref{tab:followups}. Multi-seed methods report mean accuracy and sample standard deviation. Exact McNemar $p$-values compare each seed (1, 2, 3) with direct generation and are uncorrected. Calls and tokens are per question. In the 14k-token-cap rows, no call starts once a question has used 14,000 tokens.}",
         r"\label{tab:main-results}",
         r"\begin{tabular}{llrrrr}",
         r"\toprule",
@@ -514,7 +645,7 @@ def write_main_results_table(run_rows, output_dir):
 
         lines.append(
             f"{model.upper()} & {method} & {accuracy(rows):.3f} "
-            f"& {calls:.1f} & {tokens:.0f} & {p_text} " + r"\\"
+            f"& {calls:.1f} & {tokens:,.0f} & {p_text} " + r"\\"
         )
 
     def append_multiple(model, method, runs, direct_rows=None):
@@ -544,7 +675,7 @@ def write_main_results_table(run_rows, output_dir):
             f"{model.upper()} & {method} & {mean_accuracy:.3f} "
             f"$\\pm$ {std_accuracy:.3f} "
             f"& {statistics.mean(call_totals):.1f} "
-            f"& {statistics.mean(token_totals):.0f} "
+            f"& {statistics.mean(token_totals):,.0f} "
             f"& {p_text} " + r"\\"
         )
 
@@ -633,22 +764,22 @@ def write_reproduction_table(run_rows, output_dir):
     reference_runs = [
         ("Llama 3.1 8B", "Next Action",
          "repro_llama31_8b_direct_bf16_coreweave", 0.250),
+        ("Llama 3.1 70B", "Next Action",
+         "repro_llama31_70b_direct_bedrock", 0.420),
         ("Llama 3.1 8B", "Progression",
          "repro_prog_llama31_8b", 0.400),
         ("Llama 3.1 70B", "Progression",
          "repro_prog_llama31_70b", 0.650),
-        ("Llama 3.1 70B", "Next Action",
-         "repro_llama31_70b_direct_bedrock", 0.420),
     ]
 
     lines = [
         r"\begin{table}[ht]",
         r"\centering",
-        r"\caption{Paper reference accuracies and reproduced results on ACPBench-Hard.}",
+        r"\caption{Paper reference accuracies and reproduced results on ACPBench-Hard, with the 95\% binomial interval around each reported value ($n=130$).}",
         r"\label{tab:reproduction}",
         r"\begin{tabular}{llrrl}",
         r"\toprule",
-        r"Model & Task & Paper accuracy & Reproduced accuracy & Within 95\% interval \\",
+        r"Model & Task & Paper accuracy & Reproduced accuracy & 95\% interval \\",
         r"\midrule",
     ]
 
@@ -667,8 +798,9 @@ def write_reproduction_table(run_rows, output_dir):
             else "--"
         )
 
+        lower, upper = binomial_interval_95(paper_accuracy)
         within_interval = (
-            r"\checkmark"
+            f"[{lower:.3f}, {upper:.3f}]" + r"\,\checkmark"
             if reproduced_value is not None
             and within_95_binomial_interval(paper_accuracy, reproduced_value)
             else "--"
@@ -694,7 +826,7 @@ def write_ablation_table(ablations, output_dir):
     lines = [
         r"\begin{table}[ht]",
         r"\centering",
-        r"\caption{Search ablations on Llama 3.1 8B. Accuracy is mean $\pm$ standard deviation across seeds; calls are mean calls per question.}",
+        r"\caption{Search ablations on Llama 3.1 8B. Accuracy is mean $\pm$ standard deviation across seeds; calls are mean calls per question. Rows with $0.159 \pm 0.012$ reuse the same cached proposals and select the same answers as the frozen search (all 390, except one wrong answer that is a different wrong answer without pruning) (Section~\ref{sec:method}).}",
         r"\label{tab:ablations}",
         r"\begin{tabular}{lrr}",
         r"\toprule",
@@ -867,6 +999,10 @@ def main():
     report["ablations"] = ablations
     paper_tables_dir = Path("paper/tables")
     write_latex_tables(summaries, aggregated, output_dir)
+    (paper_tables_dir / "domain_table.tex").write_text(
+        (output_dir / "domain_table.tex").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
     write_ablation_table(ablations, paper_tables_dir)
     write_main_results_table(run_rows, paper_tables_dir)
     write_reproduction_table(run_rows, paper_tables_dir)

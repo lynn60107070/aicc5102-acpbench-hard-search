@@ -11,38 +11,38 @@
     "max_calls": 14,
     "max_tokens": null,
     "name": "followup_sv_8b_s1",
-    "workers": 8,
+    "workers": 12,
     "params": {}
   },
   "n": 130,
-  "accuracy": 0.3384615384615385,
+  "accuracy": 0.3153846153846154,
   "ci95": [
-    0.257119208757198,
-    0.41980386816587895
+    0.2355064696804942,
+    0.39526276108873654
   ],
   "errors": {
-    "inapplicable": 49,
-    "not_closer": 37
+    "not_closer": 35,
+    "inapplicable": 54
   },
   "accuracy_by_domain": {
     "alfred": 0.0,
-    "blocksworld-4ops": 0.4,
-    "depots": 0.4,
-    "ferry": 0.4,
+    "blocksworld-4ops": 0.2,
+    "depots": 0.2,
+    "ferry": 0.5,
     "floor-tile": 0.0,
-    "gold-miner-typed": 0.1,
-    "grid": 0.5,
-    "grid-visit-all": 0.7,
-    "gripper-strips": 0.2,
-    "logistics-strips": 0.4,
+    "gold-miner-typed": 0.2,
+    "grid": 0.6,
+    "grid-visit-all": 0.6,
+    "gripper-strips": 0.3,
+    "logistics-strips": 0.5,
     "rover": 0.1,
-    "satellite": 0.5,
-    "swap": 0.7
+    "satellite": 0.4,
+    "swap": 0.5
   },
   "total_calls": 1820,
-  "total_tokens": 3771426,
+  "total_tokens": 3786709,
   "mean_calls": 14.0,
-  "mean_tokens": 29010.96923076923,
+  "mean_tokens": 29128.53076923077,
   "providers": {
     "CoreWeave": 130
   }

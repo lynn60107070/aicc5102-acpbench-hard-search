@@ -158,7 +158,7 @@ table.pt .l { text-align: left; }
    =========================================== */
 .vbars { display: flex; align-items: flex-end; gap: 52px; height: 540px; border-bottom: 2px solid var(--ink); position: relative; padding: 0 24px; }
 .vbar { width: 168px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; position: relative; }
-.vbar .val { font-size: 34px; font-weight: 500; margin-bottom: 14px; position: relative; z-index: 1; text-shadow: 0 0 8px #fff, 0 0 14px #fff, 0 0 20px #fff; }
+.vbar .val { font-size: 34px; font-weight: 500; margin-bottom: 14px; position: relative; z-index: 1; text-shadow: 0 0 8px #fff, 0 0 14px #fff, 0 0 20px #fff; background: #fff; padding: 0 12px; border-radius: 10px; }
 .vbar .bar-fill { width: 100%; border-radius: 12px 12px 0 0; transform-origin: bottom; transform: scaleY(0); transition: transform 1.1s var(--ease); }
 .vbar .lab { position: absolute; bottom: -60px; font-size: 23px; color: var(--ink-2); white-space: nowrap; }
 .slide.visible .vbar .bar-fill { transform: scaleY(1); }
@@ -415,8 +415,8 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
     <div class="pad">
         <div class="head reveal d1"><div class="head-l"><h2 class="md" style="max-width:1460px">Does best-first search over LLM-predicted states beat <span class="hl-pill">answering once?</span></h2></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div class="row" style="gap:28px">
-            <div class="card ice grow reveal d2" style="min-height:330px"><div class="icon-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5" stroke-linecap="round"/></svg></div><p style="font-size:40px;margin-top:auto">01.</p><p>The paper scored <b>one answer</b> per question. It never tested more compute at answer time.</p></div>
-            <div class="card black grow reveal d3" style="min-height:330px"><div class="icon-sq ice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5" stroke-linecap="round"/></svg></div><p style="font-size:40px;margin-top:auto;color:#fff">02.</p><p>Search helped LLMs on puzzles and maths (Tree of Thoughts, RAP). Planning is the <b>obvious next test</b>.</p></div>
+            <div class="card ice grow reveal d2" style="min-height:330px"><div class="icon-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5" stroke-linecap="round"/></svg></div><p style="font-size:40px;margin-top:auto">01.</p><p>The paper scored <b>one answer</b> per question. It never gave the same model more calls at answer time.</p></div>
+            <div class="card black grow reveal d3" style="min-height:330px"><div class="icon-sq ice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5" stroke-linecap="round"/></svg></div><p style="font-size:40px;margin-top:auto;color:#fff">02.</p><p>Search helped LLMs on puzzles, maths and simulated planning (Tree of Thoughts, RAP). Open-ended planning <b>without a simulator</b> is the open test.</p></div>
             <div class="card ice grow reveal d4" style="min-height:330px"><div class="icon-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12.5l4.5 4.5L19 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><p style="font-size:40px;margin-top:auto">03.</p><p>We tested it fairly: same questions, <b>matched budget</b>, 3 seeds, fixed in our proposal.</p></div>
         </div>
     </div>
@@ -439,18 +439,18 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
             </div>
             <div class="freeze reveal d3">Search design frozen on validation · everything below ran on the 130 test questions</div>
             <div class="flow-row reveal d4">
-                <div class="node"><span class="when">24–29 Oct<span class="sec">03</span></span><h3>Test runs</h3><p>130 questions × 3 seeds, 8B + 70B; token-matched check</p><div class="owners"><span class="dot l">L</span><span class="dot f">F</span><span class="dot a">A</span></div></div>
-                <div class="node key"><span class="when">25–30 Oct<span class="sec">03</span></span><h3>Analysis</h3><p>McNemar tool, tables + figures, budget + token matching, coverage + AUC</p><div class="owners"><span class="dot a">A</span></div></div>
+                <div class="node"><span class="when">24–29 Oct<span class="sec">03</span></span><h3>Test runs</h3><p>130 questions × 3 seeds, 8B + 70B; token-capped check</p><div class="owners"><span class="dot l">L</span><span class="dot f">F</span><span class="dot a">A</span></div></div>
+                <div class="node key"><span class="when">25–30 Oct<span class="sec">03</span></span><h3>Analysis</h3><p>McNemar tool, tables + figures, budget + token cap, coverage + AUC</p><div class="owners"><span class="dot a">A</span></div></div>
                 <div class="node"><span class="when">25 Oct<span class="sec">04</span></span><h3>Ablations</h3><p>13 settings × 3 seeds</p><div class="owners"><span class="dot l">L</span></div></div>
-                <div class="node"><span class="when">3–9 Nov<span class="sec">04</span></span><h3>Follow-ups</h3><p>Two post-hoc follow-ups, validation first; bonus 0.331</p><div class="owners"><span class="dot l">L</span></div></div>
-                <div class="node"><span class="when">to 18 Nov<span class="sec">All</span></span><h3>Paper + code</h3><p>Paper assembly (L); 6 pages, 42 tests, fresh-clone check</p><div class="owners"><span class="dot l">L</span><span class="dot f">F</span><span class="dot a">A</span></div></div>
+                <div class="node"><span class="when">3–9 Nov<span class="sec">04</span></span><h3>Follow-ups</h3><p>Two post-hoc follow-ups, validation first, then test; bonus 0.331</p><div class="owners"><span class="dot l">L</span></div></div>
+                <div class="node"><span class="when">to 23 Nov<span class="sec">All</span></span><h3>Paper + code</h3><p>Paper assembly (L); 21–22 Nov: seeding fix, pre-registered 70B repeat, validation re-created</p><div class="owners"><span class="dot l">L</span><span class="dot f">F</span><span class="dot a">A</span></div></div>
             </div>
         </div>
         <div class="flow-legend reveal d5"><span><span class="dot l">L</span>Lynn (lead)</span><span><span class="dot f">F</span>Faheema</span><span><span class="dot a">A</span>Aisha</span></div>
         <div class="flow-legend talk-sections reveal d6"><span><span class="dot l" style="margin-right:10px">01</span>Benchmark and reproduction · Faheema</span><span><span class="dot l" style="margin-right:10px">02</span>Our extension and the code · Lynn</span><span><span class="dot l" style="margin-right:10px">03</span>Evaluation and results · Aisha</span><span><span class="dot l" style="margin-right:10px">04</span>Ablations, bonus and takeaways · Lynn</span></div>
     </div>
     <div class="foot"><span class="who"></span><span class="pg"></span></div>
-    <aside class="notes">This slide is also the roadmap of the talk: Faheema covers the benchmark and reproduction (01), Lynn the extension and the code (02), Aisha the evaluation and results (03), and Lynn returns for ablations, the bonus and the takeaways (04). The whole project as one flow, coloured by owner. Every change went through a reviewed pull request, so each of us can explain every part; contributions and AI use are documented in Appendices E and F. The dashed line is the most important part: the search design was settled on validation data only, and everything below the line ran on the test questions with that frozen design. Test runs: Lynn ran search, Faheema the baselines, Aisha the token-matched check.</aside>
+    <aside class="notes">This slide is also the roadmap of the talk: Faheema covers the benchmark and reproduction (01), Lynn the extension and the code (02), Aisha the evaluation and results (03), and Lynn returns for ablations, the bonus and the takeaways (04). The whole project as one flow, coloured by owner. Every change went through a reviewed pull request, so each of us can explain every part; contributions and AI use are documented in Appendices E and F. The dashed line is the most important part: the search design was settled on validation data only, and everything below the line ran on the test questions with that frozen design. Test runs: Lynn ran search, Faheema the baselines, Aisha the token-capped check.</aside>
 </section>
 
 <!-- =========================================================
@@ -558,10 +558,10 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
                 <span class="pill sm">Best-of-N · 14 calls</span>
                 <h3 style="margin-top:10px">14 samples at temperature 0.7, majority vote</h3>
                 <p>Vote on the parsed action. Never uses the validator.</p>
-                <div class="stat" style="margin-top:20px">0.231 <span style="font-size:44px;color:rgba(255,255,255,.6)">± 0.015</span></div>
+                <div class="stat" style="margin-top:20px">0.231 <span style="font-size:44px;letter-spacing:0;color:rgba(255,255,255,.6)">± 0.015</span></div>
             </div>
         </div>
-        <p class="note reveal d4" style="color:var(--ink)">Best-of-N gets the same 14 calls as search. Tokens still differ (22,960 vs. 13,722), so we also match tokens.</p>
+        <p class="note reveal d4" style="color:var(--ink)">Best-of-N gets the same 14 calls as search. Tokens still differ (22,960 vs. 13,722), so we also cap tokens (14k per question).</p>
     </div>
     <div class="foot"><span class="who"></span><span class="pg"></span></div>
     <aside class="notes">Both controls were run on the same 130 test questions as search. Best-of-N uses three seeds; structured is greedy so one run.</aside>
@@ -602,7 +602,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
         </div>
     </div>
     <div class="foot"><span class="who"></span><span class="pg"></span></div>
-    <aside class="notes">One expansion costs 1 + 2k = 7 calls with k = 3, so 14 calls allow the root plus one child. The validator only grades the final answer. The proposer samples at temperature 0.7; predictor and evaluator are greedy. Search worked for Tree of Thoughts and RAP, so it was a reasonable bet for planning.</aside>
+    <aside class="notes">One expansion costs 1 + 2k = 7 calls with k = 3, so 14 calls allow the root plus one child, and calls saved by pruning can start a third expansion, of the next root child. The validator only grades the final answer. The proposer samples at temperature 0.7; predictor and evaluator are greedy. Search worked for Tree of Thoughts and RAP, so it was a reasonable bet for planning.</aside>
 </section>
 
 <!-- 10b · Inside one search: animated tree, phases and call meter run on a timeline (R replays) -->
@@ -666,7 +666,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
     <div style="position:absolute;left:var(--pad-x);top:var(--pad-top);width:760px;display:flex;flex-direction:column;gap:36px;bottom:140px">
         <h2 class="reveal d1">Tuned on<br>validation,<br>then frozen</h2>
         <span class="pill reveal d2">23 October</span>
-        <p class="reveal d3" style="margin-top:auto"><b>40 validation questions</b>, disjoint from the 130 test questions. We compared five evaluators: 0–10 score, steps-to-goal, vote, the proposer's own order, random. The 0–10 score won on validation; the rest became ablations.</p>
+        <p class="reveal d3" style="margin-top:auto"><b>40 validation questions</b>, disjoint from the 130 test questions. We chose the 0–10 score there on 23 Oct (those runs were not kept). Re-created on 22 Nov, of 40: proposer's order 13.0, 0–10 score 12.3, steps 10.0, random 8.7, vote 4.7. Within noise; the rest became ablations.</p>
     </div>
     <div class="reveal d2" style="position:absolute;right:64px;top:64px;bottom:64px;width:880px;background:var(--ice);border-radius:56px;padding:80px;display:grid;grid-template-columns:1fr 1fr;gap:24px;align-content:center">
         <div class="card black"><span class="stat sm">0–10</span><p>score as evaluator</p></div>
@@ -687,10 +687,10 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
             <div class="card grow reveal d2" style="padding:34px"><span class="dir">common/</span><ul class="clean"><li>Data with the official prompt</li><li>LLM client: cache + call budget</li><li>Validator, fixed for Windows</li><li>One method contract</li></ul></div>
             <div class="card grow reveal d3" style="padding:34px"><span class="dir">methods/</span><ul class="clean"><li>direct · structured</li><li>best_of_n · search</li><li>structured_vote · vote_check</li></ul></div>
             <div class="card grow reveal d4" style="padding:34px"><span class="dir">experiments/</span><ul class="clean"><li>run: parallel workers</li><li>sweep: config × seeds</li><li>compare: exact McNemar</li><li>analyze: tables + figures</li></ul></div>
-            <div class="card grow reveal d5" style="padding:34px"><span class="dir">tests/</span><ul class="clean"><li>42 unit tests</li><li>pipeline, search, baselines, compare, analyze</li></ul></div>
+            <div class="card grow reveal d5" style="padding:34px"><span class="dir">tests/</span><ul class="clean"><li>50 unit tests</li><li>pipeline, search, baselines, compare, analyze, follow-ups</li></ul></div>
         </div>
         <div class="row reveal d6" style="gap:22px">
-            <div class="card black grow" style="flex-direction:row;align-items:center;gap:28px;padding:28px 40px"><span class="stat sm">42</span><p>tests pass</p></div>
+            <div class="card black grow" style="flex-direction:row;align-items:center;gap:28px;padding:28px 40px"><span class="stat sm">50</span><p>tests pass</p></div>
             <div class="card grow" style="flex-direction:row;align-items:center;gap:28px;padding:28px 40px"><span class="stat sm">1:1</span><p>fresh clone rebuilds every paper table</p></div>
             <div class="card blue grow" style="flex-direction:row;align-items:center;gap:28px;padding:28px 40px"><span class="stat sm">38</span><p>reviewed pull requests</p></div>
         </div>
@@ -727,7 +727,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
             </div>
             <div class="row" style="gap:24px">
                 <div class="card blue grow reveal d5" style="flex-direction:row;align-items:center;gap:28px"><span class="pill sm dark">Statistics</span><p>Exact <b>McNemar test</b> per seed against direct, on the same questions.</p></div>
-                <div class="card grow reveal d6" style="flex-direction:row;align-items:center;gap:28px"><span class="pill sm">Robustness</span><p><b>Token-matched check:</b> equal tokens instead of equal calls, 14k cap.</p></div>
+                <div class="card grow reveal d6" style="flex-direction:row;align-items:center;gap:28px"><span class="pill sm">Robustness</span><p><b>Token-capped check:</b> a 14k-token cap per question instead of equal calls.</p></div>
             </div>
         </div>
     </div>
@@ -754,7 +754,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
                 <div class="card ice"><span class="pill sm dark">Llama 3.1 70B</span>
                     <div class="row" style="gap:36px;align-items:baseline"><div><div class="stat sm">0.377</div><p class="muted" style="font-size:22px">Direct</p></div><div><div class="stat sm ours-t">0.362</div><p class="muted" style="font-size:22px">Search</p></div></div>
                 </div>
-                <p class="note">McNemar vs. direct, 8B: p = 0.17 / 0.27 / 0.09. No seed is significant at either size, and none favours search.</p>
+                <p class="note">McNemar vs. direct, 8B: p = 0.17 / 0.26 / 0.09. No seed is significant at either size for uncapped search, and none favours search.</p>
             </div>
         </div>
     </div>
@@ -765,7 +765,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 <!-- 16 · Token-matched -->
 <section class="slide s-ice" data-presenter="Aisha Suleiman Shaik" data-section="03 · Evaluation and results">
     <div class="pad">
-        <div class="head reveal d1"><div class="head-l"><h2>Equal tokens</h2><span class="pill">same answer</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
+        <div class="head reveal d1"><div class="head-l"><h2>Capped tokens</h2><span class="pill">same answer</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div class="panel reveal d2" style="background:var(--white);box-shadow:var(--shadow);padding:44px 52px">
             <table class="pt on-white">
                 <tr><th class="l">14k-token cap · 8B · 3 seeds</th><th>Accuracy</th><th>Calls / question</th><th>Tokens / question</th></tr>
@@ -777,7 +777,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
                 <div class="gauge"><span class="name ours-t"><b>Search tokens</b></span><div class="track"><div class="bar-fill f-ours" style="width:80.2%"></div><div class="cap"></div></div><span class="v ours-t">11,230</span></div>
             </div>
         </div>
-        <p class="reveal d3">Matching tokens instead of calls does not change the conclusion: <span class="hl-pill">best-of-N is higher than search</span> in all three seeds (p = 0.557, 0.281, 0.036).</p>
+        <p class="reveal d3">Capping tokens instead of matching calls does not change the conclusion: <span class="hl-pill">best-of-N is higher than search</span> in all three seeds (p = 0.557, 0.281, 0.036).</p>
     </div>
     <div class="foot"><span class="who"></span><span class="pg"></span></div>
     <aside class="notes">Search is token-heavy per call because predicted states are long, so a call-matched comparison could be unfair to either side. The cap narrows that doubt; it is checked before each call, so single questions can overshoot it. Actual token use differs a little because a cap stops at the call that crosses it.</aside>
@@ -787,14 +787,14 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 <section class="slide" data-presenter="Aisha Suleiman Shaik" data-section="03 · Key finding">
     <div class="reveal d1" style="position:absolute;left:64px;right:64px;top:64px;height:560px;border-radius:56px;background:var(--ice);display:flex;flex-direction:column;justify-content:center;padding:0 110px">
         <span class="pill sm dark" style="margin-bottom:34px">Key finding</span>
-        <h1 style="font-size:104px;line-height:1.05;letter-spacing:-0.04em">The model can propose the <span class="hl-pill white">right move,</span><br>but cannot <span class="hl-pill">recognise it.</span></h1>
+        <h1 style="font-size:104px;line-height:1.05;letter-spacing:-0.04em">The model can propose the <span class="hl-pill white">right move,</span><br>but often cannot <span class="hl-pill">recognise it.</span></h1>
     </div>
     <div class="row reveal d3" style="position:absolute;left:64px;right:64px;top:656px;gap:24px">
         <div class="card grow" style="height:270px"><span class="stat sm">31%</span><p style="font-size:24px;color:var(--ink-2)">a correct action is among the 3 proposed (8B; 59% for 70B)</p></div>
-        <div class="card black grow" style="height:270px"><span class="stat sm">0.58</span><p style="font-size:24px">AUC of its own scores, correct vs. wrong (0.5 = chance; 70B: 0.53)</p></div>
-        <div class="card blue grow" style="height:270px"><span class="stat sm">16%</span><p style="font-size:24px">final accuracy: most found answers are lost at selection</p></div>
+        <div class="card black grow" style="height:270px"><span class="stat sm">0.48</span><p style="font-size:24px">AUC of its own scores within a question, correct vs. wrong (0.5 = chance; 70B: 0.58)</p></div>
+        <div class="card blue grow" style="height:270px"><span class="stat sm">16%</span><p style="font-size:24px">final accuracy: about half the found answers are lost at selection</p></div>
     </div>
-    <aside class="notes">This is the main finding. Coverage is an analysis metric only, computed after the run with the validator, never seen by the search. A bigger model proposes much better candidates but judges them only slightly better. Judging a move needs the same planning skill the model lacks: evaluation, not generation, is the bottleneck.</aside>
+    <aside class="notes">This is the main finding. Coverage is an analysis metric only, computed after the run with the validator, never seen by the search. The AUC compares a correct and a wrong candidate of the same question, which is what the search has to do; 8B is at chance. A bigger model proposes much better candidates and selects better too: its search beats its own first proposal, 0.36 against 0.28. It removes 71% of impossible moves, against 14% for 8B, but also 23% of possible ones. And it picks the correct candidate in 61% of the questions where it proposed one, against 43% for a random pick. But most of that is pruning: after pruning, a random pick already gets 56%, and the proposer's first remaining candidate 60%, so the 0 to 10 scores add almost nothing. Its AUC of 0.58 has a wide interval, 0.47 to 0.68, so we don't lean on it. Judging a move needs the same planning skill the model lacks: evaluation, more than generation, is the bottleneck.</aside>
 </section>
 
 <!-- 18 · Error types: stacked bars as in the first version -->
@@ -822,7 +822,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
             <div class="card grow reveal d2" style="min-height:380px;padding:36px"><div class="icon-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5" stroke-linecap="round"/></svg></div><p style="font-size:38px;margin-top:auto">01.</p><p style="font-size:23px">One task, two model sizes, 130 questions: wide intervals.</p></div>
             <div class="card black grow reveal d3" style="min-height:380px;padding:36px"><div class="icon-sq ice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5" stroke-linecap="round"/></svg></div><p style="font-size:38px;margin-top:auto;color:#fff">02.</p><p style="font-size:23px">Closed-model rows cannot be rerun: retired APIs.</p></div>
             <div class="card grow reveal d4" style="min-height:380px;padding:36px"><div class="icon-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5" stroke-linecap="round"/></svg></div><p style="font-size:38px;margin-top:auto">03.</p><p style="font-size:23px">Numbers vary with serving precision, so we pinned one provider.</p></div>
-            <div class="card grow reveal d5" style="min-height:380px;padding:36px"><div class="icon-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5" stroke-linecap="round"/></svg></div><p style="font-size:38px;margin-top:auto">04.</p><p style="font-size:23px">Small budget: 14 calls per question; about $27 in total.</p></div>
+            <div class="card grow reveal d5" style="min-height:380px;padding:36px"><div class="icon-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5" stroke-linecap="round"/></svg></div><p style="font-size:38px;margin-top:auto">04.</p><p style="font-size:23px">Small budget: 14 calls per question; about $42 in total.</p></div>
             <div class="card grow reveal d6" style="min-height:380px;padding:36px"><div class="icon-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5" stroke-linecap="round"/></svg></div><p style="font-size:38px;margin-top:auto">05.</p><p style="font-size:23px">The follow-up came after the main results: post-hoc.</p></div>
         </div>
     </div>
@@ -861,7 +861,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
                 <div class="hbar"><span class="name">Vote between options</span><div class="track"><div class="bar-fill f-g3" style="width:54%"></div></div><span class="v">0.108</span></div>
             </div>
             <div class="col grow reveal d3" style="gap:20px">
-                <div class="card black" style="padding:36px;border-radius:var(--r-lg)"><span class="pill sm">Why they fail</span><p style="font-size:25px">0–10 scores collapse onto a few values, most often 2.</p><p style="font-size:25px">The vote picked the first option in only <b>3 of 39</b> votes: position bias.</p></div>
+                <div class="card black" style="padding:36px;border-radius:var(--r-lg)"><span class="pill sm">Why they fail</span><p style="font-size:25px">0–10 scores collapse onto a few values, most often 2.</p><p style="font-size:25px">The vote picked the first option in only <b>3 of 39</b> validation votes: position bias.</p></div>
                 <div class="card ice" style="padding:30px 36px"><p style="font-size:23px">Double budget 0.154 · few-shot 0.154 · no state prediction 0.159 at 3.9 calls instead of 13.4.</p></div>
             </div>
         </div>
@@ -875,7 +875,11 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
     <div style="position:absolute;left:var(--pad-x);top:var(--pad-top);width:600px;bottom:140px;display:flex;flex-direction:column;gap:30px">
         <h2 class="reveal d1">Bonus</h2>
         <span class="pill reveal d2">skip the judging</span>
-        <div class="card black reveal d3" style="margin-top:auto;padding:36px">
+        <div class="card reveal d3" style="padding:32px 36px;gap:10px">
+            <span class="pill sm dark">70B · pre-registered</span>
+            <div class="row" style="gap:28px;align-items:baseline"><span class="stat sm ours-t">0.492</span><p style="font-size:24px">vs. best-of-N 0.364 at the same 14 calls; one greedy structured call: 0.469</p></div>
+        </div>
+        <div class="card black reveal d4" style="margin-top:auto;padding:36px">
             <span class="pill sm">Follow-up 1 · did not pass</span>
             <h3>Vote, then let the LLM check if the move is possible</h3>
             <p style="font-size:24px">Caught 78% of impossible moves, but rejected 40% of possible ones. Stopped on validation (8–11 of 40 vs. 10–12).</p>
@@ -883,17 +887,17 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
     </div>
     <div class="reveal d2" style="position:absolute;right:64px;top:64px;bottom:64px;width:1100px;background:var(--ice);border-radius:56px;padding:64px 72px;display:flex;flex-direction:column;gap:32px">
         <span class="pill sm dark">Follow-up 2 · passed</span>
-        <h3 style="font-size:54px;font-weight:400;letter-spacing:-0.03em;line-height:1.1">Structured prompt × 14, then vote: <span class="hl-pill">above the paper&rsquo;s 0.25.</span></h3>
+        <h3 style="font-size:54px;font-weight:400;letter-spacing:-0.03em;line-height:1.1">Structured prompt × 14, then vote: <span class="hl-pill">0.331 vs. 0.231</span> for best-of-N at the same 14 calls.</h3>
         <div class="hbars" style="gap:20px">
             <div class="hbar" style="grid-template-columns:290px 1fr 100px"><span class="name"><b>Structured + vote</b></span><div class="track"><div class="bar-fill f-ours" style="width:100%"></div></div><span class="v ours-t">0.331</span></div>
             <div class="hbar" style="grid-template-columns:290px 1fr 100px"><span class="name">Structured</span><div class="track"><div class="bar-fill f-g1" style="width:79.2%"></div></div><span class="v">0.262</span></div>
-            <div class="hbar" style="grid-template-columns:290px 1fr 100px"><span class="name">Paper (direct)</span><div class="track"><div class="bar-fill f-g2" style="width:75.5%"></div></div><span class="v">0.25</span></div>
-            <div class="hbar" style="grid-template-columns:290px 1fr 100px"><span class="name">Search (ours)</span><div class="track"><div class="bar-fill f-g3" style="width:48%"></div></div><span class="v">0.159</span></div>
+            <div class="hbar" style="grid-template-columns:290px 1fr 100px"><span class="name">Paper (1 call)</span><div class="track"><div class="bar-fill f-g2" style="width:75.5%"></div></div><span class="v">0.25</span></div>
+            <div class="hbar" style="grid-template-columns:290px 1fr 100px"><span class="name">Best-of-N, 14 calls</span><div class="track"><div class="bar-fill f-g3" style="width:69.8%"></div></div><span class="v">0.231</span></div>
         </div>
-        <p class="note" style="margin-top:auto">0.331 ± 0.027 · above direct in every seed (p = 0.043, 0.005, 0.058) · above structured alone, significantly in 1 of 3 seeds · 27% more tokens than best-of-N.<br><b>Same 14k-token cap: 0.321 vs. best-of-N 0.210, significant in every seed.</b></p>
+        <p class="note" style="margin-top:auto">0.331 ± 0.027 · self-consistency on the structured prompt · above direct in every seed (p = 0.043, 0.005, 0.058) · above best-of-N at the same 14 calls (seeds pooled p = 0.003, Holm 0.02) · 18× direct&rsquo;s tokens.</p>
     </div>
     <div class="foot" style="right:auto"><span class="who"></span></div>
-    <aside class="notes">Both follow-ups came after the main results, suggested as a bonus at the progress check. Each was tried on the 40 validation questions with a pass bar fixed in its code before running. Under the same 14,000-token cap, structured plus vote still leads, 0.321 vs 0.210, significantly in every seed (p = 0.004, 0.043, 0.029). The gain comes from a method that never asks the model to judge its own candidates, which supports the main finding.</aside>
+    <aside class="notes">Both follow-ups came after the main results, suggested as a bonus at the progress check. Each was tried on the 40 validation questions with a pass bar fixed in its code before running. Then we pre-registered a repeat on 70B before running it: 0.492, against best-of-N 0.364 at the same 14 calls, significant in every seed and after Holm correction, and above the paper's 70B value of 0.42, though not significantly against that number. At 70B most of the gain is the structured prompt itself, 0.469 with one call. Fair framing: the paper's 0.25 is one call; ours uses 14 calls and about 18 times the tokens, so the fair win is against best-of-N at the same 14 calls, plus 0.10, pooled p = 0.003. It is self-consistency, Wang et al. 2023, applied to the structured prompt. Under the 14,000-token cap it still leads, 0.321 vs 0.210, p = 0.004, 0.043, 0.029. The cap is checked before each call and its calls are long, so it overshoots to about 15,000 tokens; if each question only gets as many samples as fit in capped best-of-N's tokens for that question, it still reaches 0.313. Against the paper's 0.25 alone, only seed 2 is significantly higher. The gain comes from a method that never asks the model to judge its own candidates, which supports the main finding.</aside>
 </section>
 
 <!-- 23 · Takeaways -->
@@ -902,8 +906,8 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
         <div class="head reveal d1"><div class="head-l"><h2>Takeaways</h2><span class="pill">by facts</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div class="row" style="gap:22px">
             <div class="card grow reveal d2" style="min-height:330px"><span class="circ" style="width:64px;height:64px">→</span><h3 style="margin-top:auto">The paper reproduces</h3><p class="muted" style="font-size:23px">8B and 70B, both tasks, inside the interval.</p></div>
-            <div class="card black grow reveal d3" style="min-height:330px"><span class="circ" style="width:64px;height:64px">→</span><h3 style="margin-top:auto">Search without a verifier does not help</h3><p class="muted" style="font-size:23px">The model barely tells its good candidates from bad ones.</p></div>
-            <div class="card grow reveal d4" style="min-height:330px"><span class="circ" style="width:64px;height:64px">→</span><h3 style="margin-top:auto">Scale helps generation far more than judging</h3><p class="muted" style="font-size:23px">70B proposes much better, scores only slightly better.</p></div>
+            <div class="card black grow reveal d3" style="min-height:330px"><span class="circ" style="width:64px;height:64px">→</span><h3 style="margin-top:auto">Search without a verifier does not help</h3><p class="muted" style="font-size:23px">8B ranks its own candidates at chance; about half the correct ones are lost.</p></div>
+            <div class="card grow reveal d4" style="min-height:330px"><span class="circ" style="width:64px;height:64px">→</span><h3 style="margin-top:auto">Scale helps, but judging stays the weak link</h3><p class="muted" style="font-size:23px">70B selects better, yet misses the right move in 39% of questions where it found one.</p></div>
             <div class="card grow reveal d5" style="min-height:330px"><span class="circ" style="width:64px;height:64px">→</span><h3 style="margin-top:auto">Next step: a reliable evaluator</h3><p class="muted" style="font-size:23px">Learned or symbolic, like LLM+P.</p></div>
         </div>
         <p class="reveal d6" style="font-size:36px">Answer to the research question: <span class="hl-pill">no.</span> Evaluation, more than generation, is the bottleneck.</p>
@@ -944,6 +948,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
             <tr><td>D5</td><td class="l">Linux</td><td class="l">Windows, temporary-file fix to the validator</td><td class="l">None: same scoring code, checked against the answer key</td></tr>
             <tr><td>D6</td><td class="l">Dataset as of the paper</td><td class="l">HF revision 05e5883, 4 Oct 2026</td><td class="l">Same 130 questions; independent macOS run identical</td></tr>
             <tr><td>D7</td><td class="l">Reported values</td><td class="l">3 of 4 reproduced values 0.03&ndash;0.04 lower</td><td class="l">Likely chat template + precision; all inside the interval</td></tr>
+            <tr><td>D8</td><td class="l">Official validator</td><td class="l">Planner timeout and shared temp file can mis-score &ldquo;maybe&rdquo; answers</td><td class="l">Re-scored all 1,004 alone: 1 changed (best-of-N 0.231 &rarr; 0.233); run-time scores kept</td></tr>
         </table>
     </div>
     <div class="foot"><span class="who"></span><span class="pg"></span></div>
@@ -998,7 +1003,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
         </div>
     </div>
     <div class="foot"><span class="who"></span><span class="pg"></span></div>
-    <aside class="notes">Appendix C. Depth and budget don't change accuracy because under the frozen budget the second expansion cannot change the answer.</aside>
+    <aside class="notes">Appendix C. Depth and budget don't change accuracy because under the frozen budget the search in effect reranks the root candidates: only a third expansion, paid for by calls saved through pruning, can change the answer, and it changed none of the 8B answers and 4 of 390 at 70B.</aside>
 </section>
 
 <!-- B4 · Full results table -->
@@ -1017,11 +1022,14 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
             <tr><td>8B · Structured + vote (post-hoc)</td><td>0.331 ± 0.027</td><td>14.0</td><td>29,080</td><td>0.043, 0.005, 0.058</td></tr>
             <tr><td>70B · Direct</td><td>0.377</td><td>1.0</td><td>1,645</td><td>–</td></tr>
             <tr class="hl"><td>70B · Search</td><td>0.362 ± 0.015</td><td>11.4</td><td>10,292</td><td>0.572, 0.851, 1.000</td></tr>
+            <tr><td>70B · Structured</td><td>0.469</td><td>1.0</td><td>1,991</td><td>0.050</td></tr>
+            <tr><td>70B · Best-of-N (N = 14)</td><td>0.364 ± 0.016</td><td>14.0</td><td>23,032</td><td>0.219, 1.000, 1.000</td></tr>
+            <tr><td>70B · Structured + vote (pre-registered)</td><td>0.492 ± 0.013</td><td>14.0</td><td>28,165</td><td>0.002, 0.007, 0.016</td></tr>
         </table>
         <p class="note">Search, 14k cap, seed 3: p = 0.036, significantly <b>worse</b> than direct.</p>
     </div>
     <div class="foot"><span class="who"></span><span class="pg"></span></div>
-    <aside class="notes">Table 2 of the paper plus the follow-up row from Appendix D.</aside>
+    <aside class="notes">Table 2 of the paper plus the follow-up rows from Appendix D (Table 7), including the pre-registered 70B controls.</aside>
 </section>
 
 <!-- B5 · Contributions and AI use -->
@@ -1032,7 +1040,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
         <div class="row" style="gap:22px">
             <div class="card black grow" style="padding:34px"><span class="pill sm">Lynn · lead</span><p style="font-size:23px">Pipeline, validator fix, reproduction setup; search method; parallel runner; ablations and main runs; follow-ups; paper assembly, intro, method, discussion.</p></div>
             <div class="card grow" style="padding:34px"><span class="pill sm">Faheema</span><p style="font-size:23px">Independent official-harness reproduction (Windows + macOS scripts); structured and best-of-N baselines and runs; related work, reproduction section, bibliography.</p></div>
-            <div class="card grow" style="padding:34px"><span class="pill sm">Aisha</span><p style="font-size:23px">McNemar tool; analysis code (tables, figures, coverage, AUC); budget matching; token-matched check; setup, results and limitations sections.</p></div>
+            <div class="card grow" style="padding:34px"><span class="pill sm">Aisha</span><p style="font-size:23px">McNemar tool; analysis code (tables, figures, coverage, AUC); budget matching; token-capped check; setup, results and limitations sections.</p></div>
         </div>
         <div class="card" style="padding:30px 40px;border-radius:999px;flex-direction:row;align-items:center;gap:28px"><span class="pill sm dark">AI use · Appendix F</span><p style="font-size:23px">Each member lists the tool, what they asked, what it gave back and what they changed. Every number checked against <code>results/final/</code>.</p></div>
     </div>
@@ -1048,7 +1056,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
         <div class="row" style="gap:22px">
             <div class="card ice grow"><span class="pill sm dark">Llama 3.1 8B</span><p>OpenRouter, pinned to <b>CoreWeave, bf16</b>. Groq retired the model on 16 Aug 2026; no local GPU.</p></div>
             <div class="card grow"><span class="pill sm">Llama 3.1 70B</span><p>OpenRouter, pinned to <b>Amazon Bedrock</b>. The only other provider serves fp8.</p></div>
-            <div class="card black grow"><span class="stat sm">≈ $27</span><p>of API credit in total, all runs and tests</p></div>
+            <div class="card black grow"><span class="stat sm">≈ $42</span><p>of API credit in total, all runs and tests</p></div>
         </div>
         <p class="note">LLM responses are cached per request and seed, so re-running any table from the code package costs nothing.</p>
     </div>

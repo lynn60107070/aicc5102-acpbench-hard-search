@@ -6,21 +6,13 @@
 
 \paragraph{Answer to the research question.}
 LLM-guided search over LLM-predicted states does not improve Next Action accuracy over direct
-generation under a matched call budget, while using 11--13 times as many calls. How the calls are
-spent matters: with the same 14 calls, best-of-$N$ is higher than search in every seed (significantly in one), and also under a shared token cap.
+generation under a matched call budget (pooled 95\% intervals: 8B $[-0.13, +0.003]$, 70B $[-0.09, +0.06]$). How the calls are
+spent matters: with the same 14 calls on 8B, best-of-$N$ is higher than search in every seed (significantly in one; 70B: tied), and also under a token cap.
 
 \paragraph{Evaluation, more than generation, is the bottleneck.}
 The search does find correct actions: one is among the root candidates in 31\% of the questions for
-8B and 59\% for 70B, against final accuracies of 0.16 and 0.36. Selection loses much of this potential, because the model's scores hardly distinguish correct from wrong candidates (AUC $0.58$
-for 8B and $0.53$ for 70B). Scale therefore helps generation much more than self-evaluation: moving from 8B to 70B nearly doubles the rate of correct candidates, while the AUC stays near chance. The 8B ablations (Appendix~\ref{app:ablations}) point the same way, although no single contrast is significant. Trusting the proposer's own order,
-with no evaluator at all, gives $0.190$, above the frozen evaluator ($0.159$) and the steps
-($0.136$) and vote ($0.108$) variants, while random scores give $0.133$. Proposing more candidates
-hurts ($k{=}5$: $0.115$), because the evaluator then has more ways to choose wrongly, and removing
-state prediction leaves accuracy unchanged at under a third of the calls. Depth adds nothing either:
-under the frozen budget the second expansion cannot change the answer (Section~\ref{sec:method}),
-and doubling the budget to let other candidates' subtrees compete does not help ($0.154$). Nor are
-the zero-shot prompts the cause: giving the proposer direct generation's two in-context examples
-leaves search accuracy unchanged ($0.154 \pm 0.015$). Appendix~\ref{app:ablations} describes how the evaluators fail on the validation split.
+8B and 59\% for 70B, against final accuracies of 0.16 and 0.36. Selection loses much of this potential. 8B ranks a question's candidates at chance (within-question AUC $0.48$), so its search ends below its own first proposal ($0.159$ vs.\ $0.179$). Scale helps selection too: 70B lifts its first proposal from $0.279$ to $0.362$ and prunes 71\% of inapplicable candidates (8B: 14\%), though also 23\% of applicable ones, and picks the correct candidate in 61\% of the questions where one is proposed (a random pick: 43\%; after pruning, 56\%, and the proposer's first remaining candidate 60\%, so pruning, not scoring, does most of this). Its first proposal is weaker than greedy two-shot direct generation ($0.377$), and selection recovers only part of the gap. The 8B ablations point the same way, though only $k{=}5$ differs significantly from the frozen search, in one seed ($p = 0.021$). Trusting the proposer's own order gives $0.190$, above every evaluator ($0.108$--$0.159$) and random scores ($0.133$). Proposing more candidates hurts in every seed ($k{=}5$: $0.115$), plausibly because the evaluator then has more ways to choose wrongly, and removing
+state prediction leaves accuracy unchanged at under a third of the calls. Depth adds nothing either: doubling the budget to let other candidates' subtrees compete does not help ($0.154$; Section~\ref{sec:method}). 
 
 \paragraph{Implications.}
 Without a verifier, search can only be as good as the model's judgment of its own candidates, and for open-ended planning this judgment is the weak link, as found for self-critique of plans~\citep{valmeekam2023selfcritique,stechly2024selfverification}. The large gap between the candidates found

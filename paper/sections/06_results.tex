@@ -8,23 +8,21 @@ Table~\ref{tab:main-results} reports accuracy, cost, and exact McNemar $p$-value
 generation. On Llama~3.1~8B, search reaches $0.159 \pm 0.012$, below direct generation ($0.223$),
 structured prompting ($0.262$) and best-of-$N$ ($0.231 \pm 0.015$), while using 13.4 calls and
 13,722 tokens per question. On Llama~3.1~70B, search reaches $0.362 \pm 0.015$ against $0.377$ for
-direct generation. None of these methods differs significantly from direct generation ($p > 0.05$ in every seed). Compared directly, best-of-$N$ is higher than search in all three seeds, by 6 to 13 questions, significantly only in seed 3 ($p = 0.136$, $0.345$, $0.029$).
+direct generation. Only capped search differs significantly from direct generation, in one seed ($p = 0.036$). Best-of-$N$ is higher than search in all three seeds, significantly in seed 3 only ($p = 0.136$, $0.345$, $0.029$; seeds pooled $p = 0.04$, uncorrected, Appendix~\ref{app:followups}).
 
 \input{tables/main_results}
 
-\paragraph{Token-matched comparison.}
-Under a shared cap of 14,000 tokens per question, best-of-$N$ ($N=8$) reaches $0.210 \pm 0.016$ and search $0.151 \pm 0.018$. Best-of-$N$ is again higher in all three seeds ($p = 0.557$, $0.281$, $0.036$).
+\paragraph{Token-capped comparison.}
+With no call started after 14,000 tokens per question, best-of-$N$ ($N=8$) reaches $0.210 \pm 0.016$ and search $0.151 \pm 0.018$. Best-of-$N$ is again higher in all three seeds ($p = 0.557$, $0.281$, $0.036$).
 
 \paragraph{Search ablations.}
 Table~\ref{tab:ablations} (Appendix~\ref{app:ablations}) changes one setting of the frozen 8B search
 at a time. No setting scores higher than trusting the proposer's own order (fixed scoring, $0.190 \pm 0.012$, four questions per seed above the frozen search, $p \ge 0.34$); Section~\ref{sec:discussion} discusses the others.
 
 \paragraph{Candidate coverage and errors.}
-A correct candidate is among the root candidates in 31\% of the questions for 8B (final accuracy 0.16) and 59\% for 70B (0.36). The pooled score-separation AUC is 0.58 for 8B and 0.53 for 70B. Most
-search errors are inapplicable actions: on average per run, 75.7 inapplicable, 29.7 not closer and
+A correct candidate is among the root candidates in 31\% of the questions for 8B (final accuracy 0.16) and 59\% for 70B (0.36). Within a question, the scores rank a correct candidate above a wrong one with AUC 0.48 for 8B and 0.58 for 70B (0.58 and 0.53 pooled across questions), and the predictor prunes 14\% and 71\% of inapplicable root candidates (and 3\% and 23\% of applicable ones). Most search errors are inapplicable actions: per run, 75.7 inapplicable, 29.7 not closer and
 4.0 format errors for 8B, against 45.0, 37.7 and 0.3 for 70B.
 
 \paragraph{Post-hoc follow-up.}
 After the main results, we combined the two strongest controls on test: the structured prompt is sampled
-14 times and the most common action is returned (Appendix~\ref{app:followups}). Tuned only on the
-validation split, it reaches $0.331 \pm 0.027$ on the test split, above direct generation in every seed ($p = 0.043$, $0.005$, $0.058$) and above greedy structured prompting significantly in one seed only, using 27\% more tokens than best-of-$N$.
+14 times and the most common action is returned (Appendix~\ref{app:followups}). Gated on validation, it reaches $0.331 \pm 0.027$ on test, above best-of-$N$ at the same 14 calls (seeds pooled, Holm $p = 0.02$; 27\% more tokens), direct generation in every seed ($p = 0.043$, $0.005$, $0.058$) and greedy structured prompting (significantly in one seed). A pre-registered repeat on 70B reaches $0.492 \pm 0.013$, above best-of-$N$ ($0.364$) and direct generation ($0.377$) in every seed ($p < 0.03$), mostly through the structured prompt (greedy: $0.469$).

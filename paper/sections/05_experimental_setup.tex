@@ -17,7 +17,7 @@ direct generation, structured prompting, best-of-$N$ and LLM-guided search, plus
 
 \paragraph{Budget matching.}
 In the main comparison, search has a budget of $B=14$ calls and best-of-$N$ uses $N=14$. Search
-averages 13.4 calls on 8B, because some searches stop early; best-of-$N$, however, uses more tokens
+averages 13.4 calls on 8B, mainly because 3\% of its proposals parse to no action; best-of-$N$, however, uses more tokens
 (22,960 vs.\ 13,722 per question). We therefore repeat the comparison under a shared cap of 14,000
 tokens per question, with $N=8$; the cap also stops some searches early (12.2 calls on average).
 

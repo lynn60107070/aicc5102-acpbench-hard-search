@@ -23,7 +23,7 @@ so start them early and work on something else while they run.
 | **CP6** | **Sun 1 Nov** | Paper reviewed by all; code ZIP checked on a fresh clone. **Submission-ready** |
 | Buffer | Mon 2 Nov | Fix leftovers; rehearse the 5-minute walkthrough |
 | Course check | Tue 3 Nov | Show the complete work |
-| Deadline | Tue 17 Nov | Submit (after applying instructor feedback) |
+| Deadline | Tue 24 Nov, before 5 pm | Submit paper and code (after applying instructor feedback); presentation and individual defence the same day |
 
 **Daily update** in the group chat, every day by 10 pm (three lines, even if nothing changed):
 ```
@@ -73,8 +73,8 @@ a draft section), and we agree on the focus until the next checkpoint. Done mean
 | L4 | ✅ Done 24 Oct (8B + 70B). Main search runs: 130 × seeds 1, 2, 3 in `results/final/` | 1 h (+ run time) | **CP4** |
 | L5 | ✅ Done 23 Oct. `paper/` LaTeX skeleton in the NeurIPS template, with one file per section | 1 h | **CP3** |
 | L6 | ✅ Drafted (personalisation pending). Paper: abstract, introduction, research question, method & extension, discussion, conclusion | 5–6 h | **CP5** |
-| L7 | 🚧 Contributions done; AI use statement needs Lynn's own "What I changed and checked" (Tue 17 in the final week). Paper and code verification handed to Faheema and Aisha on 17 Nov; submission Tue 24 Nov. Contributions statement, AI use statement, final assembly + submission | 2 h | **CP6** |
-| L9 | ✅ Done 9 Nov (bonus suggested at the 3 Nov progress check; PRs #30–#32). Post-hoc follow-ups, validation first with a fixed go/no-go: vote + applicability check (failed on validation); structured prompting + majority vote (passed; test 0.331 ± 0.013). Appendix D | — | after 3 Nov |
+| L7 | ✅ Done. Contributions and AI use statements in the paper's appendices; final assembly and submission Tue 24 Nov | 2 h | **CP6** |
+| L9 | ✅ Done 9 Nov (bonus suggested at the 3 Nov progress check; PRs #30–#32). Post-hoc follow-ups, validation first with a fixed go/no-go: vote + applicability check (failed on validation); structured prompting + majority vote (passed; test 0.331 ± 0.027). Appendix D | — | after 3 Nov |
 | L8 | Top up the API account at CP2, based on everyone's planned full runs | 10 min | **CP2** |
 
 ### Everyone

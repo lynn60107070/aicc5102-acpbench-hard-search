@@ -1,0 +1,52 @@
+{
+  "settings": {
+    "method": "search",
+    "param": [
+      "k=3",
+      "d=2",
+      "scoring=steps"
+    ],
+    "model": "meta-llama/llama-3.1-8b-instruct",
+    "base_url": null,
+    "seed": 3,
+    "split": "validation",
+    "limit": null,
+    "ids": null,
+    "max_calls": 14,
+    "max_tokens": null,
+    "name": "val_search_steps_s3",
+    "workers": 8,
+    "params": {
+      "k": 3,
+      "d": 2,
+      "scoring": "steps"
+    }
+  },
+  "n": 40,
+  "accuracy": 0.275,
+  "ci95": [
+    0.13662379178485923,
+    0.4133762082151408
+  ],
+  "errors": {
+    "not_closer": 7,
+    "inapplicable": 22
+  },
+  "accuracy_by_domain": {
+    "blocksworld-4ops": 0.2,
+    "ferry": 0.2,
+    "floor-tile": 0.4,
+    "grid": 0.4,
+    "grid-visit-all": 1.0,
+    "gripper-strips": 0.0,
+    "logistics-strips": 0.0,
+    "rover": 0.0
+  },
+  "total_calls": 558,
+  "total_tokens": 451555,
+  "mean_calls": 13.95,
+  "mean_tokens": 11288.875,
+  "providers": {
+    "CoreWeave": 40
+  }
+}

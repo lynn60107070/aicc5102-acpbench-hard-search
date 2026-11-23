@@ -25,11 +25,7 @@ with a line \texttt{Score: $N$} on a 0--10 scale; prediction and evaluation are 
 always expands the highest-scored unexpanded node with depth below $d$, and stops when no such node
 remains or as soon as the budget of $B$ LLM calls is used. The answer is the first action on the
 path to the highest-scored node. Each expansion costs at most $1 + 2k$ calls, so with the frozen
-setting $k{=}3$, $d{=}2$, $B{=}14$, the search expands the root and then only its most promising
-child. Because every node below that child shares its first action, this second expansion cannot
-change the answer: under the frozen budget the search in effect selects among the root candidates,
-and deeper predictions can only matter with a larger budget, which lets the subtrees of other
-candidates compete (we test this in the ablations).
+setting $k{=}3$, $d{=}2$, $B{=}14$, the search expands the root and its most promising child; calls saved by pruning can start a third expansion, of the next root child. Every node below the best child shares its first action, so only that third expansion can change the answer, which it did for none of the 390 8B answers and 4 of the 390 70B answers: under the frozen budget the search in effect selects among the root candidates, and deeper predictions matter only with a larger budget (we test this in the ablations).
 
 \begin{algorithm}[t]
 \caption{LLM-guided best-first search (frozen: $k{=}3$, $d{=}2$, $B{=}14$ calls)}
@@ -65,6 +61,4 @@ state prediction, letting the LLM score actions directly from the parent state, 
 pruning.
 
 \paragraph{Design selection.}
-Apart from a 10-question smoke run of an early prototype, all design choices were made on the validation split (40 questions, disjoint from the 130 test questions) and frozen before the test runs. The 0--10 evaluator was, by one or two questions, the best-performing search
-variant for Llama~3.1~8B on validation, so it is the method we report; the other evaluators appear
-as ablations.
+Apart from a 10-question smoke run of an early prototype, all design choices were made on the validation split (40 questions from 8 of the 13 domains, disjoint from the 130 test questions) and frozen before the test runs. The 0--10 evaluator was chosen on validation, so it is the method we report; re-created with the final code (Table~\ref{tab:validation-search}), it trails fixed scoring by under one question, so the choice was within noise. The other evaluators appear as ablations.

@@ -3,7 +3,9 @@
 **Team (Section 1, Dr. Elyor Kodirov):** Lynn Younes (60107070, Lead), Faheema Hassan Kudukky (60327609), Aisha Suleiman Shaik (60328939)
 **Paper approved:** 29 Sep 2026
 
-This file is the single index for the project: links, setup, how the smoke test was run, and deadlines.
+**Reproduce the paper:** set up the environment (§3), then see the command block in §4b. `python -m experiments.analyze …` and `python -m experiments.followups` rebuild every table from `results/final/` with no API key, and `python -m unittest` runs the 50 offline tests.
+
+This file is also the project index: links, setup, how the smoke test was run, and deadlines.
 
 ---
 
@@ -20,8 +22,8 @@ This file is the single index for the project: links, setup, how the smoke test 
 | `env/acp-env-requirements.txt` | `pip freeze` of the venv the smoke test ran in |
 | **`CONTRIBUTING.md`** | **Team guide: setup, who owns what, the method contract, git workflow** |
 | `common/` | Shared, tested infrastructure: method contract, LLM client (cache + budget), data + official prompt, validator (Windows-fixed) |
-| `methods/` | `direct.py` (working baseline), `structured.py` + `best_of_n.py` (Faheema), `search.py` (Lynn) |
-| `experiments/run.py` | Runs any method on the benchmark and scores it (Aisha) |
+| `methods/` | `direct.py` (baseline), `structured.py` + `best_of_n.py` (Faheema), `search.py` (Lynn), `structured_vote.py` + `vote_check.py` (post-hoc follow-ups) |
+| `experiments/` | `run.py` runs any method and scores it; `sweep.py` runs a list of settings × seeds; `compare.py` paired McNemar; `analyze.py` and `followups.py` build the paper's tables and statistics (Aisha, Lynn) |
 | `scripts/` | Official lm-eval reproduction: `reproduce_official.bat` (Windows), `reproduce_official.sh` (macOS/Linux), both via `lm_eval_win.py` |
 | `tests/` | Offline tests: `python -m unittest -v` |
 
@@ -36,7 +38,7 @@ This file is the single index for the project: links, setup, how the smoke test 
 | ACPBench (original, AAAI 2025), background only | https://arxiv.org/abs/2410.05669 (PDF: https://arxiv.org/pdf/2410.05669) |
 | Project homepage | https://ibm.github.io/ACPBench/ |
 
-> The proposal cites ACPBench-Hard as "ICLR 2026". The harness README cites it as the arXiv preprint. Check the venue before writing the final bibliography.
+> The paper cites ACPBench-Hard as ICLR 2026 (OpenReview), with the arXiv preprint above.
 
 ### Code
 | Item | Link |
@@ -52,7 +54,7 @@ This file is the single index for the project: links, setup, how the smoke test 
 | **`ibm-research/acp_bench`**: what the harness actually loads (`dataset_path` in the task YAML), config `acp_nexta_gen`, split `test` | https://huggingface.co/datasets/ibm-research/acp_bench |
 | `ibm/ACPBench`: the dataset linked in the proposal | https://huggingface.co/datasets/ibm/ACPBench |
 
-> ⚠️ **Mismatch:** the proposal links `ibm/ACPBench`, but the run used `ibm-research/acp_bench`. In the final paper, cite the one actually used (`ibm-research/acp_bench`) or explain both.
+> The proposal linked `ibm/ACPBench`; the runs and the paper use `ibm-research/acp_bench`, the dataset the official harness loads.
 
 ### Model for the reproduction
 | Item | Link |
@@ -168,7 +170,7 @@ python -m experiments.run --method best_of_n --param n=14 --seed 1 --name best_o
 python -m experiments.run --method search --param k=3 --param d=2 --max-calls 14 --seed 1 --name main_search_8b_s1
 :: 70B search: same as the line above with --model meta-llama/llama-3.1-70b-instruct --name main_search_70b_s1
 
-:: Token-matched rows and ablations (each line x seeds 1-3)
+:: Token-capped rows and ablations (each line x seeds 1-3)
 python -m experiments.sweep experiments\a7_token_matched.txt --seeds 1 2 3
 python -m experiments.sweep experiments\ablations.txt --seeds 1 2 3
 
@@ -177,19 +179,28 @@ python -m experiments.run --method vote_check --split validation --max-calls 14 
 python -m experiments.run --method structured_vote --split validation --max-calls 14 --seed 1 --name val_sv_s1
 python -m experiments.run --method structured_vote --max-calls 14 --seed 1 --name followup_sv_8b_s1
 python -m experiments.run --method structured_vote --max-calls 14 --max-tokens 14000 --seed 1 --name followup_sv14k_8b_s1
+:: 70B controls and follow-up, pre-registered in experiments\preregistration_22nov.md (set ACP_PROVIDER=Amazon Bedrock)
+python -m experiments.run --method structured --model meta-llama/llama-3.1-70b-instruct --name structured_70b
+python -m experiments.run --method best_of_n --param n=14 --seed 1 --model meta-llama/llama-3.1-70b-instruct --name best_of_n14_70b_s1
+python -m experiments.run --method structured_vote --max-calls 14 --seed 1 --model meta-llama/llama-3.1-70b-instruct --name followup_sv_70b_s1
+:: Re-created validation comparison of the evaluators (Appendix C), 8B, scoring = llm, steps, vote (d=1), fixed, random
+python -m experiments.run --method search --split validation --param k=3 --param d=2 --param scoring=llm --max-calls 14 --seed 1 --name val_search_llm_s1
 :: Appendix D analysis numbers (validator used after the runs only; no API calls)
 python scripts\followup_headroom.py
 python scripts\followup_check_quality.py
+:: Table 7 (follow-ups, 8B and 70B), the validation table, the Appendix D p-values, pooled and domain-cluster tests, cap overshoot, token split and the vote-curve figure
+python -m experiments.followups
 
 :: Paper tables (paper/tables/) from the saved runs; no API calls
 python -m experiments.analyze --runs results\final\repro_* results\final\structured_8b results\final\best_of_n14_8b_s* results\final\main_search_* results\final\a7\* results\final\ablations\abl8b_*_s* --out results\analysis
 python -m unittest
 ```
 
-The last two commands need no API key: they rebuild every table in the paper from `results/final/`.
+`experiments.analyze` and `experiments.followups` need no API key: together they rebuild every table in the paper from `results/final/` (`experiments/write_a7_table.py` writes an older token-cap table that the paper no longer uses; Table 2's capped rows replace it), and `python -m unittest` runs the 50 offline tests.
+The `budget_exhausted` field in runs before 22 Nov predates its fix and reads false even where the budget ran out; read exhaustion from `calls` and the token counts instead (e.g. tokens above 14,000 in the capped runs).
 `experiments.sweep` skips runs that already have a `summary.json` under `results/final/`, so to
 re-run them from scratch, rename `results/final/` first. Full re-runs cost API credit (the whole
-project, including development runs and the follow-ups, used about $27 of OpenRouter credit, including the $5.50 seeding-fix re-run).
+project, including development runs and the follow-ups, used about $42 of OpenRouter credit, including the $5.50 seeding-fix re-run and about $15 for the 22 Nov 70B and validation runs).
 
 ---
 
@@ -200,7 +211,7 @@ project, including development runs and the follow-ups, used about $27 of OpenRo
 **Scope**
 | Target | Paper value | Status |
 |---|---|---|
-| Llama 3.1 8B, Next Action (required) | 0.25 (Table 1) | ✅ **0.223** (29/130, 95% CI 0.15–0.29), bf16 via CoreWeave, 21 Oct 2026 → match. `results/final/repro_llama31_8b_direct_bf16_coreweave/` |
+| Llama 3.1 8B, Next Action (required) | 0.25 (Table 1) | ✅ **0.223** (29/130, 95% CI 0.15–0.29; interval around the paper's 0.25: 0.18–0.32), bf16 via CoreWeave, 21 Oct 2026 → match. `results/final/repro_llama31_8b_direct_bf16_coreweave/` |
 | Llama 3.1 8B, all 8 tasks (stretch: whole Table 1 row) | Table 1 row | optional, `--tasks acp_gen_2shot` via `scripts/lm_eval_win.py` |
 | Llama 3.1 8B, Progression (state prediction; informs the search design) | 0.40 (Table 1) | ✅ **0.400** (official harness, bf16 CoreWeave, 21 Oct) → exact match. `results/final/repro_prog_llama31_8b/` |
 | Llama 3.1 70B, Progression | 0.65 | ✅ **0.608** (official harness, Amazon Bedrock, 21 Oct) → match (95% CI ±0.08). `results/final/repro_prog_llama31_70b/` |
@@ -215,9 +226,11 @@ project, including development runs and the follow-ups, used about $27 of OpenRo
 | D1b | (same as D1) | Llama 3.1 70B via OpenRouter → Amazon Bedrock | Only 70B providers are DeepInfra (fp8, blocked) and Bedrock (precision unspecified) | Progression 0.608 vs paper 0.65, inside the interval |
 | D2 | 5 stop sequences (A.5) | lm-eval's API mode sends only the first 4 (drops `"Q:"`) | OpenAI-style APIs accept at most 4 | Probably negligible |
 | D3 | Chat template use not stated | `--apply_chat_template` (chat messages) | Required by the chat API | All four results inside the interval, so kept |
-| D4 | Paper's own YAML is in its supplementary material | lm-eval's built-in `acpbench` task config | Supplementary not yet checked | Likely identical (same authors) — verify |
+| D4 | Paper's own YAML is in its supplementary material | lm-eval's built-in `acpbench` task config | Supplementary YAML not obtained; the settings printed in the paper's App. A.5 (2-shot, temperature 0, 1000 tokens, five stop sequences) match | None expected beyond D2 |
 | D5 | Paper ran on Linux | Windows, with the temp-file fix to the official validator | Plain lm-eval crashes on Windows | None: same scoring code, verified against the answer key |
 | D6 | Dataset as of paper (v2, Feb 2026) | `ibm-research/acp_bench` as of download date | Dataset may have been updated | Revision `05e5883`, downloaded 4 Oct 2026. Size matches (130); the independent macOS run gave identical answers |
+| D7 | Reported values | Three of four reproduced values are 0.03–0.04 lower | Most likely the chat template (D3) and provider precision (D1) | All inside the interval; direction noted, not corrected |
+| D8 | Official validator | Same validator; added after all runs except those of 22 Nov, which were scored with it: `common/validator.py` re-checks a wrong "maybe" answer twice (`MAYBE_RETRIES`) and runs the planner in a private directory | "Maybe" answers are decided by a planner with a 5 s timeout (a timeout scores the answer wrong), and the planner (K*) writes `output.sas` into the working directory, so two scoring processes started from the same directory can read each other's file | Re-scoring every saved "maybe" answer in `results/final/` alone on an idle machine (852 wrong, 152 correct) changed one: best-of-N seed 1, 30 → 31 correct, mean 0.231 → 0.233. No stored correct answer was wrong. Reported scores are the run-time ones; analysis metrics (coverage, AUC) can vary at the third decimal |
 
 **What can't be reproduced, and why (for the limitations section)**
 - Closed-model rows: API versions change or are retired (o1-preview is gone), so the original models no longer exist.
@@ -235,21 +248,35 @@ Quick reference. The paper's tables come from `experiments/analyze.py`.
 | | Llama 3.1 8B | Llama 3.1 70B |
 |---|---|---|
 | Direct generation | 0.223 | 0.377 |
-| Structured prompting (1 call, greedy) | 0.262 | — |
-| Best-of-N, N = 14 (same calls as search) | 0.231 ± 0.015 | — |
+| Structured prompting (1 call, greedy) | 0.262 | 0.469 |
+| Best-of-N, N = 14 (same calls as search) | 0.231 ± 0.015 | 0.364 ± 0.016 |
+| Structured + vote, 14 calls (post-hoc; 70B pre-registered) | 0.331 ± 0.027 | 0.492 ± 0.013 |
 | **Search** (`scoring=llm k=3 d=2 prune`, 14 calls) | **0.159 ± 0.012** | **0.362 ± 0.015** |
-| McNemar p vs direct, per seed | 0.17 / 0.27 / 0.09 | 0.57 / 0.85 / 1.00 |
+| McNemar p vs direct, per seed | 0.17 / 0.26 / 0.09 | 0.57 / 0.85 / 1.00 |
 | Correct action among root candidates (analysis only) | 0.313 | 0.590 |
-| First proposal alone (first action of the first proposal, mean over seeds; analysis only) | 0.179 | 0.277 |
-| Score separation AUC, root candidates (0.5 = chance) | 0.578 | 0.527 |
+| First proposal alone (first action of the first proposal, mean over seeds; analysis only) | 0.179 | 0.279 |
+| Random pick among the root candidates, questions with a correct one (analysis only) | 0.36 | 0.43 |
+| Same after removing the candidates the predictor pruned / proposer's first remaining candidate | 0.41 / 0.61 | 0.56 / 0.60 |
+| Search's choice in those questions | 0.51 | 0.61 |
+| Score AUC within a question (correct vs wrong candidate of the same question; 0.5 = chance) | 0.479 | 0.577 |
+| Score AUC pooled across questions | 0.578 | 0.527 |
+| Inapplicable root candidates pruned by the predictor | 14% (108/781) | 71% (385/541) |
 | Calls per question | 13.4 | 11.4 |
 
 Runs: `results/final/main_search_{8b,70b}_s{1,2,3}/`. Finding: search never beats direct; the model often
-proposes a correct action but its own scores barely tell it apart from wrong ones, even at 70B.
+proposes a correct action but selection loses many of them. 8B ranks its candidates at chance; 70B selects better
+(it lifts its first proposal from 0.279 to 0.362, and prunes most inapplicable candidates but also 23% of applicable ones)
+but still misses the correct one in 39% of the questions where it proposed one. Its first proposal is weaker than
+greedy two-shot direct generation (0.377), and selection recovers only part of the gap.
 
 Post-hoc follow-up (paper Appendix D, after the progress check): structured prompting with a majority
-vote over 14 samples reaches **0.331 ± 0.027** on the 8B test set (paper's direct result: 0.25), at the same
-14 calls. It is higher than direct in every seed (p = 0.043, 0.005, 0.058), higher than greedy structured prompting (significantly in seed 2 only), and uses 27% more tokens than best-of-N. Under the 14k-token cap it reaches 0.321 ± 0.012 against best-of-N's 0.210 ± 0.016 (p = 0.004, 0.043, 0.029).
+vote over 14 samples (self-consistency, Wang et al. 2023) reaches **0.331 ± 0.027** on the 8B test set, at the same
+14 calls as best-of-N (0.231) and search (0.159); our direct generation scores 0.223 and the paper's single call 0.25.
+It is higher than direct in every seed (p = 0.043, 0.005, 0.058), higher than greedy structured prompting (significantly in seed 2 only; seeds pooled p = 0.03), and uses 27% more tokens than best-of-N. Under the 14k-token cap it reaches 0.321 ± 0.012 against best-of-N's 0.210 ± 0.016 (p = 0.004, 0.043, 0.029), but the cap is checked before each call and its long calls overshoot it on 129–130 of 130 questions (15,036 tokens on average); with a budget fixed per question in advance (each question gets as many samples as fit in the tokens capped best-of-N used on it; 5.6 samples, 11,495 tokens on average) it still gives 0.313 (seeds 0.315, 0.323, 0.300). The capped runs replay the first samples of the uncapped ones, so they are a truncation, not a replication. Seed-pooled tests, cap overshoot and the prompt/generated token split: `python -m experiments.followups` → `results/analysis/followups.json`.
+
+**70B repeat (pre-registered 22 Nov, `experiments/preregistration_22nov.md`).** Structured + vote on Llama 3.1 70B reaches **0.492 ± 0.013** (66/63/63 of 130), above best-of-N at the same 14 calls (0.364 ± 0.016; p = 0.0003, 0.006, 0.02; pooled p = 0.0008, Holm 0.008) and direct generation (0.377; p = 0.002, 0.007, 0.016). It is above the paper's 70B value of 0.42 in every seed, though not significantly against that value (p = 0.05, 0.15, 0.15). Most of the gain is the structured prompt itself: one greedy structured call scores 0.469 (p = 0.05 against direct), and voting adds +0.023 (not pre-registered; pooled p = 0.50, per seed p ≥ 0.33). The first launch (22 Nov 22:55, three minutes after the pre-registration commit) was stopped by the API key's $30 spending cap; the re-launch replayed the cached calls, so no answer changed and no run was discarded. Best-of-N is again no better than direct (p = 0.22, 1.0, 1.0). Runs: `results/final/structured_70b/`, `results/final/best_of_n14_70b_s*/`, `results/final/followup_structured_vote/followup_sv_70b_s*/`.
+
+**Re-created validation comparison (pre-registered 22 Nov).** The 23 Oct evaluator runs behind the frozen design were not kept, so they were re-created with the final code on the 40 validation questions (seeds 1–3, correct of 40): fixed 15/10/14 (13.0), 0–10 score 12/10/15 (12.3), steps 9/10/11 (10.0), random 9/8/9 (8.7), vote 2/7/5 (4.7). Fixed scoring is slightly ahead of the frozen 0–10 evaluator, so the frozen evaluator is not the best here; the choice was within noise, and fixed scoring also leads on test. Vote runs at d=1 use about 5 calls per question. Seed 1 of the 0–10, steps and vote runs replayed every call from the cache, so they repeat calls made in the original validation runs. Runs: `results/final/validation_search/`.
 
 **Seeding fix (21 Nov 2026).** Repeated sampled requests used server seed `run seed + sample index`, so seeds 1–3 of best-of-N and the follow-ups shared most of their samples. `common/llm.py` now steps sampled requests by 1000 (`SEED_STRIDE`), a test checks that seeds 1–3 never share a server seed, and every affected run was re-run (best-of-N, the token-capped best-of-N, structured+vote and the follow-up validation runs, about $5.50 of credit). Greedy calls are unchanged, so search, direct and structured replay identically from the cache. The superseded runs are kept in `results/superseded_overlapping_seeds/`. No conclusion changed. Runs: `results/final/followup_structured_vote/`.
 

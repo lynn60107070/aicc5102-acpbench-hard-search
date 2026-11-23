@@ -1,4 +1,4 @@
-% OWNER: Faheema (F7). The full deviation table D1-D6 from README section 5, as a LaTeX table.
+% OWNER: Faheema (F7). The full deviation table D1-D8 from README section 5, as a LaTeX table.
 \section{Reproduction Fidelity Log}
 \label{app:fidelity}
 
@@ -19,6 +19,7 @@ D4 & Paper's own task YAML in its supplementary material & lm-eval's built-in \t
 D5 & Linux & Windows, with a temporary-file fix to the official validator & The unmodified validator crashes on Windows & None: same scoring code, verified against the answer key \\
 D6 & Dataset as of the paper (v2, Feb 2026) & \texttt{ibm-research/\allowbreak acp\_bench}, revision \texttt{05e5883}, downloaded 4 Oct 2026 & The dataset may have been updated & Same size (130); the independent macOS run gave identical answers \\
 D7 & Reported values & Three of four reproduced values are 0.03--0.04 lower & Most likely the chat template (D3) and provider precision (D1) & All inside the interval; direction noted, not corrected \\
+D8 & Official validator & Same validator; added after all runs except those of 22 Nov, which were scored with it, a wrong ``maybe'' answer is re-checked twice and the planner runs in a private directory & ``Maybe'' answers are decided by a planner with a 5-second timeout (a timeout scores the answer wrong), and the planner writes a temporary file to the working directory, so two scoring processes in one directory can interfere & Re-scoring every saved ``maybe'' answer alone on an idle machine changed one of 1,004 (best-of-$N$ seed 1, 30 to 31 correct; mean 0.231 to 0.233). Reported scores are the run-time ones; analysis metrics can vary at the third decimal \\
 \bottomrule
 \end{tabular}
 \end{table}

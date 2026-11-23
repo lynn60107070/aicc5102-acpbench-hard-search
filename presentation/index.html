@@ -850,7 +850,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
         <div class="row reveal d6" style="gap:22px">
             <div class="card black grow" style="flex-direction:row;align-items:center;gap:28px;padding:28px 40px"><span class="stat sm">50</span><p>tests pass</p></div>
             <div class="card grow" style="flex-direction:row;align-items:center;gap:28px;padding:28px 40px"><span class="stat sm">1:1</span><p>fresh clone rebuilds every paper table</p></div>
-            <div class="card blue grow" style="flex-direction:row;align-items:center;gap:28px;padding:28px 40px"><span class="stat sm">42</span><p>reviewed pull requests</p></div>
+            <div class="card blue grow" style="flex-direction:row;align-items:center;gap:28px;padding:28px 40px"><span class="stat sm">43</span><p>reviewed pull requests</p></div>
         </div>
     </div>
     <div class="foot"><span class="who"></span><span class="pg"></span></div>
@@ -917,7 +917,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
                 <div class="card ice"><span class="pill sm dark">Llama 3.1 70B</span>
                     <div class="row" style="gap:36px;align-items:baseline"><div><div class="stat sm">0.377</div><p class="muted" style="font-size:22px">Direct</p></div><div><div class="stat sm ours-t">0.362</div><p class="muted" style="font-size:22px">Search</p></div></div>
                 </div>
-                <p class="note">McNemar vs. direct, 8B (per seed, uncorrected): p = 0.169 / 0.265 / 0.087. No seed is significant at either size for uncapped search, and none favours search. Best-of-N, with the same 14 calls, is higher than search in every seed (pooled p = 0.04).</p>
+                <p class="note">McNemar vs. direct, 8B (per seed, uncorrected): p = 0.169 / 0.265 / 0.087. No seed is significant at either size for uncapped search, and none favours search. Best-of-N, with the same 14 calls, is higher than search in every seed (pooled p = 0.04 uncorrected; 0.22 after Holm).</p>
             </div>
         </div>
     </div>
@@ -1230,7 +1230,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
             <div class="card grow"><span class="pill sm">Llama 3.1 70B</span><p>OpenRouter, pinned to <b>Amazon Bedrock</b>. The only other provider serves fp8. Bedrock does not state its precision.</p></div>
             <div class="card black grow"><span class="stat sm">≈ $42</span><p>of API credit in total, all runs and tests</p></div>
         </div>
-        <p class="note">LLM responses are cached per request and seed, so re-running any table from the code package costs nothing.</p>
+        <p class="note">Every table rebuilds from results/final/ with no API key; re-running the experiments needs API credit.</p>
     </div>
     <div class="foot"><span class="who"></span><span class="pg"></span></div>
     <aside class="notes">Data: ibm-research/acp_bench, revision 05e5883.</aside>

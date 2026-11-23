@@ -679,7 +679,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
         <div class="col grow reveal d3" style="gap:22px;justify-content:center">
             <p style="font-size:25px"><span class="pill sm dark">Match rule</span><br>Inside the 95% interval around the paper's value, fixed in the proposal.</p>
             <p style="font-size:25px"><span class="pill sm dark">Independent check</span><br>The official lm-eval harness on a second machine gave identical answers on all 130.</p>
-            <p style="font-size:25px"><span class="pill sm dark">Pinned provider</span><br>Mixed fp8/bf16 serving scored 0.192, so every run uses one bf16 provider.</p>
+            <p style="font-size:25px"><span class="pill sm dark">Pinned provider</span><br>Mixed fp8/bf16 serving scored 0.192 (8B), so each model uses one pinned provider: CoreWeave bf16 for 8B, Bedrock (precision not stated) for 70B.</p>
         </div>
     </div>
     <div class="foot"><span class="who"></span><span class="pg"></span></div>
@@ -803,7 +803,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
         </div>
     </div>
     <div class="foot"><span class="who"></span><span class="pg"></span></div>
-    <aside class="notes">This animates one search on one question; the scores shown are illustrative. Propose: one call lists three actions. Predict: three calls write the state after each; one says NOT APPLICABLE and is pruned, so it is never scored. Score: the evaluator rates each surviving state 0 to 10. Expand: we repeat from the best state, which costs up to seven more calls. Answer: we return the first move on the path to the highest-scored state. Pruned candidates (never scored) and a few unparsable proposals are why search averages 13.4 calls rather than 14. The validator never sees any of this; it only grades the final answer. Use the arrow keys or the ‹ › buttons to go one step at a time; R goes back to step 1.</aside>
+    <aside class="notes">This animates one search on one question; the scores shown are illustrative. Propose: one call lists three actions. Predict: three calls write the state after each; one says NOT APPLICABLE and is pruned, so it is never scored. Score: the evaluator rates each surviving state 0 to 10. Expand: we repeat from the best state, which costs up to seven more calls. Answer: we return the first move on the path to the highest-scored state. In the real search the call saved by pruning goes to proposing from S₂, the next root child; the budget then runs out, so the answer stays a₁. Search averages 13.4 calls rather than 14 mainly because 3% of proposals parse to no action, and partly because of pruning. The validator never sees any of this; it only grades the final answer. Use the arrow keys or the ‹ › buttons to go one step at a time; R goes back to step 1.</aside>
 </section>
 
 <!-- 11 · Design selection: white left, ice rounded panel right with tiles -->
@@ -819,7 +819,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
             <div class="hbar" style="grid-template-columns:270px 1fr 64px;gap:18px"><span class="name" style="font-size:25px"><b>0–10 score (frozen)</b></span><div class="track" style="height:36px"><div class="bar-fill f-ours" style="width:82.0%"></div></div><span class="v" style="font-size:25px">12.3</span></div>
             <div class="hbar" style="grid-template-columns:270px 1fr 64px;gap:18px"><span class="name" style="font-size:25px">Steps to goal</span><div class="track" style="height:36px"><div class="bar-fill f-g2" style="width:66.7%"></div></div><span class="v" style="font-size:25px">10.0</span></div>
             <div class="hbar" style="grid-template-columns:270px 1fr 64px;gap:18px"><span class="name" style="font-size:25px">Random scores</span><div class="track" style="height:36px"><div class="bar-fill f-g2" style="width:58.0%"></div></div><span class="v" style="font-size:25px">8.7</span></div>
-            <div class="hbar" style="grid-template-columns:270px 1fr 64px;gap:18px"><span class="name" style="font-size:25px">Vote</span><div class="track" style="height:36px"><div class="bar-fill f-g3" style="width:31.3%"></div></div><span class="v" style="font-size:25px">4.7</span></div>
+            <div class="hbar" style="grid-template-columns:270px 1fr 64px;gap:18px"><span class="name" style="font-size:25px">Vote (d = 1)</span><div class="track" style="height:36px"><div class="bar-fill f-g3" style="width:31.3%"></div></div><span class="v" style="font-size:25px">4.7</span></div>
             </div>
                 <p style="font-size:22px;color:var(--ink-2)">Under one question apart: within noise. The rest became ablations.</p>
             </div>
@@ -850,7 +850,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
         <div class="row reveal d6" style="gap:22px">
             <div class="card black grow" style="flex-direction:row;align-items:center;gap:28px;padding:28px 40px"><span class="stat sm">50</span><p>tests pass</p></div>
             <div class="card grow" style="flex-direction:row;align-items:center;gap:28px;padding:28px 40px"><span class="stat sm">1:1</span><p>fresh clone rebuilds every paper table</p></div>
-            <div class="card blue grow" style="flex-direction:row;align-items:center;gap:28px;padding:28px 40px"><span class="stat sm">41</span><p>reviewed pull requests</p></div>
+            <div class="card blue grow" style="flex-direction:row;align-items:center;gap:28px;padding:28px 40px"><span class="stat sm">42</span><p>reviewed pull requests</p></div>
         </div>
     </div>
     <div class="foot"><span class="who"></span><span class="pg"></span></div>
@@ -917,7 +917,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
                 <div class="card ice"><span class="pill sm dark">Llama 3.1 70B</span>
                     <div class="row" style="gap:36px;align-items:baseline"><div><div class="stat sm">0.377</div><p class="muted" style="font-size:22px">Direct</p></div><div><div class="stat sm ours-t">0.362</div><p class="muted" style="font-size:22px">Search</p></div></div>
                 </div>
-                <p class="note">McNemar vs. direct, 8B: p = 0.17 / 0.26 / 0.09. No seed is significant at either size for uncapped search, and none favours search.</p>
+                <p class="note">McNemar vs. direct, 8B (per seed, uncorrected): p = 0.169 / 0.265 / 0.087. No seed is significant at either size for uncapped search, and none favours search. Best-of-N, with the same 14 calls, is higher than search in every seed (pooled p = 0.04).</p>
             </div>
         </div>
     </div>
@@ -982,7 +982,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
     <div class="pad">
         <div class="head reveal d1"><div class="head-l"><h2>Limitations</h2></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div class="row lim" style="gap:20px">
-            <div class="card grow reveal d2"><div class="icon-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></div><p class="lim-n">01.</p><p class="lim-t">One task, two model sizes, 130 questions: wide intervals.</p>
+            <div class="card grow reveal d2"><div class="icon-sq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></div><p class="lim-n">01.</p><p class="lim-t">One task, two model sizes, 130 questions: wide intervals; ablations on 8B only; per-seed p-values uncorrected.</p>
                 <div class="lim-viz"><div class="lim-ci"><span class="band" data-at="0.8" style="left:28%;width:16%"></span><span class="pt" data-at="1.1" style="left:36%"></span></div><div class="lim-cap"><span>±0.08 at 0.36</span><span>95% interval</span></div></div></div>
             <div class="card black grow reveal d3"><div class="icon-sq ice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10.5" width="14" height="9.5" rx="2.2"/><path d="M8 10.5V8a4 4 0 018 0v2.5" stroke-linecap="round"/></svg></div><p class="lim-n" style="color:#fff">02.</p><p class="lim-t">Closed-model rows cannot be rerun: retired APIs.</p>
                 <div class="lim-viz"><span class="lim-stamp" data-at="1.0">API retired</span></div></div>
@@ -1021,15 +1021,15 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
         <div class="row" style="gap:64px">
             <div class="hbars reveal d2" style="width:1060px">
                 <p class="note">8B search, one setting changed at a time, 3 seeds</p>
-                <div class="hbar"><span class="name"><b>None: proposer's order</b></span><div class="track"><div class="bar-fill f-g1" style="width:95%"></div></div><span class="v">0.190</span></div>
+                <div class="hbar"><span class="name"><b>Proposer's order (fixed)</b></span><div class="track"><div class="bar-fill f-g1" style="width:95%"></div></div><span class="v">0.190</span></div>
                 <div class="hbar"><span class="name ours-t"><b>0–10 score (frozen)</b></span><div class="track"><div class="bar-fill f-ours" style="width:79.5%"></div></div><span class="v ours-t">0.159</span></div>
-                <div class="hbar"><span class="name">Steps left</span><div class="track"><div class="bar-fill f-g2" style="width:68%"></div></div><span class="v">0.136</span></div>
+                <div class="hbar"><span class="name">Steps to goal</span><div class="track"><div class="bar-fill f-g2" style="width:68%"></div></div><span class="v">0.136</span></div>
                 <div class="hbar"><span class="name">Random scores</span><div class="track"><div class="bar-fill f-g2" style="width:66.5%"></div></div><span class="v">0.133</span></div>
                 <div class="hbar"><span class="name">5 candidates (k = 5)</span><div class="track"><div class="bar-fill f-g3" style="width:57.5%"></div></div><span class="v">0.115</span></div>
                 <div class="hbar"><span class="name">Vote between options</span><div class="track"><div class="bar-fill f-g3" style="width:54%"></div></div><span class="v">0.108</span></div>
             </div>
             <div class="col grow reveal d3" style="gap:20px">
-                <div class="card black" style="padding:36px;border-radius:var(--r-lg)"><span class="pill sm">Why they fail</span><p style="font-size:25px">0–10 scores collapse onto a few values, most often 2.</p><p style="font-size:25px">The vote picked the first option in only <b>3 of 39</b> validation votes: position bias.</p></div>
+                <div class="card black" style="padding:36px;border-radius:var(--r-lg)"><span class="pill sm">Why they fail</span><p style="font-size:25px">0–10 scores collapse onto a few values, most often 2.</p><p style="font-size:25px">The vote picked the first option in only <b>3 of 39</b> validation votes: position bias.</p><p style="font-size:21px;opacity:.75">Proposer's order vs. frozen: +4 questions per seed, p ≥ 0.34; only k = 5 differs significantly (one seed).</p></div>
                 <div class="card ice" style="padding:30px 36px"><p style="font-size:23px">Double budget 0.154 · few-shot 0.154 · no state prediction 0.159 at 3.9 calls instead of 13.4.</p></div>
             </div>
         </div>
@@ -1065,7 +1065,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
         <p class="note" style="margin-top:auto">0.331 ± 0.027 · self-consistency on the structured prompt · above direct in every seed (p = 0.043, 0.005, 0.058) · above best-of-N at the same 14 calls (seeds pooled p = 0.003, Holm 0.02) · 18× direct&rsquo;s tokens.</p>
     </div>
     <div class="foot" style="right:auto"><span class="who"></span></div>
-    <aside class="notes">Both follow-ups came after the main results, suggested as a bonus at the progress check. Each was tried on the 40 validation questions with a pass bar fixed in its code before running. Then we pre-registered a repeat on 70B before running it: 0.492, against best-of-N 0.364 at the same 14 calls, significant in every seed and after Holm correction, and above the paper's 70B value of 0.42, though not significantly against that number. At 70B most of the gain is the structured prompt itself, 0.469 with one call. Fair framing: the paper's 0.25 is one call; ours uses 14 calls and about 18 times the tokens, so the fair win is against best-of-N at the same 14 calls, plus 0.10, pooled p = 0.003. It is self-consistency, Wang et al. 2023, applied to the structured prompt. Under the 14,000-token cap it reaches 0.321 vs 0.210, but its calls are long and it overshoots the cap on almost every question (15,036 tokens on average), so quote the per-question token-matched figure: 0.313 against 0.210. Against the paper's 0.25 alone, only seed 2 is significantly higher. Its gain over a single structured call is not significant at either size, so much of it is the structured prompt; neither asks the model to judge its own candidates, which fits the main finding.</aside>
+    <aside class="notes">Both follow-ups came after the main results, suggested as a bonus at the progress check. Each was tried on the 40 validation questions with a pass bar fixed in its code before running. Then we pre-registered a repeat on 70B before running it: 0.492, against best-of-N 0.364 at the same 14 calls, significant in every seed and after Holm correction, and above the paper's 70B value of 0.42, though not significantly against that number. At 70B most of the gain is the structured prompt itself, 0.469 with one call. Fair framing: the paper's 0.25 is one call; ours uses 14 calls and about 18 times the tokens, so the fair win is against best-of-N at the same 14 calls, plus 0.10, pooled p = 0.003. It is self-consistency, Wang et al. 2023, applied to the structured prompt. Under the 14,000-token cap it reaches 0.321 vs 0.210, but its calls are long and it overshoots the cap on almost every question (15,036 tokens on average), so quote the per-question token-matched figure: 0.313 against 0.210. Against the paper's 0.25 alone, only seed 2 is significantly higher. Its gain over a single structured call is small: at 8B it is significant only in seed 2 (pooled p = 0.03, not after Holm correction), and at 70B voting adds only +0.023 (p = 0.50). So much of the gain is the structured prompt itself; neither asks the model to judge its own candidates, which fits the main finding.</aside>
 </section>
 
 <!-- 23 · Takeaways -->
@@ -1158,7 +1158,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
                 <tr><td>scoring = fixed</td><td>0.190 ± 0.012</td><td>12.8</td></tr>
                 <tr><td>scoring = random</td><td>0.133 ± 0.031</td><td>12.8</td></tr>
                 <tr><td>scoring = steps</td><td>0.136 ± 0.016</td><td>13.4</td></tr>
-                <tr><td>scoring = vote</td><td>0.108 ± 0.008</td><td>4.8</td></tr>
+                <tr><td>scoring = vote (d = 1)</td><td>0.108 ± 0.008</td><td>4.8</td></tr>
                 <tr><td>k = 2</td><td>0.162 ± 0.015</td><td>12.2</td></tr>
                 <tr><td>k = 5</td><td>0.115 ± 0.020</td><td>13.2</td></tr>
             </table>
@@ -1175,7 +1175,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
         </div>
     </div>
     <div class="foot"><span class="who"></span><span class="pg"></span></div>
-    <aside class="notes">Appendix C. Depth and budget don't change accuracy because under the frozen budget the search in effect reranks the root candidates: only a third expansion, paid for by calls saved through pruning, can change the answer, and it changed none of the 8B answers and 4 of 390 at 70B.</aside>
+    <aside class="notes">Appendix C. Depth and budget leave accuracy at or slightly below the frozen search (0.154 at 28 calls) because under the frozen budget the search in effect reranks the root candidates: only a third expansion, paid for by calls saved through pruning, can change the answer, and it changed none of the 8B answers and 4 of 390 at 70B.</aside>
 </section>
 
 <!-- B4 · Full results table -->
@@ -1227,7 +1227,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
         <h2 class="md">Models, serving and cost</h2>
         <div class="row" style="gap:22px">
             <div class="card ice grow"><span class="pill sm dark">Llama 3.1 8B</span><p>OpenRouter, pinned to <b>CoreWeave, bf16</b>. Groq retired the model on 16 Aug 2026; no local GPU.</p></div>
-            <div class="card grow"><span class="pill sm">Llama 3.1 70B</span><p>OpenRouter, pinned to <b>Amazon Bedrock</b>. The only other provider serves fp8.</p></div>
+            <div class="card grow"><span class="pill sm">Llama 3.1 70B</span><p>OpenRouter, pinned to <b>Amazon Bedrock</b>. The only other provider serves fp8. Bedrock does not state its precision.</p></div>
             <div class="card black grow"><span class="stat sm">≈ $42</span><p>of API credit in total, all runs and tests</p></div>
         </div>
         <p class="note">LLM responses are cached per request and seed, so re-running any table from the code package costs nothing.</p>

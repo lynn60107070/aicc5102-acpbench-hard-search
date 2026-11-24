@@ -479,6 +479,112 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 .stepper button:disabled { opacity: .3; cursor: default; }
 .stepper .lab { font-size: 21px; color: var(--ink); min-width: 290px; text-align: center; font-variant-numeric: tabular-nums; }
 @media print { .jump, .stepper { display: none !important; } }
+
+/* ===========================================
+   Q&A BACKUP SLIDES (B7 onwards)
+   Prepared answers to likely questions, opened from the main slides' jump buttons.
+   =========================================== */
+.qa-pad { gap: 26px; padding-bottom: 150px; }
+h2.qt { font-size: 58px; line-height: 1.02; }
+.qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; min-height: 0; }
+.qa-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+.qa { background: var(--white); border-radius: 28px; padding: 24px 30px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow); min-height: 0; }
+.qa.ice { background: var(--ice); box-shadow: none; }
+.qa.dark { background: var(--black); color: var(--white); }
+.qa .q { font-size: 26px; font-weight: 700; line-height: 1.25; }
+.qa .q::before { content: "Q "; color: var(--ours); }
+.qa.dark .q::before { color: var(--blue); }
+.qa .a { font-size: 23px; line-height: 1.42; }
+.qa.dark .a { color: rgba(255,255,255,.88); }
+.qa .a b { font-weight: 700; }
+.qa ul { margin: 0; padding-left: 24px; font-size: 22px; line-height: 1.42; }
+.qa li { margin: 3px 0; font-size: 22px; line-height: 1.42; }
+.qa-split { display: grid; grid-template-columns: 1.15fr 1fr; gap: 22px; flex: 1; min-height: 0; }
+.qa-split .col { gap: 18px; min-height: 0; }
+.qa .h { font-size: 26px; font-weight: 700; line-height: 1.25; }
+.qa .num { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--black); color: #fff; font-size: 18px; font-weight: 700; margin-right: 10px; vertical-align: middle; }
+.qa.dark .num { background: var(--blue); color: var(--black); }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip { font-size: 20px; padding: 8px 16px; border-radius: 999px; background: #F1F5F8; color: var(--ink-2); }
+.chip.ours { background: var(--ours); color: #fff; font-weight: 700; }
+.size-lab { font-size: 15px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); margin: 4px 0 -2px; }
+.ival { position: relative; height: 92px; margin: 6px 10px 0; }
+.ival .axis { position: absolute; left: 0; right: 0; top: 46px; height: 2px; background: var(--line); }
+.ival .band { position: absolute; top: 34px; height: 26px; border-radius: 999px; background: var(--blue); }
+.ival .dot { position: absolute; top: 33px; width: 28px; height: 28px; margin-left: -14px; border-radius: 50%; border: 3px solid #fff; }
+.ival .dot.p { background: var(--black); }
+.ival .dot.o { background: var(--ours); }
+.ival .lab { position: absolute; font-size: 17px; color: var(--ink-2); transform: translateX(-50%); white-space: nowrap; }
+.probs { display: flex; flex-direction: column; gap: 8px; }
+.probs div { display: grid; grid-template-columns: 170px 1fr 56px; gap: 12px; align-items: center; font-size: 20px; }
+.probs span { font-family: var(--mono); font-size: 18px; }
+.probs b { display: block; height: 18px; border-radius: 999px; background: var(--ours); }
+.probs em { font-style: normal; color: var(--ink-2); }
+.pick { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.pick .chip { font-size: 18px; padding: 5px 12px; }
+.muted-t { font-size: 18px; color: var(--ink-2); margin-left: 4px; }
+.tally { display: grid; grid-template-columns: repeat(14, 1fr); gap: 8px; margin: 6px 0; }
+.tally i { aspect-ratio: 1; border-radius: 50%; }
+.tally-leg { display: flex; flex-direction: column; gap: 6px; font-size: 20px; }
+.tally-leg i { display: inline-block; width: 18px; height: 18px; border-radius: 50%; margin-right: 10px; vertical-align: -2px; }
+.seedplot { position: relative; height: 136px; margin: 4px 70px 0; }
+.seedplot .axis { position: absolute; left: 0; right: 0; top: 57px; height: 2px; background: var(--line); }
+.seedplot .ref { position: absolute; top: 26px; height: 48px; width: 2px; background: var(--black); }
+.seedplot .dot { position: absolute; width: 26px; height: 26px; margin-left: -13px; border-radius: 50%; border: 3px solid #fff; }
+.seedplot .dot.p { background: var(--g2); }
+.seedplot .dot.o { background: var(--ours); }
+.seedplot .lab { position: absolute; font-size: 17px; color: var(--ink-2); transform: translateX(-50%); white-space: nowrap; }
+.tdist { display: flex; align-items: flex-end; gap: 5px; height: 54px; }
+.tdist b { flex: 1; min-height: 3px; border-radius: 5px 5px 0 0; background: var(--ours); }
+.trow { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 4px; }
+.trow > div { display: flex; flex-direction: column; gap: 6px; }
+.trow span { font-size: 16px; color: var(--ink-2); text-align: center; }
+.flow-v { display: flex; flex-direction: column; align-items: stretch; gap: 4px; margin-top: 4px; }
+.flow-v span { font-size: 20px; padding: 10px 18px; border-radius: 16px; background: rgba(255,255,255,.1); text-align: center; }
+.flow-v span.m { background: var(--ours); }
+.flow-v span.v { background: var(--blue); color: var(--black); font-weight: 700; }
+.flow-v small { font-size: 16px; opacity: .8; }
+.flow-v b { text-align: center; color: rgba(255,255,255,.5); font-size: 18px; line-height: 1; }
+.bigstat { display: flex; align-items: center; gap: 16px; margin: 6px 0; }
+table.pt td.ok { color: #2F7D4F; }
+table.pt td.no { color: #B23B3B; }
+.bigstat b { font-size: 72px; font-weight: 600; line-height: 1; color: var(--blue); }
+.bigstat span { font-size: 20px; line-height: 1.35; color: rgba(255,255,255,.85); }
+.chg { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: start; }
+.contract { padding: 26px 36px; gap: 14px; }
+.contract .flow-h span { font-size: 21px; }
+.flow-h { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.flow-h span { font-size: 19px; padding: 9px 16px; border-radius: 14px; background: var(--ice); }
+.flow-h span.m { background: var(--ours); color: #fff; font-weight: 700; }
+.flow-h b { color: var(--g2); font-weight: 400; }
+.hbars { display: flex; flex-direction: column; gap: 10px; margin: 4px 0; }
+.hb { display: grid; grid-template-columns: 270px 1fr 70px; gap: 12px; align-items: center; font-size: 19px; }
+.hb .tr { height: 20px; border-radius: 999px; background: #EEF2F6; }
+.hb .tr i { display: block; height: 100%; border-radius: 999px; }
+.hb i.g { background: var(--g2); } .hb i.o { background: var(--ours); } .hb i.f { background: var(--blue); }
+.chain { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.chain div { display: grid; grid-template-columns: 120px 1fr; gap: 14px; align-items: center; }
+.chain .pill { justify-content: center; width: 100%; text-transform: none; letter-spacing: .02em; }
+table.pt.ab td.s { background: #F1F5F8; font-weight: 400; color: var(--ink); }
+table.pt.ab tr.hl td.s { background: var(--ice-2); font-weight: 600; color: var(--ink); }
+table.pt td small { font-size: 15px; font-weight: 400; color: var(--ink-2); }
+table.pt.mc td { text-align: center; font-size: 18px; }
+table.pt.mc td.ig { background: #F6F8FA; color: var(--g2); }
+table.pt.mc td.dis { background: var(--ours); color: #fff; font-weight: 700; }
+table.pt.holm { font-size: 17px; }
+table.pt.holm td, table.pt.holm th { padding: 6px 14px; }
+.split-row { display: grid; grid-template-columns: 110px 1fr; gap: 12px; align-items: center; }
+.split-row .pill { justify-content: center; width: 100%; text-transform: none; }
+.split-row em { font-style: normal; font-size: 19px; }
+.chain em { font-style: normal; font-size: 20px; line-height: 1.35; }
+.ok { color: #2F7D4F; font-weight: 700; }
+.no { color: #B23B3B; font-weight: 700; }
+.steps-v { display: flex; flex-direction: column; gap: 16px; }
+.steps-v .st { display: grid; grid-template-columns: 46px 1fr; gap: 16px; align-items: start; background: var(--white); border-radius: 24px; padding: 22px 26px; box-shadow: var(--shadow); }
+.steps-v .st i { font-style: normal; width: 46px; height: 46px; border-radius: 50%; background: var(--black); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 21px; }
+.steps-v .st b { font-size: 25px; display: block; margin-bottom: 4px; }
+.steps-v .st span { font-size: 21px; line-height: 1.4; color: var(--ink-2); }
+.steps-v .st span em { font-style: normal; font-weight: 700; color: var(--ink); }
 </style>
 </head>
 <body>
@@ -513,7 +619,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 </section>
 
 <!-- 2 · Research question -->
-<section class="slide" data-presenter="Lynn Younes" data-section="Research question">
+<section class="slide" data-presenter="Lynn Younes" data-section="Research question" data-more="B7,B17,B8,B9">
     <div class="pad">
         <div class="head reveal d1"><div class="head-l"><h2 class="md" style="max-width:1460px">Does best-first search over LLM-predicted states beat <span class="hl-pill">answering once?</span></h2></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div class="row" style="gap:28px">
@@ -560,7 +666,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 
 
 <!-- 3b · Project flowchart (prototype: keep or drop after team feedback) -->
-<section class="slide" data-presenter="Lynn Younes" data-section="How the project ran" data-more="B5">
+<section class="slide" data-presenter="Lynn Younes" data-section="How the project ran" data-more="B5,B10">
     <div class="pad" style="gap:30px">
         <div class="head reveal d1"><div class="head-l"><h2 class="md">How the project ran</h2><span class="pill" style="font-size:26px">who did what, by phase</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div>
@@ -604,7 +710,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 </section>
 
 <!-- 5 · The task -->
-<section class="slide" data-presenter="Faheema Hassan Kudukky" data-section="01 · Benchmark and reproduction">
+<section class="slide" data-presenter="Faheema Hassan Kudukky" data-section="01 · Benchmark and reproduction" data-more="B11,B18,B12">
     <div class="pad">
         <div class="head reveal d1"><div class="head-l"><h2>The task</h2><span class="pill">choose the next move</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div class="row" style="gap:56px;align-items:stretch">
@@ -636,7 +742,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 </section>
 
 <!-- 6 · Related work -->
-<section class="slide s-ice" data-presenter="Faheema Hassan Kudukky" data-section="01 · Benchmark and reproduction">
+<section class="slide s-ice" data-presenter="Faheema Hassan Kudukky" data-section="01 · Benchmark and reproduction" data-more="B7,B17,B18">
     <div class="pad">
         <div class="head reveal d1"><div class="head-l"><h2>Related work</h2><span class="pill">where we sit</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div>
@@ -655,7 +761,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 </section>
 
 <!-- 7 · Reproduction: title on white, pill table on an ice panel -->
-<section class="slide" data-presenter="Faheema Hassan Kudukky" data-section="01 · Benchmark and reproduction" data-more="B1,B6">
+<section class="slide" data-presenter="Faheema Hassan Kudukky" data-section="01 · Benchmark and reproduction" data-more="B20,B21,B19,B1">
     <div style="position:absolute;left:var(--pad-x);right:var(--pad-x);top:var(--pad-top)" class="head reveal d1"><div class="head-l"><h2>Reproduction</h2><span class="pill">all four match</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
     <div class="reveal d2" style="position:absolute;left:64px;right:64px;top:290px;height:560px;background:var(--ice);border-radius:56px;padding:56px 64px;display:flex;gap:56px">
         <div style="width:1040px;display:flex;flex-direction:column;gap:22px;justify-content:center">
@@ -687,7 +793,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 </section>
 
 <!-- 8 · Baselines -->
-<section class="slide s-ice" data-presenter="Faheema Hassan Kudukky" data-section="01 · Benchmark and reproduction" data-more="B4">
+<section class="slide s-ice" data-presenter="Faheema Hassan Kudukky" data-section="01 · Benchmark and reproduction" data-more="B4,B8,B9,B22">
     <div class="pad">
         <div class="head reveal d1"><div class="head-l"><h2>Baselines</h2><span class="pill">what search must beat</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div class="row" style="gap:28px">
@@ -729,7 +835,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 </section>
 
 <!-- 10 · Approach -->
-<section class="slide" data-presenter="Lynn Younes" data-section="02 · Our extension" data-more="B2">
+<section class="slide" data-presenter="Lynn Younes" data-section="02 · Our extension" data-more="B2,B12,B13">
     <div class="pad">
         <div class="head reveal d1"><div class="head-l"><h2>Our approach</h2><span class="pill">let the model search</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div class="steps reveal d2">
@@ -751,7 +857,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 </section>
 
 <!-- 10b · Inside one search: animated tree, phases and call meter run on a timeline (R replays) -->
-<section class="slide s-ice" data-presenter="Lynn Younes" data-section="02 · Our extension" data-more="B2" data-steps="0.2,1.1,3.0,3.6,5.9,6.8,8.6" data-step-labels="Current state|Propose|Predict|Score|Expand the best|Score again|Answer">
+<section class="slide s-ice" data-presenter="Lynn Younes" data-section="02 · Our extension" data-more="B2,B14" data-steps="0.2,1.1,3.0,3.6,5.9,6.8,8.6" data-step-labels="Current state|Propose|Predict|Score|Expand the best|Score again|Answer">
     <div class="pad" style="gap:30px">
         <div class="head reveal d1"><div class="head-l"><h2 class="md">Inside one search</h2><span class="pill" style="font-size:26px">k = 3 · d = 2 · 14 calls</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div class="row" style="gap:40px;align-items:center">
@@ -807,7 +913,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 </section>
 
 <!-- 11 · Design selection: white left, ice rounded panel right with tiles -->
-<section class="slide" data-presenter="Lynn Younes" data-section="02 · Our extension" data-more="B3">
+<section class="slide" data-presenter="Lynn Younes" data-section="02 · Our extension" data-more="B23,B24,B25,B14">
     <div class="pad" style="gap:40px">
         <div class="head reveal d1"><div class="head-l"><h2 class="md">Tuned on validation, then frozen</h2><span class="pill">23 October</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div class="row" style="gap:28px;align-items:stretch;min-height:650px">
@@ -838,7 +944,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 </section>
 
 <!-- 12 · How the code is built -->
-<section class="slide s-ice" data-presenter="Lynn Younes" data-section="02 · Our extension" data-more="B5">
+<section class="slide s-ice" data-presenter="Lynn Younes" data-section="02 · Our extension" data-more="B5,B13">
     <div class="pad" style="gap:36px">
         <div class="head reveal d1"><div class="head-l"><h2>The code</h2><span class="pill">how it's built</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div class="row" style="gap:22px">
@@ -846,6 +952,11 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
             <div class="card grow reveal d3" style="padding:34px"><span class="dir">methods/</span><ul class="clean"><li>direct · structured</li><li>best_of_n · search</li><li>structured_vote · vote_check</li></ul></div>
             <div class="card grow reveal d4" style="padding:34px"><span class="dir">experiments/</span><ul class="clean"><li>run: parallel workers</li><li>sweep: config × seeds</li><li>compare: exact McNemar</li><li>analyze: tables + figures</li></ul></div>
             <div class="card grow reveal d5" style="padding:34px"><span class="dir">tests/</span><ul class="clean"><li>50 unit tests</li><li>pipeline, search, baselines, compare, analyze, follow-ups</li></ul></div>
+        </div>
+        <div class="card reveal d6 contract">
+            <span class="pill sm dark">One method contract</span>
+            <div class="flow-h"><span>Question only: state + goal</span><b>&rarr;</b><span class="m">solve(question, budgeted LLM)</span><b>&rarr;</b><span>One action</span><b>&rarr;</b><span>Same grammar + official validator</span></div>
+            <p class="note" style="margin:0">Every method plugs into the same slot. None sees the PDDL or the answer key, and the budget is enforced inside the client.</p>
         </div>
         <div class="row reveal d6" style="gap:22px">
             <div class="card black grow" style="flex-direction:row;align-items:center;gap:28px;padding:28px 40px"><span class="stat sm">50</span><p>tests pass</p></div>
@@ -874,7 +985,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 </section>
 
 <!-- 14 · Setup and fairness -->
-<section class="slide" data-presenter="Aisha Suleiman Shaik" data-section="03 · Evaluation and results" data-more="B6">
+<section class="slide" data-presenter="Aisha Suleiman Shaik" data-section="03 · Evaluation and results" data-more="B27,B6,B8,B9">
     <div class="pad">
         <div class="head reveal d1"><div class="head-l"><h2>A fair comparison</h2></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div class="col" style="gap:24px">
@@ -899,7 +1010,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 </section>
 
 <!-- 15 · Main results: same chart as the first version -->
-<section class="slide" data-presenter="Aisha Suleiman Shaik" data-section="03 · Evaluation and results" data-more="B4">
+<section class="slide" data-presenter="Aisha Suleiman Shaik" data-section="03 · Evaluation and results" data-more="B4,B28,B15">
     <div class="pad" style="gap:36px">
         <div class="head reveal d1"><div class="head-l"><h2 class="md">Results</h2><span class="pill">search never beats answering once</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div class="row" style="gap:80px">
@@ -926,7 +1037,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 </section>
 
 <!-- 16 · Token-matched -->
-<section class="slide s-ice" data-presenter="Aisha Suleiman Shaik" data-section="03 · Evaluation and results" data-more="B4">
+<section class="slide s-ice" data-presenter="Aisha Suleiman Shaik" data-section="03 · Evaluation and results" data-more="B4,B27">
     <div class="pad">
         <div class="head reveal d1"><div class="head-l"><h2>Capped tokens</h2><span class="pill">same answer</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div class="panel reveal d2" style="background:var(--white);box-shadow:var(--shadow);padding:44px 52px">
@@ -947,7 +1058,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 </section>
 
 <!-- 17 · Key finding: big statement with highlight pills -->
-<section class="slide" data-presenter="Aisha Suleiman Shaik" data-section="03 · Key finding" data-more="B3">
+<section class="slide" data-presenter="Aisha Suleiman Shaik" data-section="03 · Key finding" data-more="B3,B16,B22">
     <div class="reveal d1" style="position:absolute;left:64px;right:64px;top:64px;height:560px;border-radius:56px;background:var(--ice);display:flex;flex-direction:column;justify-content:center;padding:0 110px">
         <span class="pill sm dark" style="margin-bottom:34px">Key finding</span>
         <h1 style="font-size:104px;line-height:1.05;letter-spacing:-0.04em">The model can propose the <span class="hl-pill white">right move,</span><br>but often cannot <span class="hl-pill">recognise it.</span></h1>
@@ -961,7 +1072,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 </section>
 
 <!-- 18 · Error types: stacked bars as in the first version -->
-<section class="slide" data-presenter="Aisha Suleiman Shaik" data-section="03 · Evaluation and results">
+<section class="slide" data-presenter="Aisha Suleiman Shaik" data-section="03 · Evaluation and results" data-more="B22">
     <div class="pad">
         <div class="head reveal d1"><div class="head-l"><h2 class="md">Most errors: moves that can't be made</h2></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div class="col reveal d2" style="gap:44px">
@@ -1015,7 +1126,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 </section>
 
 <!-- 21 · Ablations: horizontal bars as in the first version -->
-<section class="slide" data-presenter="Lynn Younes" data-section="04 · Ablations and bonus" data-more="B3">
+<section class="slide" data-presenter="Lynn Younes" data-section="04 · Ablations and bonus" data-more="B26,B3,B23,B25">
     <div class="pad" style="gap:36px">
         <div class="head reveal d1"><div class="head-l"><h2>Ablations</h2><span class="pill">no evaluator helps</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div class="row" style="gap:64px">
@@ -1039,7 +1150,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 </section>
 
 <!-- 22 · Bonus follow-ups -->
-<section class="slide" data-presenter="Lynn Younes" data-section="04 · Ablations and bonus" data-more="B4">
+<section class="slide" data-presenter="Lynn Younes" data-section="04 · Ablations and bonus" data-more="B4,B28,B16">
     <div style="position:absolute;left:var(--pad-x);top:var(--pad-top);width:600px;bottom:140px;display:flex;flex-direction:column;gap:30px">
         <h2 class="reveal d1">Bonus</h2>
         <span class="pill reveal d2">skip the judging</span>
@@ -1069,7 +1180,7 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
 </section>
 
 <!-- 23 · Takeaways -->
-<section class="slide s-ice" data-presenter="Lynn Younes" data-section="04 · Takeaways" data-more="B4">
+<section class="slide s-ice" data-presenter="Lynn Younes" data-section="04 · Takeaways" data-more="B4,B16,B12">
     <div class="pad">
         <div class="head reveal d1"><div class="head-l"><h2>Takeaways</h2><span class="pill">by facts</span></div><span class="circ"><svg><use href="#arr"/></svg></span></div>
         <div class="row tk" style="gap:22px">
@@ -1236,6 +1347,694 @@ body.editing [contenteditable="true"] { outline: 1px dashed rgba(111,151,186,.6)
     <aside class="notes">Data: ibm-research/acp_bench, revision 05e5883.</aside>
 </section>
 
+<!-- =========================================================
+     Q&A BACKUP SLIDES (B7 onwards): prepared answers, opened from the main slides
+     ========================================================= -->
+
+<!-- B7 · Related work: Tree of Thoughts vs RAP vs ours -->
+<section class="slide" data-presenter="Backup" data-section="Related work">
+    <span class="pill sm dark backup-tag">Backup · Q&amp;A</span>
+    <div class="pad qa-pad">
+        <h2 class="qt">Tree of Thoughts, RAP and our search</h2>
+        <table class="pt dense on-white">
+            <tr><th class="l"></th><th class="l">Tree of Thoughts (Yao et al., 2023)</th><th class="l">RAP: Reasoning via Planning (Hao et al., 2023)</th><th class="l">Ours</th></tr>
+            <tr><td>Searches over</td><td class="l">Thoughts: steps of reasoning</td><td class="l">World states: the LLM predicts the state after each action</td><td class="l">World states the LLM predicts (like RAP)</td></tr>
+            <tr><td>Picks options by</td><td class="l">The LLM scores each thought, or votes</td><td class="l">Monte Carlo Tree Search with task-specific rewards</td><td class="l">Best-first on the LLM's own 0&ndash;10 score; no task-specific help</td></tr>
+            <tr><td>Tested on</td><td class="l">Puzzles: Game of 24, mini crosswords, creative writing</td><td class="l">Blocksworld plans (its one planning domain), GSM8K maths, PrOntoQA logic</td><td class="l">Open-ended Next Action across 13 planning domains</td></tr>
+            <tr><td>Who judges applicability</td><td class="l">&ndash;</td><td class="l">The task set-up helps</td><td class="l">The LLM alone (NOT APPLICABLE)</td></tr>
+            <tr><td>Budget-matched control</td><td class="l">Not the focus</td><td class="l">Not the focus</td><td class="l">Best-of-N at the same 14 calls</td></tr>
+            <tr class="hl"><td>Search helped?</td><td class="l">Yes</td><td class="l">Yes</td><td class="l">No</td></tr>
+        </table>
+        <div class="qa-grid">
+            <div class="qa ice"><div class="q">What did we take from each?</div><div class="a">From <b>RAP</b>: the LLM as a world model that predicts the next state. From <b>Tree of Thoughts</b>: the LLM judging its options (our &ldquo;vote&rdquo; ablation is ToT&rsquo;s evaluator). So our search is closest to RAP.</div></div>
+            <div class="qa dark"><div class="q">Why did search help them but not us?</div><div class="a">Their searches had good judges: designed rewards, or puzzles that are easy to check. Ours relies on the LLM judging itself, and on open-ended planning it judges near chance. Search only works if the judging works.</div></div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Paper Section 2. One line: our search is closest to RAP, but best-first, every judgment including applicability comes from the LLM with no task-specific rewards, 13 domains, and a matched budget.</aside>
+</section>
+
+<!-- B8 · Why five methods: each control rules out one explanation -->
+<section class="slide" data-presenter="Backup" data-section="Methods">
+    <span class="pill sm dark backup-tag">Backup · Q&amp;A</span>
+    <div class="pad qa-pad">
+        <h2 class="qt">Why five methods? Each one rules out one explanation</h2>
+        <table class="pt dense on-white">
+            <tr><th class="l">Method</th><th>Calls</th><th>More calls</th><th>More reasoning</th><th>LLM judges itself</th><th>8B</th><th>70B</th><th class="l">Its job</th></tr>
+            <tr><td>Direct (the paper's)</td><td>1</td><td class="no">&ndash;</td><td class="no">&ndash;</td><td class="no">&ndash;</td><td>0.223</td><td>0.377</td><td class="l">Baseline we reproduce and must beat</td></tr>
+            <tr><td>Structured prompting</td><td>1</td><td class="no">&ndash;</td><td class="ok">yes</td><td class="no">&ndash;</td><td>0.262</td><td>0.469</td><td class="l">Control: is it just more thinking?</td></tr>
+            <tr><td>Best-of-N (N = 14)</td><td>14</td><td class="ok">yes</td><td class="no">&ndash;</td><td class="no">&ndash;</td><td>0.231</td><td>0.364</td><td class="l">Control: is it just more calls?</td></tr>
+            <tr class="hl"><td>Search (ours)</td><td>&le; 14</td><td class="ok">yes</td><td class="ok">yes</td><td class="ok">yes</td><td>0.159</td><td>0.362</td><td class="l">The extension we test</td></tr>
+            <tr><td>Structured + vote (bonus)</td><td>14</td><td class="ok">yes</td><td class="ok">yes</td><td class="no">&ndash;</td><td>0.331</td><td>0.492</td><td class="l">After the results: the same, minus judging</td></tr>
+        </table>
+        <div class="qa-grid three">
+            <div class="qa dark"><div class="q">The key comparison</div><div class="a">Search and the bonus both add more calls and more reasoning. The <b>only</b> difference is whether the LLM judges its own options, and that takes 8B from worst (0.159) to best (0.331).</div></div>
+            <div class="qa ice"><div class="q">Did the controls help on their own?</div><div class="a">A little, and neither significantly on 8B: best-of-N +0.008, structured +0.039. On 70B structured vs direct is p = 0.0501: <b>not</b> significant.</div></div>
+            <div class="qa"><div class="q">Why does structured propose one action, not three?</div><div class="a">It is the control for step-by-step reasoning. Proposing three and choosing would be judging, i.e. search in one call. The 14-call version of structured is the bonus.</div></div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Structured prompt steps: State, Goal, Candidate action (one), Progress, Final action. Only the text after the last "Final action:" is scored. Faheema built the structured and best-of-N baselines.</aside>
+</section>
+
+<!-- B9 · Greedy vs sampling, majority vote, and seeds (explanatory) -->
+<section class="slide s-ice" data-presenter="Backup" data-section="Sampling and seeds">
+    <span class="pill sm dark backup-tag">Backup · More detail</span>
+    <div class="pad qa-pad" style="gap:22px">
+        <h2 class="qt">Greedy vs sampling, the vote, and where &plusmn; comes from</h2>
+        <div class="qa-grid" style="grid-template-rows:auto 1fr">
+            <div class="qa">
+                <div class="h">How the model picks what to write</div>
+                <div class="a">At each step it has a probability list (illustrative):</div>
+                <div class="probs">
+                    <div><span>(sail l1 l0)</span><b style="width:60%"></b><em>60%</em></div>
+                    <div><span>(board c0)</span><b style="width:30%"></b><em>30%</em></div>
+                    <div><span>(debark c1)</span><b style="width:10%"></b><em>10%</em></div>
+                </div>
+                <div class="pick"><span class="pill sm dark">Greedy &middot; T = 0</span><span class="chip">sail</span><span class="chip">sail</span><span class="chip">sail</span><span class="muted-t">always the top one</span></div>
+                <div class="pick"><span class="pill sm">Sampling &middot; T = 0.7</span><span class="chip">sail</span><span class="chip">board</span><span class="chip">sail</span><span class="chip">debark</span><span class="muted-t">a weighted dice roll</span></div>
+            </div>
+            <div class="qa dark">
+                <div class="h">Best-of-N: the most common answer wins</div>
+                <div class="a">14 sampled answers, each parsed to an action, then counted. No judging, no validator (illustrative):</div>
+                <div class="tally"><i style="background:var(--ours)"></i><i style="background:var(--ours)"></i><i style="background:var(--ours)"></i><i style="background:var(--ours)"></i><i style="background:var(--ours)"></i><i style="background:var(--ours)"></i><i style="background:var(--ours)"></i><i style="background:var(--blue)"></i><i style="background:var(--blue)"></i><i style="background:var(--blue)"></i><i style="background:var(--blue)"></i><i style="background:var(--g2)"></i><i style="background:var(--g2)"></i><i style="background:var(--g2)"></i></div>
+                <div class="tally-leg"><span><i style="background:var(--ours)"></i>(sail l1 l0) &times; 7 &rarr; <b>answer</b></span><span><i style="background:var(--blue)"></i>(board c0) &times; 4</span><span><i style="background:var(--g2)"></i>(debark c1) &times; 3</span></div>
+                <div class="a" style="margin-top:auto;color:rgba(255,255,255,.7)">With greedy, all 14 answers would be identical, so the vote needs sampling.</div>
+            </div>
+            <div class="qa">
+                <div class="h">Seeds: sampled methods run three times, reported as mean &plusmn; std</div>
+                <div class="seedplot">
+                    <div class="axis"></div>
+                    <div class="ref" style="left:64.38%"></div><span class="lab" style="left:64.38%;top:0">direct 0.223 (greedy, one run)</span>
+                    <div class="dot p" style="left:69.25%;top:44px"></div><div class="dot p" style="left:59.63%;top:44px"></div><div class="dot p" style="left:78.88%;top:44px"></div><span class="lab" style="left:69.38%;top:78px"><b>best-of-N</b> 0.231 &plusmn; 0.015</span>
+                    <div class="dot o" style="left:25.94%;top:44px"></div><div class="dot o" style="left:30.75%;top:44px"></div><div class="dot o" style="left:16.38%;top:44px"></div><span class="lab" style="left:24.38%;top:78px;color:var(--ours)"><b>search</b> 0.159 &plusmn; 0.012</span>
+                    <span class="lab" style="left:0%;top:108px">0.12</span><span class="lab" style="left:50%;top:108px">0.20</span><span class="lab" style="left:100%;top:108px">0.28</span>
+                </div>
+                <div class="a">Each dot is one seed (best-of-N: 30, 28, 32 of 130). A seed fixes the randomness, so every run is repeatable; three seeds show a result is not one lucky run.</div>
+            </div>
+            <table class="pt dense" style="align-self:start">
+                <tr><th class="l">Method</th><th>Picks by</th><th>Runs</th><th>8B</th></tr>
+                <tr><td>Direct</td><td>greedy</td><td>1</td><td>0.223</td></tr>
+                <tr><td>Structured</td><td>greedy</td><td>1</td><td>0.262</td></tr>
+                <tr><td>Best-of-N</td><td>sampling</td><td>3 seeds</td><td>0.231 &plusmn; 0.015</td></tr>
+                <tr class="hl"><td>Search</td><td>proposer samples</td><td>3 seeds</td><td>0.159 &plusmn; 0.012</td></tr>
+                <tr><td>Structured + vote</td><td>sampling</td><td>3 seeds</td><td>0.331 &plusmn; 0.027</td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">No &plusmn; on direct and structured because greedy gives the same answer every run. Search's predictor and evaluator are greedy; only its proposer samples. Ablations and token-capped runs also use 3 seeds. Seeding fix (21 Nov, Appendix D): sample i of seed s used server seed s + i, so best-of-N's seeds shared most samples; now s + 1000i, with a test; best-of-N 0.236 to 0.231, no conclusion changed.</aside>
+</section>
+
+<!-- B10 · Validation, the freeze, the smoke test and the match rule -->
+<section class="slide" data-presenter="Backup" data-section="Validation and freeze">
+    <span class="pill sm dark backup-tag">Backup · Q&amp;A</span>
+    <div class="pad qa-pad">
+        <h2 class="qt">Validation, the freeze and the match rule</h2>
+        <div class="qa-grid">
+            <div class="qa ice"><div class="q">Validation set vs test set?</div><div class="a">Both come from the paper&rsquo;s dataset. <b>Validation:</b> 40 questions from 8 of the 13 domains, used only to try out and choose the design. <b>Test:</b> 130 questions, 10 per domain, run only after the freeze. They never overlap.</div></div>
+            <div class="qa"><div class="q">What was chosen on validation?</div><div class="a">The evaluator (0&ndash;10 score), candidates k = 3, depth d = 2, budget 14 calls, pruning of NOT APPLICABLE moves, the three prompts, and the temperatures. Frozen on <b>23 Oct</b>, before any test run.</div></div>
+            <div class="qa"><div class="q">What was the smoke test?</div><div class="a">Before the freeze, an early prototype ran on 10 test questions just to check the code worked. Nothing was tuned on it, and the paper reports it (Section 4).</div></div>
+            <div class="qa dark"><div class="q">What is the match rule? Can it fail?</div><div class="a">Fixed in the proposal (29 Sep): a result reproduces if it lies inside the 95% binomial interval around the paper&rsquo;s value for n = 130 (about &plusmn; 0.08). A real gap of 0.1 would fail. All four results passed; 3 of 4 are 0.03&ndash;0.04 lower, explained in D7.</div></div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Example: 8B Next Action, paper 0.25, interval 0.176 to 0.324, ours 0.223. Faheema's independent macOS harness run gave identical answers on all 130. Validator (marking tool) and validation set (40 practice questions) are different things.</aside>
+</section>
+
+<!-- B11 · The benchmark's eight tasks and why Next Action -->
+<section class="slide" data-presenter="Backup" data-section="Benchmark tasks">
+    <span class="pill sm dark backup-tag">Backup · Q&amp;A</span>
+    <div class="pad qa-pad">
+        <h2 class="qt">ACPBench-Hard: 8 tasks &times; 13 domains &times; 10 questions</h2>
+        <div class="qa-split">
+            <table class="pt dense on-white">
+                <tr><th class="l">Task</th><th class="l">The model must produce</th></tr>
+                <tr><td>Applicability</td><td class="l">Which actions are possible now</td></tr>
+                <tr><td>Progression</td><td class="l">What changes after an action (we reproduced it)</td></tr>
+                <tr><td>Reachability</td><td class="l">Whether a fact can ever become true</td></tr>
+                <tr><td>Action reachability</td><td class="l">Whether an action can ever become possible</td></tr>
+                <tr><td>Validation</td><td class="l">Whether a plan works, and where it breaks</td></tr>
+                <tr><td>Justification</td><td class="l">Whether a plan has unnecessary steps</td></tr>
+                <tr><td>Landmarks</td><td class="l">Facts that must hold on every solution</td></tr>
+                <tr class="hl"><td>Next Action</td><td class="l">The next move one optimal step closer (ours)</td></tr>
+            </table>
+            <div class="col">
+                <div class="qa dark"><div class="q">Why only Next Action?</div><ul><li>The brief asks for one reproduced result and one extension.</li><li>Our search chooses between actions, and Next Action is choosing an action.</li><li>It is the core planning skill: repeating it builds an optimal plan. It is the paper&rsquo;s new task, with low scores (8B: 0.25).</li><li>All eight would cost about eight times as much.</li></ul></div>
+                <div class="qa ice"><div class="q">Can a question have several correct answers?</div><div class="a">Yes. Any move that cuts the shortest remaining plan by one counts, so the validator checks the move instead of matching one stored answer.</div></div>
+            </div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">1,040 questions in the paper. Tasks 1 to 7 come from ACPBench (2025), made open-ended; Next Action is new. We also reproduced Progression as a sanity check. Section 8 lists one task as a limitation.</aside>
+</section>
+
+<!-- B12 · How the official validator marks an answer, where it sits, judging vs validating, planner vs LLM -->
+<section class="slide s-ice" data-presenter="Backup" data-section="Validator">
+    <span class="pill sm dark backup-tag">Backup · More detail</span>
+    <div class="pad qa-pad" style="gap:22px">
+        <h2 class="qt">The official validator: the answer key, not part of any method</h2>
+        <div class="qa-split" style="grid-template-columns:1.1fr 1fr">
+            <div class="col">
+                <div class="steps-v">
+                    <div class="st"><i>1</i><div><b>Extract the action</b><span>The benchmark&rsquo;s action grammar pulls the action out of the reply. None found &rarr; <em>format error</em>.</span></div></div>
+                    <div class="st"><i>2</i><div><b>Look it up in the answer key</b><span>Each question lists every applicable action as &ldquo;yes&rdquo; (&rarr; <em>correct</em>), &ldquo;no&rdquo; (&rarr; <em>not closer</em>) or &ldquo;maybe&rdquo;. Not listed &rarr; <em>inapplicable</em>.</span></div></div>
+                    <div class="st"><i>3</i><div><b>&ldquo;Maybe&rdquo;: run the planner</b><span>Correct if the fewest moves still needed drops by exactly one: h*(s) &minus; h*(t) = 1 (5-second limit; see B13).</span></div></div>
+                </div>
+                <table class="pt dense" style="margin-top:6px">
+                    <tr><th class="l"></th><th class="l">Judging (evaluator)</th><th class="l">Validating (validator)</th></tr>
+                    <tr><td>Who</td><td class="l">The LLM itself</td><td class="l">The paper&rsquo;s official program</td></tr>
+                    <tr><td>When</td><td class="l">During search, before answering</td><td class="l">After the final answer</td></tr>
+                    <tr><td>How</td><td class="l">Pattern-based guess, 0&ndash;10</td><td class="l">Formal PDDL rules + planner</td></tr>
+                    <tr class="hl"><td>Reliable?</td><td class="l">No: AUC 0.48 on 8B</td><td class="l">Yes: deterministic</td></tr>
+                </table>
+            </div>
+            <div class="col">
+                <div class="qa dark">
+                    <div class="h">Where it sits</div>
+                    <div class="flow-v">
+                        <span>Question: state + goal</span><b>&darr;</b>
+                        <span class="m">Method: the LLM only, no tools<br><small>direct &middot; structured &middot; best-of-N &middot; search &middot; bonus</small></span><b>&darr;</b>
+                        <span>Final action</span><b>&darr;</b>
+                        <span class="v">Official validator &rarr; correct / wrong</span>
+                    </div>
+                    <div class="chips" style="margin-top:6px"><span class="chip">from the paper</span><span class="chip">same for every method</span><span class="chip">deterministic</span><span class="chip">not an AI</span></div>
+                </div>
+                <div class="qa">
+                    <div class="h">Why not just use its planner?</div>
+                    <table class="pt dense on-white" style="margin:2px 0 0">
+                        <tr><td>Planner</td><td class="l">Needs the problem in formal PDDL &middot; exact &middot; can be slow</td></tr>
+                        <tr><td>LLM</td><td class="l">Works from plain language &middot; what ACPBench-Hard tests</td></tr>
+                        <tr class="hl"><td>LLM + planner</td><td class="l">LLM+P: a different question, and our next step</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Our wrapper is common/validator.py. After the runs we also scored each proposed candidate for the coverage analysis; that never changed any answer. Error types in the paper (format, inapplicable, not closer) come from steps 1 and 2. Using the planner inside search would measure the planner, not the LLM; real problems rarely come as PDDL.</aside>
+</section>
+
+<!-- B13 · Limits of the validator: the timeout, strict marking, our two changes -->
+<section class="slide" data-presenter="Backup" data-section="Validator limits">
+    <span class="pill sm dark backup-tag">Backup · More detail</span>
+    <div class="pad qa-pad">
+        <h2 class="qt">The validator&rsquo;s limits, and what we changed</h2>
+        <div class="qa-grid three">
+            <div class="qa dark">
+                <div class="h">One weakness: a 5-second timeout</div>
+                <div class="a">&ldquo;Maybe&rdquo; answers are settled by the planner within 5 s; a timeout scores the answer wrong, so on a busy machine a correct answer can come back wrong.</div>
+                <div class="bigstat"><b>1</b><span>of 1,004 saved &ldquo;maybe&rdquo; answers changed when all were re-scored alone</span></div>
+                <ul><li>One-way only: correct &rarr; wrong, never wrong &rarr; correct, so it cannot inflate a score.</li><li>Hits every method equally.</li></ul>
+            </div>
+            <div class="qa">
+                <div class="h">Strict by design: optimal steps only</div>
+                <div class="a">Ferry, 4 moves from the goal:</div>
+                <table class="pt dense on-white" style="margin:2px 0 4px">
+                    <tr><td class="l">(sail l1 l0)</td><td>4 &rarr; 3</td><td class="ok">correct</td></tr>
+                    <tr><td class="l">(board c0)</td><td>not possible</td><td class="no">inapplicable</td></tr>
+                    <tr><td class="l">a possible detour</td><td>no shorter</td><td class="no">not closer</td></tr>
+                </table>
+                <div class="a">A sensible but non-optimal move counts as wrong. That is the benchmark&rsquo;s definition; keeping it makes our numbers comparable with the paper, and it is equally strict for every method.</div>
+            </div>
+            <div class="qa ice">
+                <div class="h">Two changes, scoring rule unchanged</div>
+                <div class="chg"><span class="pill sm dark">D5</span><div class="a">A temporary-file fix so it runs on Windows, where it crashed on every &ldquo;maybe&rdquo; answer. Checked against the answer key; Faheema&rsquo;s macOS run matched.</div></div>
+                <div class="chg"><span class="pill sm dark">D8</span><div class="a">For the 22 Nov runs: a wrong &ldquo;maybe&rdquo; answer is re-checked twice, and the planner runs in a private directory so parallel runs cannot clash.</div></div>
+                <div class="a" style="margin-top:auto;color:var(--ink-2)">Both in Appendix A of the paper.</div>
+            </div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">D8 effect: best-of-N seed 1 went from 30 to 31 correct (0.231 to 0.233); reported scores are the run-time ones. The ACPBench-Hard paper notes validating Next Action is PSPACE-complete in general, which is why it uses a precomputed answer key and only runs the planner for "maybe" actions.</aside>
+</section>
+
+<!-- B14 · Search settings: what each parameter means and why these values -->
+<section class="slide" data-presenter="Backup" data-section="Search settings">
+    <span class="pill sm dark backup-tag">Backup · Q&amp;A</span>
+    <div class="pad qa-pad">
+        <h2 class="qt">The frozen search settings, and why these values</h2>
+        <div class="qa-split">
+            <table class="pt dense on-white">
+                <tr><th class="l">Setting</th><th class="l">Meaning</th></tr>
+                <tr><td>k = 3</td><td class="l">Candidate actions proposed per expansion</td></tr>
+                <tr><td>d = 2</td><td class="l">Depth: how many moves ahead the tree reaches</td></tr>
+                <tr><td>B = 14</td><td class="l">Call budget per question</td></tr>
+                <tr><td>Evaluator 0&ndash;10</td><td class="l">The LLM itself rates each predicted state</td></tr>
+                <tr><td>Pruning</td><td class="l">NOT APPLICABLE moves are dropped, never scored</td></tr>
+                <tr><td>Prompts</td><td class="l">One per role: proposer, predictor, evaluator (B2)</td></tr>
+                <tr><td>Temperatures</td><td class="l">Proposer 0.7; predictor and evaluator greedy</td></tr>
+            </table>
+            <div class="col">
+                <div class="qa dark"><div class="q">Why 14 calls?</div><div class="a">One expansion costs 1 + 2k = 7 calls (1 propose, 3 predict, 3 score). Depth 2 = two expansions = 14. Best-of-N got N = 14 to match.</div></div>
+                <div class="qa"><div class="q">Why depth 2, not 3? Does deeper help?</div><div class="a">Depth 2 is what 14 calls allow. Deeper only helps with accurate predicted states and a good judge, like a chess engine. We tested it (8B):</div>
+                    <table class="pt dense on-white" style="margin:2px 0 0"><tr><td>d = 1 &middot; 0.159</td><td>d = 2 &middot; 0.159</td><td>d = 3 &middot; 0.159</td></tr><tr><td>budget 7 &middot; 0.159</td><td colspan="2">budget 28 &middot; 0.154 (deeper can matter)</td></tr></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Depth 1 to 3 give identical answers under 14 calls because every node below the best child shares its first action; only a third expansion paid for by pruning can change the answer (0 of 390 at 8B, 4 of 390 at 70B). Average calls: 13.4 (8B), 11.4 (70B).</aside>
+</section>
+
+<!-- B15 · Defence: method questions -->
+<section class="slide s-ice" data-presenter="Backup" data-section="Defence: method">
+    <span class="pill sm dark backup-tag">Backup · Q&amp;A</span>
+    <div class="pad qa-pad">
+        <h2 class="qt">Likely questions: method and fairness</h2>
+        <div class="qa-grid">
+            <div class="qa dark"><div class="q">Is this really search?</div><div class="a">Under 14 calls it mostly re-ranks the three root candidates, and the paper says so. Depth 1 gives the same answers at 6.5 calls. The 28-call version, where deeper search can matter, scores 0.154: no better.</div></div>
+            <div class="qa"><div class="q">Is accuracy the right metric?</div><div class="a">It is the paper&rsquo;s own metric and validator, so results are comparable. We also report calls, tokens, error types, coverage and AUC, so a cost or selection problem cannot hide behind accuracy.</div></div>
+            <div class="qa"><div class="q">Is the comparison fair?</div><div class="a">Same 130 questions, same validator, same 14-call budget, a 14k-token-cap check, three seeds, paired exact McNemar tests.</div></div>
+            <div class="qa"><div class="q">Did you tune on test?</div><div class="a">No: frozen on 40 validation questions. Two disclosed exceptions: a 10-question prototype smoke run, and the 8B bonus idea came from test results (post-hoc).</div></div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Q&amp;A sheet Q1, Q9, Q25. Random applicable action (paper's own baseline, needs an applicability oracle): about 0.24.</aside>
+</section>
+
+<!-- B16 · Defence: results questions -->
+<section class="slide" data-presenter="Backup" data-section="Defence: results">
+    <span class="pill sm dark backup-tag">Backup · Q&amp;A</span>
+    <div class="pad qa-pad">
+        <h2 class="qt">Likely questions: results and the bonus</h2>
+        <div class="qa-grid three">
+            <div class="qa dark"><div class="q">Does search fail on 70B?</div><div class="a">Not significantly different from direct: 0.362 vs 0.377, interval &minus;0.09 to +0.06. Say &ldquo;not significantly different&rdquo;, never &ldquo;no effect&rdquo;.</div></div>
+            <div class="qa"><div class="q">Isn&rsquo;t generation the bigger problem?</div><div class="a">Generation sets the ceiling. For search, extra candidates raise &ldquo;correct move found&rdquo; from 22% to 31% on 8B, and selection drops it to 16%. So &ldquo;more than generation&rdquo;, not &ldquo;only&rdquo;.</div></div>
+            <div class="qa"><div class="q">What if every candidate is pruned?</div><div class="a">The search returns the proposer&rsquo;s first candidate. On 70B: 70 of 390 searches (7 correct, 57 inapplicable). No re-proposal step: a known limitation.</div></div>
+            <div class="qa"><div class="q">Did you beat the paper?</div><div class="a">Only as numbers: 0.331 vs 0.25 and 0.492 vs 0.42 (the 70B one not significant). The paper uses 1 call, we use 14, so the fair comparison is best-of-N at 14 calls: 0.231 and 0.364.</div></div>
+            <div class="qa"><div class="q">Isn&rsquo;t the bonus post-hoc?</div><div class="a">On 8B, yes, and we say so. That is why the 70B repeat was pre-registered: committed on 22 Nov before any run, reported whatever came out.</div></div>
+            <div class="qa ice"><div class="q">Is the bonus just the structured prompt?</div><div class="a">On 70B mostly: one greedy structured call scores 0.469 (vs direct p = 0.0501, not significant); voting adds +0.023.</div></div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Q&amp;A sheet Q35, Q76, Q83, Q85, Q113. Holm over twelve pooled tests: four survive (structured + vote vs best-of-N at 8B capped and uncapped, and both 70B tests).</aside>
+</section>
+
+<!-- B17 · Related work: our gap, and the other groups of papers -->
+<section class="slide s-ice" data-presenter="Backup" data-section="Our gap">
+    <span class="pill sm dark backup-tag">Backup · Q&amp;A</span>
+    <div class="pad qa-pad">
+        <h2 class="qt">What is new compared with related work?</h2>
+        <table class="pt dense">
+            <tr><th class="l">Part of our gap</th><th class="l">Where it comes from</th></tr>
+            <tr><td>Search over LLM-predicted states</td><td class="l">Tree of Thoughts and RAP showed search can help (puzzles, maths, Blocksworld)</td></tr>
+            <tr><td>No symbolic help</td><td class="l">LLM+P and Thought of Search let a planner or code do the checking; we use none</td></tr>
+            <tr><td>Open-ended planning</td><td class="l">ACPBench-Hard: open-ended, one skill at a time, 13 domains; search was never tested there</td></tr>
+            <tr class="hl"><td>Matched budget</td><td class="l">AI Agents That Matter: compare methods at equal cost, so best-of-N gets the same 14 calls</td></tr>
+        </table>
+        <div class="qa-grid three">
+            <div class="qa"><div class="q">PlanBench vs ACPBench-Hard?</div><div class="a">PlanBench grades a <b>whole plan</b> pass or fail, mostly in Blocksworld. ACPBench-Hard asks about <b>one skill at one moment</b>, open-ended, so it shows which skill breaks.</div></div>
+            <div class="qa"><div class="q">Why not LLM+P or Thought of Search?</div><div class="a">LLM+P translates the problem into PDDL for a classical planner; Thought of Search has the LLM write the rules as code, then a normal search runs. Both answer &ldquo;can the LLM plus a tool plan?&rdquo;. We test the LLM alone, and our result points to adding such a checker next.</div></div>
+            <div class="qa dark"><div class="q">Why does &ldquo;AI Agents That Matter&rdquo; matter?</div><div class="a">It shows repeated sampling with a majority vote can match complex methods at lower cost, so methods must be compared at equal cost. That is why our main control is best-of-N at the same 14 calls.</div></div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Paper Section 2. Also related: Corr&ecirc;a et al. (2025), where the LLM writes Python heuristic functions for a classical planner (another LLM + program approach). One line: others did pieces; nobody tested search with no symbolic help, on open-ended planning, at a matched budget.</aside>
+</section>
+
+
+<!-- B18 · Benchmarks, skills, tasks vs domains, and what a planner is -->
+<section class="slide" data-presenter="Backup" data-section="Benchmarks and planners">
+    <span class="pill sm dark backup-tag">Backup · Q&amp;A</span>
+    <div class="pad qa-pad">
+        <h2 class="qt">Skills, tasks vs domains, and what a planner is</h2>
+        <div class="qa-grid">
+            <div class="qa"><div class="q">What does &ldquo;splitting planning into skills&rdquo; mean?</div><div class="a">Like a driving test that checks rules, signs and turns separately instead of only &ldquo;did you reach the airport?&rdquo;. A plan needs several abilities: which moves are possible now, what a move changes, whether a plan works, which move to take next. Testing each one separately shows <b>which ability breaks</b>.</div></div>
+            <div class="qa"><div class="q">PlanBench vs ACPBench vs ACPBench-Hard?</div><ul><li><b>PlanBench:</b> generate a whole plan, graded pass or fail.</li><li><b>ACPBench (2025):</b> 7 separate skills, asked as yes/no or multiple choice: the model <b>picks</b>.</li><li><b>ACPBench-Hard (ours):</b> the same 7 skills plus Next Action, open-ended: the model must <b>write</b> the answer.</li></ul></div>
+            <div class="qa ice"><div class="q">Are the skills the tasks or the domains?</div><div class="a">The skills are the <b>tasks</b>: <b>what</b> is asked (Applicability, Progression, Next Action&hellip;). The <b>domains</b> are <b>where</b> it happens: the 13 puzzle worlds (ferry, Blocksworld, logistics&hellip;). Every task is asked in every domain: 8 &times; 13 &times; 10 = 1,040 questions. We used the Next Action row: 13 &times; 10 = 130.</div></div>
+            <div class="qa dark"><div class="q">What is a planner?</div><div class="a">A classical, deterministic program, not an AI. Given the start state, the goal and the action rules in PDDL, it systematically searches move sequences, like a GPS checking routes, and finds a plan, often the shortest. Always correct, but it needs the problem in PDDL and can be slow on large problems. It is inside the validator and LLM+P, <b>never</b> in our search.</div></div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Ferry example of the skills: applicability "can c0 board now?"; progression "after sailing, where is the ferry?"; validation "does board, sail, debark work?"; Next Action "what should we do next?". In LLM+P the LLM only translates English into PDDL; the planner does the planning.</aside>
+</section>
+
+<!-- B19 · Models: which the paper used, which we reproduced, and why -->
+<section class="slide s-ice" data-presenter="Backup" data-section="Models">
+    <span class="pill sm dark backup-tag">Backup · More detail</span>
+    <div class="pad qa-pad">
+        <h2 class="qt">The paper tested 15 models; we reproduced the two Llama 3.1 sizes</h2>
+        <div class="qa-split">
+            <div class="qa">
+                <div class="size-lab">Small</div><div class="chips"><span class="chip">Granite 3.1 8B</span><span class="chip ours">Llama 3.1 8B</span></div>
+                <div class="size-lab">Medium</div><div class="chips"><span class="chip">DeepSeek Coder 33B</span><span class="chip">Granite 34B Code</span></div>
+                <div class="size-lab">Large</div><div class="chips"><span class="chip">Mixtral 8x22B</span><span class="chip ours">Llama 3.1 70B</span><span class="chip">Llama 3.1 405B</span><span class="chip">DeepSeek V3</span><span class="chip">GPT-4o mini</span><span class="chip">GPT-4o</span></div>
+                <div class="size-lab">Reasoning</div><div class="chips"><span class="chip">DeepSeek R1</span><span class="chip">o1-mini</span><span class="chip">o1-preview</span><span class="chip">GPT-OSS 20B</span><span class="chip">GPT-OSS 120B</span></div>
+                <div class="a" style="margin-top:auto">Each model on 2 tasks (Next Action, Progression) = <b>4 reproduced results</b>. 8B ran almost every experiment; 70B is the second size.</div>
+            </div>
+            <div class="col">
+                <div class="qa dark"><div class="h"><span class="num">1</span>Open and fixed</div><div class="a">Llama&rsquo;s weights are public and unchanged. The closed models&rsquo; API versions the paper used have been retired, so they cannot be reproduced.</div></div>
+                <div class="qa"><div class="h"><span class="num">2</span>One family, two sizes</div><div class="a">Small vs large shows what scale changes: 70B proposes and prunes better, but still cannot judge reliably.</div></div>
+                <div class="qa"><div class="h"><span class="num">3</span>Affordable, with room to improve</div><div class="a">Three seeds and 13 ablations cost about $42 in total. 8B scores only 0.25 in the paper; the paper calls 405B and GPT-4o &ldquo;prohibitively expensive&rdquo; as planner components.</div></div>
+            </div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">ACPBench-Hard Section 7.1 lists the 15 models. Serving: 8B on OpenRouter pinned to CoreWeave (bf16), 70B pinned to Amazon Bedrock (precision not stated); see B6.</aside>
+</section>
+
+<!-- B20 · The match rule: 95% binomial interval, and what accuracy means -->
+<section class="slide" data-presenter="Backup" data-section="Match rule">
+    <span class="pill sm dark backup-tag">Backup · More detail</span>
+    <div class="pad qa-pad">
+        <h2 class="qt">The match rule: a 95% interval around the paper&rsquo;s value</h2>
+        <div class="qa ice">
+            <div class="h">Example: Llama 3.1 8B, Next Action</div>
+            <div class="ival">
+                <div class="axis"></div>
+                <div class="band" style="left:25.33%;width:49.33%"></div>
+                <div class="dot p" style="left:50.00%"></div>
+                <div class="dot o" style="left:41.00%"></div>
+                <span class="lab" style="left:25.33%;top:0">0.176</span>
+                <span class="lab" style="left:74.67%;top:0">0.324</span>
+                <span class="lab" style="left:50.00%;top:68px"><b>paper 0.25</b></span>
+                <span class="lab" style="left:41.00%;top:68px;color:var(--ours)"><b>ours 0.223</b></span>
+            </div>
+        </div>
+        <div class="qa-grid three">
+            <div class="qa"><div class="h">Accuracy</div><div class="a">The share of the 130 questions answered correctly: 29 &divide; 130 = 0.223. <b>One question moves it by about 0.008</b>, so scores wobble by luck.</div></div>
+            <div class="qa"><div class="h">Why 95%</div><div class="a">The standard scientific convention, the same as p &lt; 0.05. 90% would fail on bad luck; 99% would let real gaps pass. Fixed in the proposal before any run.</div></div>
+            <div class="qa dark"><div class="h">How strict it is</div><div class="a">A binomial interval for n = 130: about &plusmn;0.07&ndash;0.08. A real gap of 0.1 would fail. All four results passed; 3 of 4 sit 0.03&ndash;0.04 low, explained in D7 and backed by the identical independent harness run.</div></div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Intervals: 8B Next Action [0.176, 0.324]; 70B Next Action [0.335, 0.505]; 8B Progression [0.316, 0.484]; 70B Progression [0.568, 0.732].</aside>
+</section>
+
+<!-- B21 · Reproduction checks: the three runs, the official harness, the pinned provider -->
+<section class="slide s-ice" data-presenter="Backup" data-section="Reproduction checks">
+    <span class="pill sm dark backup-tag">Backup · More detail</span>
+    <div class="pad qa-pad">
+        <h2 class="qt">How we know the reproduction is right</h2>
+        <div class="qa-split">
+            <div class="col">
+                <table class="pt dense">
+                    <tr><th class="l">Run (8B Next Action)</th><th class="l">Who · machine</th><th>Result</th></tr>
+                    <tr><td>Official lm-eval harness</td><td class="l">Lynn · Windows (validator temp-file fix)</td><td>0.223</td></tr>
+                    <tr><td>Our own pipeline, same prompt</td><td class="l">Lynn · Windows</td><td>0.223</td></tr>
+                    <tr class="hl"><td>Independent check: official harness</td><td class="l">Faheema · macOS, her own set-up</td><td>130 / 130 identical</td></tr>
+                </table>
+                <div class="qa"><div class="h">Why Faheema&rsquo;s run is the independent one</div><div class="a">Lynn&rsquo;s runs are the reproduction itself: any mistake in that set-up would be shared by all of them. A different person, machine and operating system, with a separate set-up, got identical answers, so the result does not depend on one set-up. Run 2 also shows <b>our own code</b>, which search and the baselines are built on, matches the official tool.</div></div>
+                <div class="qa"><div class="h">The official LM Evaluation Harness</div><div class="a">EleutherAI&rsquo;s open-source benchmark runner (Gao et al., 2024; v0.4.13). ACPBench-Hard&rsquo;s tasks are built in with the paper&rsquo;s settings: official prompt and 2 examples, greedy, 1,000 tokens, the stop sequences and the validator. The paper&rsquo;s authors used it.</div></div>
+            </div>
+            <div class="qa dark">
+                <div class="h">Pinned provider</div>
+                <div class="a">OpenRouter passes each request to one of several companies hosting the model and can switch between them. Some run it compressed (<b>fp8</b>) instead of full quality (<b>bf16</b>), and that changes answers.</div>
+                <div class="mini-bars" style="display:flex;flex-direction:column;gap:12px;margin:8px 0">
+                    <div style="display:grid;grid-template-columns:170px 1fr 70px;gap:12px;align-items:center;font-size:20px"><span>Mixed fp8/bf16</span><span style="height:22px;border-radius:999px;background:rgba(255,255,255,.16)"><span style="display:block;height:100%;width:59%;border-radius:999px;background:var(--g2)"></span></span><b>0.192</b></div>
+                    <div style="display:grid;grid-template-columns:170px 1fr 70px;gap:12px;align-items:center;font-size:20px"><span>Pinned bf16</span><span style="height:22px;border-radius:999px;background:rgba(255,255,255,.16)"><span style="display:block;height:100%;width:69%;border-radius:999px;background:var(--blue)"></span></span><b>0.223</b></div>
+                </div>
+                <div class="a">16 of 130 answers differed (McNemar p = 0.45: not significant, but precision visibly changes answers). So each model is <b>locked to one provider</b>, and every answer comes from the same version of the model:</div>
+                <div class="chips" style="margin-top:4px"><span class="chip ours">8B &rarr; CoreWeave, bf16</span><span class="chip ours">70B &rarr; Amazon Bedrock</span></div>
+                <div class="a" style="margin-top:auto;color:rgba(255,255,255,.6)">Bedrock does not state its precision; the only other 70B provider serves fp8 (D1b).</div>
+            </div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">README section 3 and Appendix A (D1, D1b, D5). Lynn also ran Progression for 8B and 70B with the official harness on 21 Oct. Analogy for pinning: always ordering from the same restaurant branch so the dish tastes the same.</aside>
+</section>
+
+<!-- B22 · Where the model's probabilities come from, and what sampling does with them -->
+<section class="slide" data-presenter="Backup" data-section="Model probabilities">
+    <span class="pill sm dark backup-tag">Backup · More detail</span>
+    <div class="pad qa-pad" style="gap:22px">
+        <h2 class="qt">Where the model&rsquo;s choices come from</h2>
+        <div class="qa-grid three" style="flex:0 0 auto">
+            <div class="qa ice"><div class="h"><span class="num">1</span>Training</div><div class="a">Trained on huge amounts of text with one job: guess the next word, billions of times. It learns <b>patterns</b>: which words tend to follow which.</div></div>
+            <div class="qa ice"><div class="h"><span class="num">2</span>Answering</div><div class="a">It reads our question (domain, state, goal, two examples) and scores <b>every possible next word</b> by how well it fits those patterns.</div></div>
+            <div class="qa ice"><div class="h"><span class="num">3</span>Probabilities</div><div class="a">Scores become percentages that add up to 100%. <b>Temperature</b> sets how spread out they are:</div>
+                <div class="trow"><div><div class="tdist"><b style="height:100%"></b><b style="height:0%"></b><b style="height:0%"></b></div><span>T = 0 (greedy)</span></div><div><div class="tdist"><b style="height:60%"></b><b style="height:30%"></b><b style="height:10%"></b></div><span>T = 0.7 (ours)</span></div><div><div class="tdist"><b style="height:40%"></b><b style="height:33%"></b><b style="height:27%"></b></div><span>high: near random</span></div></div>
+            </div>
+        </div>
+        <div class="qa-grid">
+            <div class="qa">
+                <div class="h">The model does not know the answer; it estimates</div>
+                <ul>
+                    <li>&ldquo;sail 60%&rdquo; is a confident guess, not knowledge: board at 30% might be the correct move.</li>
+                    <li><b>Sampling</b> rolls a weighted dice per word, so repeated calls differ; one different early word changes everything after it.</li>
+                    <li>The <b>vote</b> then returns the answer given most often. The spread shows confidence: 13 of 14 agreeing vs a 5 / 5 / 4 split.</li>
+                    <li>Plain best-of-N barely beats one greedy answer (0.231 vs 0.223): the vote mostly lands on the top guess. Voting helps more on structured reasoning (0.331).</li>
+                </ul>
+            </div>
+            <div class="qa dark">
+                <div class="h">Patterns, not the puzzle&rsquo;s rules</div>
+                <div class="a">The probabilities say what <b>usually follows</b> text like this; the model never checks whether a move is possible. That is why:</div>
+                <ul>
+                    <li>its most common error is an impossible move (75.7 per run of 130 on 8B);</li>
+                    <li>its confidence is a poor judge of its own candidates (within-question AUC 0.48 on 8B).</li>
+                </ul>
+                <div class="a" style="margin-top:auto;color:rgba(255,255,255,.7)">The validator is the opposite: it applies the formal rules with a planner, so it checks instead of guessing.</div>
+            </div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Numbers in the probability example are illustrative. Technically the model scores tokens (pieces of words), and a softmax turns the scores into probabilities; temperature divides the scores before the softmax.</aside>
+</section>
+
+<!-- B23 · Proposer's order (fixed scoring): what it is, why we did not switch, what it would change -->
+<section class="slide s-ice" data-presenter="Backup" data-section="Proposer's order">
+    <span class="pill sm dark backup-tag">Backup · More detail</span>
+    <div class="pad qa-pad" style="gap:22px">
+        <h2 class="qt">Proposer&rsquo;s order: no scoring at all, and it did best</h2>
+        <div class="qa-split" style="grid-template-columns:1fr 1fr">
+            <div class="col">
+                <div class="qa">
+                    <div class="h">What it means (&ldquo;fixed&rdquo; scoring)</div>
+                    <div class="flow-h"><span>Proposer lists 3, best first</span><b>&rarr;</b><span>Prune NOT APPLICABLE</span><b>&rarr;</b><span class="m">Take the first one left</span></div>
+                    <div class="a">The 0&ndash;10 evaluator is skipped: the ranking is fixed by the proposer.</div>
+                </div>
+                <table class="pt dense">
+                    <tr><th class="l">How candidates are picked</th><th>Validation (of 40)</th><th>Test (8B)</th></tr>
+                    <tr class="hl"><td>Proposer&rsquo;s order</td><td>13.0</td><td>0.190</td></tr>
+                    <tr><td>0&ndash;10 score (frozen)</td><td>12.3</td><td>0.159</td></tr>
+                    <tr><td>Steps to goal</td><td>10.0</td><td>0.136</td></tr>
+                    <tr><td>Random scores</td><td>8.7</td><td>0.133</td></tr>
+                    <tr><td>Vote (d = 1)</td><td>4.7</td><td>0.108</td></tr>
+                </table>
+                <div class="a" style="font-size:20px;color:var(--ink-2)">No evaluator beat not judging. On test the gap is about four questions per seed, not significant (p &ge; 0.34).</div>
+            </div>
+            <div class="col">
+                <div class="qa dark">
+                    <div class="h">Why we did not switch to it</div>
+                    <ul>
+                        <li><b>We learned it from test results.</b> Switching after the exam would be tuning on the test set.</li>
+                        <li><b>Within noise:</b> 13.0 vs 12.3 of 40 on validation, under one question.</li>
+                        <li>It is reported honestly as an ablation (slide 22).</li>
+                    </ul>
+                </div>
+                <div class="qa">
+                    <div class="h">What freezing it would have changed</div>
+                    <div class="hbars"><div class="hb"><span>Best-of-N (14 calls)</span><span class="tr"><i class="g" style="width:92.4%"></i></span><b>0.231</b></div><div class="hb"><span>Direct (1 call)</span><span class="tr"><i class="g" style="width:89.2%"></i></span><b>0.223</b></div><div class="hb"><span>Search, proposer&rsquo;s order</span><span class="tr"><i class="o" style="width:76.0%"></i></span><b>0.190</b></div><div class="hb"><span>Search, 0&ndash;10 score (frozen)</span><span class="tr"><i class="f" style="width:63.6%"></i></span><b>0.159</b></div></div>
+                    <div class="a">Search would rise from 0.159 to 0.190, still below answering once, so the answer stays <b>no</b>. And with no evaluator, it would barely test LLM-guided search: its winning only reinforces that the model&rsquo;s judging is the problem.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Called scoring=fixed in Table 4. Pruning stays on. If every candidate is pruned, the proposer's first candidate is returned.</aside>
+</section>
+
+<!-- B24 · The re-created validation runs (22 Nov): why, how, what they showed -->
+<section class="slide" data-presenter="Backup" data-section="Re-created validation">
+    <span class="pill sm dark backup-tag">Backup · More detail</span>
+    <div class="pad qa-pad">
+        <h2 class="qt">The re-created validation runs (22 November)</h2>
+        <div class="qa-grid three" style="grid-template-rows:1fr">
+            <div class="qa ice">
+                <div class="h"><span class="num">1</span>Why</div>
+                <div class="a">The freeze (23 Oct) rests on a validation comparison of evaluators. Those original runs were not kept with the final code, so there was <b>no checkable evidence</b> for the choice: &ldquo;where are the runs that justified the freeze?&rdquo;</div>
+            </div>
+            <div class="qa">
+                <div class="h"><span class="num">2</span>How</div>
+                <ul>
+                    <li>Same 40 validation questions, 5 evaluators, 3 seeds each.</li>
+                    <li>The <b>final</b> code, the same as the test runs.</li>
+                    <li><b>Pre-registered:</b> the plan was committed in <code>experiments/preregistration_22nov.md</code> before running.</li>
+                    <li>Seed 1 of three evaluators replayed the original October calls from the cache.</li>
+                </ul>
+            </div>
+            <div class="qa dark">
+                <div class="h"><span class="num">3</span>What it showed</div>
+                <div class="a">Proposer&rsquo;s order 13.0, frozen 0&ndash;10 score 12.3, then steps 10.0, random 8.7, vote 4.7 (Table 6, slide 12).</div>
+                <div class="a" style="margin-top:6px"><b>Awkward:</b> the evidence we can show does not put our choice on top. <b>But fine:</b> the gap is under one question, the original runs favoured the 0&ndash;10 score, it changes no conclusion, and we report it openly.</div>
+            </div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Re-runnable with experiments/followups.py. Saying it first shows honesty; if the professor found it himself, it would look like hiding something.</aside>
+</section>
+
+<!-- B25 · How k, d and the budget were set (design reasoning), and the ablations that tested the alternatives -->
+<section class="slide s-ice" data-presenter="Backup" data-section="k, d and budget">
+    <span class="pill sm dark backup-tag">Backup · More detail</span>
+    <div class="pad qa-pad" style="gap:22px">
+        <h2 class="qt">How k, d and the 14-call budget were set</h2>
+        <div class="qa-split" style="grid-template-columns:1fr 1fr">
+            <div class="col">
+                <div class="qa">
+                    <div class="h">Set together, by design</div>
+                    <div class="chain">
+                        <div><span class="pill sm dark">k = 3</span><em>three candidates per expansion: a real choice, but cheap</em></div>
+                        <div><span class="pill sm dark">7 calls</span><em>one expansion = 1 propose + 3 predict + 3 score = 1 + 2k</em></div>
+                        <div><span class="pill sm dark">14 calls</span><em>two full expansions: the root, then its best child</em></div>
+                        <div><span class="pill sm dark">d = 2</span><em>the deepest two expansions can reach</em></div>
+                    </div>
+                    <div class="a" style="margin-top:4px">Best-of-N then got N = 14 to match the budget.</div>
+                </div>
+                <div class="qa ice">
+                    <div class="h">What the validation evidence covers</div>
+                    <div class="a">The saved validation comparison is of the <b>evaluators</b> (slide 12, Table 6). k, d and the budget were fixed by the reasoning above while developing on validation, not by a saved grid of k, d or budget values.</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="qa">
+                    <div class="h">The alternatives, tested afterwards as ablations</div>
+                    <div class="a" style="font-size:19px;color:var(--ink-2)">8B, 130 test questions, mean of 3 seeds, one setting changed at a time</div>
+                    <div class="hbars"><div class="hb" style="grid-template-columns:200px 1fr 70px"><span>k = 2</span><span class="tr"><i class="g" style="width:81.0%"></i></span><b>0.162</b></div><div class="hb" style="grid-template-columns:200px 1fr 70px"><span><b>k = 3 (frozen)</b></span><span class="tr"><i class="o" style="width:79.5%"></i></span><b>0.159</b></div><div class="hb" style="grid-template-columns:200px 1fr 70px"><span>k = 5</span><span class="tr"><i class="f" style="width:57.5%"></i></span><b>0.115</b></div><div class="hb" style="grid-template-columns:200px 1fr 70px"><span>d = 1</span><span class="tr"><i class="g" style="width:79.5%"></i></span><b>0.159</b></div><div class="hb" style="grid-template-columns:200px 1fr 70px"><span>d = 3</span><span class="tr"><i class="g" style="width:79.5%"></i></span><b>0.159</b></div><div class="hb" style="grid-template-columns:200px 1fr 70px"><span>budget 7</span><span class="tr"><i class="g" style="width:79.5%"></i></span><b>0.159</b></div><div class="hb" style="grid-template-columns:200px 1fr 70px"><span>budget 28</span><span class="tr"><i class="g" style="width:77.0%"></i></span><b>0.154</b></div></div>
+                </div>
+                <div class="qa dark">
+                    <div class="h">What to conclude</div>
+                    <ul>
+                        <li>k = 2 is the same; k = 5 is worse in every seed (significant in one), plausibly because the evaluator has more ways to choose wrongly.</li>
+                        <li>Depth and budget change no answers (28 calls: 0.154).</li>
+                        <li>So none of these choices is why search lost: the evaluator is.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">If asked: "The evaluator was compared on validation, which is the chart on slide 12. k, d and the budget were set together by design: three candidates keeps an expansion at 7 calls, so 14 calls gives two full expansions and depth 2. We then tested the alternatives as ablations: k = 2 is the same, k = 5 is worse, and depth and budget do not change the answers." Do not claim a validation comparison of k values.</aside>
+</section>
+
+<!-- B26 · What our ablations are: remove vs vary vs swap, and how they were run -->
+<section class="slide" data-presenter="Backup" data-section="Ablation method">
+    <span class="pill sm dark backup-tag">Backup · More detail</span>
+    <div class="pad qa-pad" style="gap:22px">
+        <h2 class="qt">What our ablations are, and how we ran them</h2>
+        <div class="qa-split" style="grid-template-columns:1.05fr 1fr">
+            <div class="col">
+                <table class="pt dense on-white ab">
+                    <tr><th class="l">Kind</th><th class="l">Setting changed (one at a time)</th><th>8B test</th></tr>
+                    <tr><td rowspan="3">Remove a part<br><small>true ablation</small></td><td class="l s">no scoring: proposer&rsquo;s order</td><td>0.190</td></tr>
+                    <tr><td class="l s">no state prediction</td><td>0.159</td></tr>
+                    <tr><td class="l s">no pruning</td><td>0.159</td></tr>
+                    <tr><td rowspan="2">Swap a part</td><td class="l s">evaluator: steps &middot; random &middot; vote</td><td>0.136 &middot; 0.133 &middot; 0.108</td></tr>
+                    <tr><td class="l s">few-shot proposer</td><td>0.154</td></tr>
+                    <tr><td rowspan="3">Vary a value<br><small>sensitivity</small></td><td class="l s">k = 2 &middot; k = 5</td><td>0.162 &middot; 0.115</td></tr>
+                    <tr><td class="l s">d = 1 &middot; d = 3</td><td>0.159 &middot; 0.159</td></tr>
+                    <tr><td class="l s">budget 7 &middot; budget 28</td><td>0.159 &middot; 0.154</td></tr>
+                    <tr class="hl"><td>Reference</td><td class="l s">frozen search: 0&ndash;10 score, k = 3, d = 2, 14 calls</td><td>0.159</td></tr>
+                </table>
+                <div class="a" style="font-size:19px;color:var(--ink-2)">Strictly, varying a value is a sensitivity analysis. Both are grouped as ablations, as the proposal planned (&ldquo;remove LLM state scoring, replace it with fixed or random expansion, remove state prediction, and vary k, d, and budget&rdquo;) and the brief allows (&ldquo;remove a component or test harder conditions&rdquo;).</div>
+            </div>
+            <div class="col">
+                <div class="qa">
+                    <div class="h">Switches in the search code</div>
+                    <div class="prompt" style="font-size:16px;line-height:1.55">abl8b_fixed &nbsp;&nbsp;&nbsp;&nbsp;--param scoring=fixed<br>abl8b_nopredict --param predict_state=False<br>abl8b_noprune &nbsp;&nbsp;--param prune=False<br>abl8b_k5 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--param k=5<br>abl8b_b28 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--max-calls 28<br>&hellip; 13 lines in experiments/ablations.txt</div>
+                </div>
+                <div class="qa">
+                    <div class="h">The procedure</div>
+                    <div class="flow-h"><span>Change one switch</span><b>&rarr;</b><span>Same 130 test questions</span><b>&rarr;</b><span>Seeds 1, 2, 3</span><b>&rarr;</b><span class="m">Compare with 0.159</span></div>
+                    <div class="a">13 settings &times; 3 seeds = 39 runs, all on 8B, with per-seed exact McNemar tests against the frozen search. One command: <code>python -m experiments.sweep experiments/ablations.txt --seeds 1 2 3</code></div>
+                </div>
+                <div class="qa dark">
+                    <div class="h">What they show</div>
+                    <div class="a">Removing parts never hurt, and removing the scorer helped. Only k = 5 differs significantly (one seed). So the bottleneck is judging, not the shape of the search.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">The vote ablation runs at d = 1 (one comparative call per expansion). Without state prediction, children keep the parent's state and the LLM scores the action itself, so the search is depth 1 (3.9 calls). Lynn built the ablation switches (Appendix E).</aside>
+</section>
+
+<!-- B27 · McNemar's test: how it works and how we used it -->
+<section class="slide s-ice" data-presenter="Backup" data-section="McNemar test">
+    <span class="pill sm dark backup-tag">Backup · More detail</span>
+    <div class="pad qa-pad" style="gap:22px">
+        <h2 class="qt">McNemar&rsquo;s test: real difference, or luck?</h2>
+        <div class="qa-grid three" style="flex:0 0 auto">
+            <div class="qa">
+                <div class="h"><span class="num">1</span>Sort the 130 questions</div>
+                <table class="pt dense on-white mc">
+                    <tr><th></th><th>B right</th><th>B wrong</th></tr>
+                    <tr><td>A right</td><td class="ig">both right<br><small>ignored</small></td><td class="dis">only A right</td></tr>
+                    <tr><td>A wrong</td><td class="dis">only B right</td><td class="ig">both wrong<br><small>ignored</small></td></tr>
+                </table>
+                <div class="a" style="font-size:20px">Questions both got right or both got wrong say nothing about which is better.</div>
+            </div>
+            <div class="qa">
+                <div class="h"><span class="num">2</span>Is the split a coin flip?</div>
+                <div class="a" style="font-size:20px">If A and B were equally good, the disagreements would split about 50/50.</div>
+                <div class="split-row"><span class="pill sm">10 vs 6</span><em>could easily be luck &middot; p &asymp; 0.45</em></div>
+                <div class="split-row"><span class="pill sm dark">12 vs 3</span><em>very lopsided &middot; p &asymp; 0.035, significant</em></div>
+                <div class="a" style="font-size:19px;color:var(--ink-2)"><b>Exact</b>: the coin-flip probability is computed exactly, which matters for small counts.</div>
+            </div>
+            <div class="qa dark">
+                <div class="h"><span class="num">3</span>Why we need it</div>
+                <div class="a">One question moves accuracy by 0.008, so a gap of a few questions could be chance. The test tells us which differences we may claim, and stops us overclaiming.</div>
+            </div>
+        </div>
+        <div class="qa-split" style="grid-template-columns:1fr 1fr">
+            <div class="qa">
+                <div class="h">How we used it</div>
+                <ul>
+                    <li><b>Per seed:</b> each sampled method has three runs, so each comparison gives three p-values (one per seed), on the same 130 questions.</li>
+                    <li>Accuracy is reported as the mean &plusmn; std; the tests stay per seed because McNemar needs right/wrong per question, which exists only within one run.</li>
+                    <li><b>Seed-pooled</b> sign-flip tests combine the seeds for the key comparisons (Appendix D), then Holm corrects them (B28).</li>
+                </ul>
+            </div>
+            <table class="pt dense">
+                <tr><th class="l">Comparison (8B, per seed)</th><th>p</th><th class="l">So we say</th></tr>
+                <tr><td>Search vs direct</td><td>0.169 &middot; 0.265 &middot; 0.087</td><td class="l">lower, not significantly</td></tr>
+                <tr><td>Best-of-N vs search, capped</td><td>0.557 &middot; 0.281 &middot; 0.036</td><td class="l">higher every seed, significant in one</td></tr>
+                <tr><td>Structured + vote vs direct</td><td>0.043 &middot; 0.005 &middot; 0.058</td><td class="l">above every seed, significant in two</td></tr>
+                <tr><td>k = 5 vs frozen search</td><td>one seed 0.021</td><td class="l">the only significant ablation</td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">McNemar (1947); Aisha built the tool, experiments/compare.py. Per-seed p-values are uncorrected and labelled so. Unit tests check known cases: 3 vs 12 and 6 vs 10 disagreements.</aside>
+</section>
+
+<!-- B28 · Holm correction: which wins still count -->
+<section class="slide" data-presenter="Backup" data-section="Holm correction">
+    <span class="pill sm dark backup-tag">Backup · More detail</span>
+    <div class="pad qa-pad" style="gap:22px">
+        <h2 class="qt">Holm correction: which wins still count</h2>
+        <div class="qa-split" style="grid-template-columns:0.78fr 1.22fr">
+            <div class="col">
+                <div class="qa">
+                    <div class="h">Why correct at all</div>
+                    <div class="a">p &lt; 0.05 allows a 5% chance of luck per test. Run 20 tests where nothing is real and about one still looks significant. We ran <b>12</b> seed-pooled tests, so the bar has to rise.</div>
+                </div>
+                <div class="qa ice">
+                    <div class="h">How Holm works</div>
+                    <ul>
+                        <li>Sort the p-values, smallest first.</li>
+                        <li>Multiply each by the number of tests still in play: 12, then 11, then 10&hellip;</li>
+                        <li>Stop at the first one above 0.05; it and all after it do not count.</li>
+                    </ul>
+                </div>
+                <div class="qa dark">
+                    <div class="h">McNemar vs Holm</div>
+                    <div class="a"><b>McNemar</b> is a test: is A better than B on these questions? <b>Holm</b> is a correction applied afterwards to many tests&rsquo; p-values. First test, then correct.</div>
+                </div>
+            </div>
+            <div class="col">
+                <table class="pt dense on-white ab holm">
+                    <tr><th class="l">Seed-pooled test</th><th>p</th><th>&times;</th><th>Holm p</th><th>Counts?</th></tr>
+                    <tr class="hl"><td class="l s">Structured + vote vs best-of-N &middot; 8B, capped</td><td>&lt; 0.001</td><td>&times; 12</td><td>&lt; 0.012</td><td class="ok">counts</td></tr><tr class="hl"><td class="l s">Structured + vote vs best-of-N &middot; 70B (pre-registered)</td><td>0.0008</td><td>&times; 11</td><td>0.009</td><td class="ok">counts</td></tr><tr class="hl"><td class="l s">Structured + vote vs direct &middot; 70B</td><td>0.002</td><td>&times; 10</td><td>0.02</td><td class="ok">counts</td></tr><tr class="hl"><td class="l s">Structured + vote vs best-of-N &middot; 8B</td><td>0.003</td><td>&times; 9</td><td>0.02</td><td class="ok">counts</td></tr><tr><td class="l s">Structured + vote vs direct &middot; 8B</td><td>0.008</td><td>&times; 8</td><td>0.064</td><td class="no">stop here</td></tr><tr><td class="l s">Structured + vote vs one structured call &middot; 8B</td><td>0.03</td><td></td><td></td><td class="no">no</td></tr><tr><td class="l s">Best-of-N vs search &middot; 8B</td><td>0.04</td><td></td><td>0.22</td><td class="no">no</td></tr><tr><td class="l s">Search vs direct &middot; 8B</td><td>0.08</td><td></td><td></td><td class="no">no</td></tr><tr><td class="l s">Best-of-N vs search &middot; 8B, capped</td><td>0.08</td><td></td><td></td><td class="no">no</td></tr><tr><td class="l s">Proposer&rsquo;s order vs frozen search &middot; 8B</td><td>0.10</td><td></td><td></td><td class="no">no</td></tr><tr><td class="l s">Search vs direct &middot; 70B</td><td>0.73</td><td></td><td></td><td class="no">no</td></tr><tr><td class="l s">Best-of-N vs direct &middot; 8B</td><td>0.83</td><td></td><td></td><td class="no">no</td></tr>
+                </table>
+                <div class="a" style="font-size:19px;color:var(--ink-2)">All four survivors are structured + vote. Best-of-N beating search (0.04 &rarr; 0.22) and the bonus beating one structured call do not survive.</div>
+            </div>
+        </div>
+    </div>
+    <div class="foot"><span class="who"></span><span class="pg"></span></div>
+    <aside class="notes">Appendix D of the paper. The pooled test averages each question's correctness over seeds 1 to 3 and runs a paired sign-flip permutation test; it is approximate when a three-seed mean is compared with a single greedy run. Domain-cluster bootstrap intervals for the survivors stay above zero.</aside>
+</section>
 </main>
 </div>
 
